@@ -1,10 +1,4 @@
 import { Roboto } from "next/font/google"
-import { cn } from "@/lib/utils"
-
-const font = Roboto({
-  subsets: ["latin"],
-  weight: ["400"]
-});
 
 export const Navbar = () => {
   return (

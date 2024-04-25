@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from 'react';
 import { Roboto } from "next/font/google";
 import { cn } from "@/lib/utils";

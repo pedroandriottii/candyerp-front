@@ -1,6 +1,4 @@
 'use client';
-import { Navbar } from '@/components/base/navbar';
-import { Sidebar } from '@/components/base/sidebar';
 import React, { useState, useEffect } from 'react';
 
 export default function Home() {
@@ -16,12 +14,11 @@ export default function Home() {
       setData(data);
     }
     fetchData().catch(console.error);
+    console.log(data);
   }, []);
 
   return (
     <div className='flex flex-col bg-white'>
-      <Navbar />
-      <Sidebar />
       <h1>TESTANDO A API</h1>
       <div>
         {data && data.map(e => (
