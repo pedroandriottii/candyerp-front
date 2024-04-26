@@ -9,6 +9,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import ReportIcon from '@mui/icons-material/Report';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const font = Roboto({
   subsets: ["latin"],
@@ -63,8 +64,12 @@ export const Sidebar = () => {
           <>
             <h1 className="uppercase">Home</h1>
             <div className="flex flex-col text-center gap-5 mt-2 mb-2">
-              <p className="hover:bg-[#6da5c0] rounded-md p-2">Dashboard</p>
-              <p className="hover:bg-[#6da5c0] rounded-md p-2">Relatórios</p>
+              <Link href="/supplier">
+                <p className="hover:bg-[#6da5c0] rounded-md p-2">Fornecedores</p>
+              </Link>
+              <Link href="/ingredient">
+                <p className="hover:bg-[#6da5c0] rounded-md p-2">Ingredientes</p>
+              </Link>
             </div>
             <hr />
             <p>Menu 2</p>
