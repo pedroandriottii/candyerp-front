@@ -30,7 +30,7 @@ const SupplierPage: React.FC = () => {
 
 
   return (
-    <div className="p-4">
+    <div className="p-4 flex flex-col">
       <h1 className="text-xl font-bold">Suppliers List</h1>
       <Link href="/supplier/create">
         <button className="bg-blue-500 text-white p-2 mt-4">Add New Supplier</button>
@@ -46,7 +46,7 @@ const SupplierPage: React.FC = () => {
             <Link href={`/supplier/${supplier.id}/update`}>
               <button className="ml-2 text-blue-500">Update</button>
             </Link>
-            
+
             <form onSubmit={(event) => handleDelete(event, supplier.id)}>
               <button type='submit' className='text-red-500'>
                 delete???

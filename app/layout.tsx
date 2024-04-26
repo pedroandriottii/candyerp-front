@@ -20,8 +20,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Navbar />
-        {/* <Sidebar /> */}
-        {children}
+        <div className="flex">
+          <Sidebar />
+          {children}
+        </div>
       </body>
     </html>
   );
