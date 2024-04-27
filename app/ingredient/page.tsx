@@ -4,6 +4,13 @@ import { IngredientProps } from '@/types';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
+import { FormHeader } from '@/components/form/FormHeader';
+import { FormLabel } from '@/components/form/FormLabel';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import InfoIcon from '@mui/icons-material/Info';
+
+
 const IngredientPage: React.FC = () => {
   const [ingredients, setIngredients] = useState<IngredientProps[]>([]);
 
@@ -30,32 +37,50 @@ const IngredientPage: React.FC = () => {
 
 
   return (
-    <div className="p-4 flex flex-col">
-      <h1 className="text-xl font-bold">Ingredients List</h1>
-      <Link href="/ingredient/create">
-        <button className="bg-blue-500 text-white p-2 mt-4">Add New Ingredient</button>
-      </Link>
-      <ul>
-        {ingredients.map(ingredient => (
-          <li key={ingredient.id} className="mt-2">
-            {ingredient.name}
-            {ingredient.measurement_unit}
-            {ingredient.quantity}
-            <Link href={`/ingredient/${ingredient.id}`}>
-              <button className="ml-2 text-blue-500">Detail</button>
-            </Link>
-            <Link href={`/ingredient/${ingredient.id}/update`}>
-              <button className="ml-2 text-blue-500">Update</button>
-            </Link>
-
-            <form onSubmit={(event) => handleDelete(event, ingredient.id)}>
-              <button type='submit' className='text-red-500'>
-                delete???
-              </button>
-            </form>
-          </li>
-        ))}
-      </ul>
+    <div className="p-6 w-full flex flex-col bg-[#EEF2F6]">
+      <FormLabel />
+      <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
+        <FormHeader />
+        <hr className='my-4' />
+        <table className='w-full'>
+          <thead>
+            <tr className='text-left'>
+              <th className='font-bold p-2'>Nome</th>
+              <th className='font-bold p-2'>Unidade de Medida</th>
+              <th className='font-bold p-2'>Quantidade</th>
+              <th className='font-bold p-2'>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ingredients.map(ingredient => (
+              <tr key={ingredient.id} className="border-b">
+                <td className='p-2'>
+                  {ingredient.name}
+                </td>
+                <td className='p-2'>
+                  {ingredient.measurement_unit}
+                </td>
+                <td className='p-2'>
+                  {ingredient.quantity}
+                </td>
+                <td className='p-2 flex gap-3'>
+                  <Link href={`/ingredient/${ingredient.id}`}>
+                    <button className="text-blue-500"><InfoIcon /></button>
+                  </Link>
+                  <Link href={`/ingredient/${ingredient.id}/update`}>
+                    <button className="text-blue-500"><EditIcon /></button>
+                  </Link>
+                  <form onSubmit={(event) => handleDelete(event, ingredient.id)}>
+                    <button type='submit' className='text-red-500'>
+                      <DeleteIcon />
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

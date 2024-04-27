@@ -4,12 +4,16 @@ import { useState } from 'react';
 import { Roboto } from "next/font/google";
 import { cn } from "@/lib/utils";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
-import ReportIcon from '@mui/icons-material/Report';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Image from 'next/image';
 import Link from 'next/link';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
+import DiningIcon from '@mui/icons-material/Dining';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 const font = Roboto({
   subsets: ["latin"],
@@ -31,21 +35,25 @@ export const Sidebar = () => {
     )}>
       <div className='flex items-center align-center text-center'>
         <Image
-          src={'/img/candy-logo.png'}
+          src={isCollapsed ? '/img/candy-logo.png' : '/img/candy-logo-full.png'}
           alt="Logo"
-          width={140}
-          height={340}
+          width={isCollapsed ? 40 : 140}
+          height={isCollapsed ? 80 : 300}
         />
+
       </div>
       <div className="flex flex-row justify-between items-center">
         <h1 className={cn(
           "uppercase text-sm font-bold transition-opacity duration-300",
           isCollapsed ? "hidden" : "opacity-100"
         )}>
-          Atalhos Recomendados
+          Atalhos
         </h1>
-        <button onClick={toggleSidebar} className="">
-          {isCollapsed ? <ChevronRightIcon className='items-center justify-center text-center' /> : <ChevronLeftIcon />}
+        <button onClick={toggleSidebar} className={cn(
+          "hover:bg-candy-purple rounded-md p-2 transition-all duration-300",
+          isCollapsed ? "mx-auto" : ""
+        )}>
+          {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </button>
       </div>
       <div>
@@ -54,31 +62,50 @@ export const Sidebar = () => {
           <div className='flex flex-col items-center justify-start'>
             <div className='flex flex-col justify-start'>
             </div>
-            <div className='flex flex-col gap-5'>
-              <button className='hover:bg-[#6da5c0] rounded-md p-2'><DashboardIcon /></button>
-              <button className='hover:bg-[#6da5c0] rounded-md p-2'><HomeIcon /></button>
-              <button className='hover:bg-[#6da5c0] rounded-md p-2'><ReportIcon /></button>
+            <div className='flex flex-col gap-3'>
+              <button className='hover:bg-candy-purple rounded-md p-2'><HomeIcon /></button>
+              <button className='hover:bg-candy-purple rounded-md p-2'><Diversity3Icon /></button>
+              <button className='hover:bg-candy-purple rounded-md p-2'><DiningIcon /></button>
+              <button className='hover:bg-candy-purple rounded-md p-2'><Inventory2Icon /></button>
+              <button className='hover:bg-candy-purple rounded-md p-2'><AssignmentIndIcon /></button>
+              <button className='hover:bg-candy-purple rounded-md p-2'><EventAvailableIcon /></button>
+              <button className='hover:bg-candy-purple rounded-md p-2'><AttachMoneyIcon /></button>
+
             </div>
           </div>
         ) : (
-          <>
-            <h1 className="uppercase">Home</h1>
-            <div className="flex flex-col text-center gap-5 mt-2 mb-2">
-              <Link href="/supplier">
-                <p className="hover:bg-[#6da5c0] rounded-md p-2">Fornecedores</p>
-              </Link>
-              <Link href="/ingredient">
-                <p className="hover:bg-[#6da5c0] rounded-md p-2">Ingredientes</p>
-              </Link>
-            </div>
-            <hr />
-            <p>Menu 2</p>
-            <p>Menu 3</p>
-            <p>Menu 4</p>
-            <p>Menu 5</p>
-          </>
+          <div className='items-center'>
+            <Link href="/" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+              <HomeIcon />
+              <p className="">Home</p>
+            </Link>
+            <Link href="/supplier" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+              <Diversity3Icon />
+              <p className="">Fornecedores</p>
+            </Link>
+            <Link href="/ingredient" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+              <DiningIcon />
+              <p className="">Ingredientes</p>
+            </Link>
+            <Link href="/products" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+              <Inventory2Icon />
+              <p className="">Produtos</p>
+            </Link>
+            <Link href="/clients" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+              <AssignmentIndIcon />
+              <p className="">Cliente</p>
+            </Link>
+            <Link href="/productions" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+              <EventAvailableIcon />
+              <p className="">Produção</p>
+            </Link>
+            <Link href="/sales" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+              <AttachMoneyIcon />
+              <p className="">Vendas</p>
+            </Link>
+          </div>
         )}
       </div>
-    </div>
+    </div >
   )
 }
