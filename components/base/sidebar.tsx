@@ -63,13 +63,27 @@ export const Sidebar = () => {
             <div className='flex flex-col justify-start'>
             </div>
             <div className='flex flex-col gap-3'>
-              <button className='hover:bg-candy-purple rounded-md p-2'><HomeIcon /></button>
-              <button className='hover:bg-candy-purple rounded-md p-2'><Diversity3Icon /></button>
-              <button className='hover:bg-candy-purple rounded-md p-2'><DiningIcon /></button>
-              <button className='hover:bg-candy-purple rounded-md p-2'><Inventory2Icon /></button>
-              <button className='hover:bg-candy-purple rounded-md p-2'><AssignmentIndIcon /></button>
-              <button className='hover:bg-candy-purple rounded-md p-2'><EventAvailableIcon /></button>
-              <button className='hover:bg-candy-purple rounded-md p-2'><AttachMoneyIcon /></button>
+              <Link href='/'>
+                <button className='hover:bg-candy-purple rounded-md p-2'><HomeIcon /></button>
+              </Link>
+              <Link href='/supplier'>
+                <button className='hover:bg-candy-purple rounded-md p-2'><Diversity3Icon /></button>
+              </Link>
+              <Link href='/ingredient'>
+                <button className='hover:bg-candy-purple rounded-md p-2'><DiningIcon /></button>
+              </Link>
+              <Link href='/products'>
+                <button className='hover:bg-candy-purple rounded-md p-2'><Inventory2Icon /></button>
+              </Link>
+              <Link href='/clients'>
+                <button className='hover:bg-candy-purple rounded-md p-2'><AssignmentIndIcon /></button>
+              </Link>
+              <Link href='/productions'>
+                <button className='hover:bg-candy-purple rounded-md p-2'><EventAvailableIcon /></button>
+              </Link>
+              <Link href='/sales'>
+                <button className='hover:bg-candy-purple rounded-md p-2'><AttachMoneyIcon /></button>
+              </Link>
 
             </div>
           </div>
