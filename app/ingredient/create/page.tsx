@@ -11,7 +11,8 @@ const NewIngredient = () => {
     const [quantity, setQuantity] = useState('');
     
     const [supplier, setSupplier] = useState<SupplierProps[]>([]);
-    const [selectedSupplierId, setSelectedSupplierId] = useState('');
+    const [selectedSupplierId, setSelectedSupplierId] = useState<string>();
+
 
     useEffect(() => {
       fetch(`http://localhost:8080/suppliers`)
@@ -23,6 +24,7 @@ const NewIngredient = () => {
 
     const handleSubmit = async (event: React.FormEvent) => {
       event.preventDefault();
+    
       const response = await fetch('http://localhost:8080/ingredients', {
         method: 'POST',
         headers: {
@@ -30,12 +32,38 @@ const NewIngredient = () => {
         },
         body: JSON.stringify({ name, measurement_unit, quantity }),
       });
-
+      
       if (response.ok) {
-        router.push('/ingredient');
+        const ingredient = await response.json();
+        console.log('Ingredient created:', ingredient);
+        const ingredientId: number = ingredient.id;
+        console.log(selectedSupplierId)
+        console.log(ingredientId);
+
+        const relationResponse = await fetch('http://localhost:8080/ingredient-suppliers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fk_Ingredient_Id: Number(ingredientId),
+            fk_Supplier_Id: Number(selectedSupplierId)
+          }),
+        });
+        console.log(relationResponse);
+    
+        if (relationResponse.ok) {
+          router.push('/ingredient');
+        } else {
+          console.error('Failed to create ingredient-supplier relationship');
+          console.error(await relationResponse.json());
+        }
+      } else {
+        console.error('Failed to create ingredient');
+        console.error(await response.json()); 
       }
     };
-
+    
     
     return (
       <div className="p-4">
@@ -68,18 +96,18 @@ const NewIngredient = () => {
             className="border"
           />
 
-          <label htmlFor="supplier">Supplier:</label>
           <select
             id="supplier"
-            value={supplier.map(s => s.name)}
-            onChange={(e) => setSelectedSupplierId(e.target.value)}
+            value={selectedSupplierId}
+            onChange={(e) => setSelectedSupplierId(e.target.value.toString())}
             required
             className="border"
-          > 
+          >
             {supplier.map((supplier) => {
-              return <option key={supplier.id} value={supplier.name}>{supplier.name}</option>
+              return <option key={supplier.id} value={supplier.id}>{supplier.name}</option>
             })}
           </select>
+
           <button type="submit" className="bg-blue-500 text-white p-2 mt-4">
             Submit
           </button>

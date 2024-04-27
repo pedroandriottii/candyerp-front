@@ -79,4 +79,4 @@ const UpdateIngredient = ({ params }: { params: { id: string }}) => {
   );
 };
 
-export default UpdateSupplier;
+export default UpdateIngredient;
