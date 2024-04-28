@@ -3,13 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SupplierProps } from '@/types';
 
-export enum MeasurementUnit {
-  KILOGRAM = "KILOGRAM",
-  GRAM = "GRAM",
-  LITER = "LITERS",
-  MILLILITER = "MILLILITER",
-  UNIT = "UNIT",
-}
+
 
 const NewIngredient = () => {
   const router = useRouter();
@@ -96,9 +90,11 @@ const NewIngredient = () => {
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           >
-            {Object.values(MeasurementUnit).map((unit) => (
-              <option key={unit} value={unit}>{unit}</option>
-            ))}
+            <option value="KILOGRAM">Quilogramas</option>
+            <option value="GRAM">Gramas</option>
+            <option value="LITER">Litros</option>
+            <option value="MILILITER">Mililitros</option>
+            <option value="UNIT">Unidade</option>
           </select>
 
         </div>
