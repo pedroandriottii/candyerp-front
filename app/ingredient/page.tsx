@@ -10,21 +10,20 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoIcon from '@mui/icons-material/Info';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
 
 
 const IngredientPage: React.FC = () => {
   const [ingredients, setIngredients] = useState<IngredientProps[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/ingredients')
+    fetch('https://reasonable-amazement-production.up.railway.app/ingredients')
       .then(response => response.json())
       .then(data => setIngredients(data));
   }, []);
 
   const handleDelete = async (event: React.FormEvent, id: number) => {
     event.preventDefault();
-    const response = await fetch(`http://localhost:8080/ingredients/${id}`, {
+    const response = await fetch(`https://reasonable-amazement-production.up.railway.app/ingredients/${id}`, {
       method: 'DELETE',
     });
     if (response.ok) {
@@ -50,7 +49,7 @@ const IngredientPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {ingredients.map(ingredient => (
+              {ingredients ? ingredients.map(ingredient => (
                 <tr key={ingredient.id} className="border-b">
                   <td className='p-2'>
                     {ingredient.name}
@@ -74,28 +73,28 @@ const IngredientPage: React.FC = () => {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Voce tem certeza?</AlertDialogTitle>
+                          <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Esta acao nao pode ser desfeita.
-                            Caso algum produto seja feito com este ingrediente ele sera afetado.
-                            Caso algum fornecedor forneça este ingrediente ele sera afetado.
+                            Esta ação não pode ser desfeita.
+                            Caso algum produto seja feito com este ingrediente, ele será afetado.
+                            Caso algum fornecedor forneça este ingrediente, ele será afetado.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction asChild >
-                          <form onSubmit={(event) => handleDelete(event, ingredient.id)}>
-                            <button type='submit'>
-                              Remover
-                            </button>
-                          </form>
+                          <AlertDialogAction asChild>
+                            <form onSubmit={(event) => handleDelete(event, ingredient.id)}>
+                              <button type='submit'>
+                                Remover
+                              </button>
+                            </form>
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   </td>
                 </tr>
-              ))}
+              )) : <tr><td colSpan={4}>Carregando...</td></tr>}
             </tbody>
           </table>
         </div>

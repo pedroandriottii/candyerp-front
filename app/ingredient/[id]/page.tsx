@@ -9,7 +9,7 @@ export default function IngredientDetail({ params }: { params: { id: string } })
 
   useEffect(() => {
     if (params.id) {
-      fetch(`http://localhost:8080/ingredients/${params.id}`)
+      fetch(`https://reasonable-amazement-production.up.railway.app/ingredients/${params.id}`)
         .then(response => response.json())
         .then(data => setSupplier(data));
     }

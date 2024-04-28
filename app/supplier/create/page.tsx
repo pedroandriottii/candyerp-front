@@ -10,7 +10,7 @@ const NewSupplier = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const response = await fetch('http://localhost:8080/suppliers', {
+    const response = await fetch('https://reasonable-amazement-production.up.railway.app/suppliers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
