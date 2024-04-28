@@ -1,5 +1,6 @@
 "use client";
 
+import FormLabel from '@/components/form/FormLabel';
 import { SupplierProps } from '@/types';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -30,7 +31,8 @@ const SupplierPage: React.FC = () => {
 
 
   return (
-    <div className="p-4 flex flex-col">
+    <div className="p-6 w-full flex flex-col bg-candy-background">
+      <FormLabel labelType="suppliers" />
       <h1 className="text-xl font-bold">Suppliers List</h1>
       <Link href="/supplier/create">
         <button className="bg-blue-500 text-white p-2 mt-4">Add New Supplier</button>

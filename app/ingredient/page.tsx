@@ -5,15 +5,16 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 import { FormHeader } from '@/components/form/FormHeader';
-import { FormLabel } from '@/components/form/FormLabel';
+import FormLabel from '@/components/form/FormLabel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoIcon from '@mui/icons-material/Info';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 
 const IngredientPage: React.FC = () => {
   const [ingredients, setIngredients] = useState<IngredientProps[]>([]);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('https://reasonable-amazement-production.up.railway.app/ingredients')
@@ -31,14 +32,17 @@ const IngredientPage: React.FC = () => {
     }
   }
 
+  const toggleDetails = (id: number) => {
+    setExpandedId(prevId => prevId !== id ? id : null);
+  };
 
   return (
-    <div className="p-6 w-full flex flex-col bg-[#EEF2F6]">
-      <FormLabel />
+    <div className="p-6 w-full flex flex-col bg-candy-background">
+      <FormLabel labelType="ingredients" />
       <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
         <FormHeader />
-        <hr className='my-4' />
-        <div className='h-full max-h-[60vh] overflow-auto'>
+        <hr className='my-8' />
+        <div className='h-full max-h-[60vh] overflow-auto mb-8'>
           <table className='w-full'>
             <thead>
               <tr className='text-left'>
@@ -51,7 +55,7 @@ const IngredientPage: React.FC = () => {
             <tbody>
               {ingredients ? ingredients.map(ingredient => (
                 <tr key={ingredient.id} className="border-b">
-                  <td className='p-2'>
+                  <td className='p-2' onClick={() => toggleDetails(ingredient.id)}>
                     {ingredient.name}
                   </td>
                   <td className='p-2'>
@@ -82,13 +86,11 @@ const IngredientPage: React.FC = () => {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction asChild>
-                            <form onSubmit={(event) => handleDelete(event, ingredient.id)}>
-                              <button type='submit'>
-                                Remover
-                              </button>
-                            </form>
-                          </AlertDialogAction>
+                          <form onSubmit={(event) => handleDelete(event, ingredient.id)}>
+                            <Button variant="destructive" type='submit'>
+                              Remover
+                            </Button>
+                          </form>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -98,6 +100,18 @@ const IngredientPage: React.FC = () => {
             </tbody>
           </table>
         </div>
+        {/* {expandedId != null && (
+          <div>
+            {ingredients.filter(ingredient => ingredient.id === expandedId).map(ingredient => (
+              <div key={ingredient.id} className='bg-gray-100 p-4 rounded-lg mb-4 text-black'>
+                BLABLABLA
+                <p><strong>Nome:</strong> {ingredient.name}</p>
+                <p><strong>Unidade de Medida:</strong> {ingredient.measurement_unit}</p>
+                <p><strong>Quantidade:</strong> {ingredient.quantity}</p>
+              </div>
+            ))}
+          </div>
+        )} */}
       </div>
     </div>
   );

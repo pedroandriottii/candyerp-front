@@ -72,16 +72,16 @@ export const Sidebar = () => {
               <Link href='/ingredient'>
                 <button className='hover:bg-candy-purple rounded-md p-2'><DiningIcon /></button>
               </Link>
-              <Link href='/products'>
+              <Link href='/product'>
                 <button className='hover:bg-candy-purple rounded-md p-2'><Inventory2Icon /></button>
               </Link>
-              <Link href='/clients'>
+              <Link href='/client'>
                 <button className='hover:bg-candy-purple rounded-md p-2'><AssignmentIndIcon /></button>
               </Link>
-              <Link href='/productions'>
+              <Link href='/production'>
                 <button className='hover:bg-candy-purple rounded-md p-2'><EventAvailableIcon /></button>
               </Link>
-              <Link href='/sales'>
+              <Link href='/sale'>
                 <button className='hover:bg-candy-purple rounded-md p-2'><AttachMoneyIcon /></button>
               </Link>
 
@@ -101,19 +101,19 @@ export const Sidebar = () => {
               <DiningIcon />
               <p className="">Ingredientes</p>
             </Link>
-            <Link href="/products" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/product" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
               <Inventory2Icon />
               <p className="">Produtos</p>
             </Link>
-            <Link href="/clients" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/client" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
               <AssignmentIndIcon />
               <p className="">Cliente</p>
             </Link>
-            <Link href="/productions" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/production" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
               <EventAvailableIcon />
               <p className="">Produção</p>
             </Link>
-            <Link href="/sales" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/sale" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
               <AttachMoneyIcon />
               <p className="">Vendas</p>
             </Link>

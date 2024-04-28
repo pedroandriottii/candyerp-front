@@ -3,6 +3,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SupplierProps } from '@/types';
 
+export enum MeasurementUnit {
+  KILOGRAM = "KILOGRAM",
+  GRAM = "GRAM",
+  LITER = "LITERS",
+  MILLILITER = "MILLILITER",
+  UNIT = "UNIT",
+}
+
 const NewIngredient = () => {
   const router = useRouter();
 
@@ -12,6 +20,8 @@ const NewIngredient = () => {
 
   const [supplier, setSupplier] = useState<SupplierProps[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>();
+
+
 
 
   useEffect(() => {
@@ -79,13 +89,18 @@ const NewIngredient = () => {
 
         <div>
           <label htmlFor="measurement_unit" className="block text-sm font-medium text-gray-700">Measurement Unit:</label>
-          <input
+          <select
             id="measurement_unit"
             value={measurement_unit}
             onChange={(e) => setMeasurement_unit(e.target.value)}
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          />
+          >
+            {Object.values(MeasurementUnit).map((unit) => (
+              <option key={unit} value={unit}>{unit}</option>
+            ))}
+          </select>
+
         </div>
 
         <div>
@@ -97,6 +112,7 @@ const NewIngredient = () => {
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
+
         </div>
 
         <div>
@@ -114,7 +130,7 @@ const NewIngredient = () => {
           </select>
         </div>
 
-        <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Submit
         </button>
       </form>
