@@ -26,7 +26,7 @@ const NewIngredient = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await fetch(`${process.env.API_URL}/ingredients`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const NewIngredient = () => {
       const ingredient = await response.json();
       const ingredientId: number = ingredient.id;
 
-      const relationResponse = await fetch(`${process.env.API_URL}/ingredient-suppliers`, {
+      const relationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

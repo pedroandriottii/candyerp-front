@@ -9,7 +9,7 @@ export default function IngredientDetail({ params }: { params: { id: string } })
 
   useEffect(() => {
     if (params.id) {
-      fetch(`${process.env.API_URL}/ingredients/${params.id}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients/${params.id}`)
         .then(response => response.json())
         .then(data => setSupplier(data));
     }
