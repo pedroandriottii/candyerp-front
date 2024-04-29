@@ -22,7 +22,7 @@ const SupplierPage: React.FC = () => {
 
   const handleDelete: OnDeleteFunction = async (event, id) => {
     event.preventDefault();
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers/${id}`, {
       method: 'DELETE',
     });
     if (response.ok) {

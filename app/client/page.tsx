@@ -30,9 +30,9 @@ export default function Client() {
             method: 'DELETE',
         });
         if (response.ok) {
-            setClients(prevClients => prevClients.filter(clients => clients.id !== id));
+            setClients(prevClients => prevClients.filter(client => client.id !== id));
         }
-    }
+    };
 
     return (
         <div className='p-6 w-full flex flex-col bg-candy-background'>
