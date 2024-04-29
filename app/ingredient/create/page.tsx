@@ -50,6 +50,7 @@ const NewIngredient = () => {
           fk_Ingredient_Id: Number(ingredientId),
           fk_Supplier_Id: Number(selectedSupplierId)
         }),
+
       });
       setIsloading(false);
       console.log(relationResponse);

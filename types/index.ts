@@ -76,4 +76,10 @@ export interface DataItem {
   [key: string]: any;
 }
 
+export interface DetailProps {
+  id: number;
+  description: string;
+  additional_value: number;
+}
+
 export type OnDeleteFunction = (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
