@@ -12,7 +12,7 @@ const UpdateSupplier = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (params.id) {
-      fetch(`http://localhost:8080/suppliers/${params.id}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers/${params.id}`)
         .then(response => response.json())
         .then(data => {
           setName(data.name);
@@ -24,7 +24,7 @@ const UpdateSupplier = ({ params }: { params: { id: string } }) => {
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    const response = await fetch(`http://localhost:8080/suppliers/${params.id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers/${params.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

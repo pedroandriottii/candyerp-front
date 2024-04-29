@@ -6,7 +6,7 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('http://localhost:8080/clients');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

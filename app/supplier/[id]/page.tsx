@@ -9,7 +9,7 @@ export default function SupplierDetail({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     if (params.id) {
-      fetch(`http://localhost:8080/suppliers/${params.id}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers/${params.id}`)
         .then(response => response.json())
         .then(data => setSupplier(data));
     }

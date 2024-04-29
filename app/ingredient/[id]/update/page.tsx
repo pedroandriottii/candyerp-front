@@ -13,7 +13,7 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (params.id) {
-      fetch(`http://localhost:8080/ingredients/${params.id}`)
+      fetch(`${process.env.API_URL}/ingredients/${params.id}`)
         .then(response => response.json())
         .then(data => {
           setName(data.name);
@@ -26,7 +26,7 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    const response = await fetch(`http://localhost:8080/ingredients/${params.id}`, {
+    const response = await fetch(`${process.env.API_URL}/ingredients/${params.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

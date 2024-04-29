@@ -16,7 +16,7 @@ const NewIngredient = () => {
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>();
 
   useEffect(() => {
-    fetch(`http://localhost:8080/suppliers`)
+    fetch(`${process.env.API_URL}/suppliers`)
       .then(response => response.json())
       .then(data => {
         setSupplier(data);
@@ -25,8 +25,8 @@ const NewIngredient = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("oi"+measurementUnit)
-    const response = await fetch('http://localhost:8080/ingredients', {
+
+    const response = await fetch(`${process.env.API_URL}/ingredients`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -37,9 +37,8 @@ const NewIngredient = () => {
     if (response.ok) {
       const ingredient = await response.json();
       const ingredientId: number = ingredient.id;
-      console.log(ingredientId)
-      console.log(selectedSupplierId)
-      const relationResponse = await fetch('http://localhost:8080/ingredient-suppliers', {
+
+      const relationResponse = await fetch(`${process.env.API_URL}/ingredient-suppliers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +117,7 @@ const NewIngredient = () => {
             onChange={(e) => setSelectedSupplierId(e.target.value.toString())}
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          > 
+          >
             <option disabled value="">Escolha um fornecedor</option>
             {supplier.map((supplier) => {
               return <option key={supplier.id} value={supplier.id}>{supplier.name}</option>

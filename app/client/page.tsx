@@ -11,14 +11,14 @@ export default function Client() {
     const [clients, setClients] = useState<ClientProps[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/clients')
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients`)
             .then(response => response.json())
             .then(data => setClients(data));
     }, []);
 
     const handleDelete = async (event: React.FormEvent, id: number) => {
         event.preventDefault();
-        const response = await fetch(`http://localhost:8080/clients/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {

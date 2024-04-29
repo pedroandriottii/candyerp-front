@@ -11,14 +11,14 @@ export default function Production() {
     const [productions, setProductions] = useState<ProductionProps[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/productions')
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions`)
             .then(response => response.json())
             .then(data => setProductions(data));
     }, []);
 
     const handleDelete = async (event: React.FormEvent, id: number) => {
         event.preventDefault();
-        const response = await fetch(`http://localhost:8080/productions/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {

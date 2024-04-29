@@ -12,14 +12,14 @@ export default function Product() {
     const [products, setProducts] = useState<ProductProps[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/products')
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
             .then(response => response.json())
             .then(data => setProducts(data));
     }, []);
 
     const handleDelete = async (event: React.FormEvent, id: number) => {
         event.preventDefault();
-        const response = await fetch(`http://localhost:8080/products/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {

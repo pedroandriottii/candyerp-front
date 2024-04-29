@@ -9,7 +9,7 @@ const SupplierPage: React.FC = () => {
   const [suppliers, setSuppliers] = useState<SupplierProps[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/suppliers')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers`)
       .then(response => response.json())
       .then(data => setSuppliers(data));
   }, []);
@@ -17,7 +17,7 @@ const SupplierPage: React.FC = () => {
   const handleDelete = async (event: React.FormEvent, id: number) => {
     event.preventDefault();
     if (window.confirm('Are you sure you want to delete this supplier?')) {
-      const response = await fetch(`http://localhost:8080/suppliers/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
