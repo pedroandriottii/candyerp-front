@@ -1,14 +1,22 @@
 'use client';
 import FormLabel from '@/components/form/FormLabel';
-import { ClientProps } from '@/types';
-import Link from 'next/link';
+import { ColumnDefinition, DataItem, OnDeleteFunction } from '@/types';
 import React, { useState, useEffect } from 'react';
 
-import EditIcon from '@mui/icons-material/Edit';
-import InfoIcon from '@mui/icons-material/Info';
+
+import DynamicTable from '@/components/form/DynamicTable';
+import { FormHeader } from '@/components/form/FormHeader';
 
 export default function Client() {
-    const [clients, setClients] = useState<ClientProps[]>([]);
+    const [clients, setClients] = useState<DataItem[]>([]);
+
+    const columns: ColumnDefinition[] = [
+        { key: 'name', title: 'Nome' },
+        { key: 'street', title: 'Endereço' },
+        { key: 'number', title: 'Número' },
+        { key: 'neighborhood', title: 'Cidade' },
+        { key: 'complement', title: 'Complemento' },
+    ];
 
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients`)
@@ -16,7 +24,7 @@ export default function Client() {
             .then(data => setClients(data));
     }, []);
 
-    const handleDelete = async (event: React.FormEvent, id: number) => {
+    const handleDelete: OnDeleteFunction = async (event, id) => {
         event.preventDefault();
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`, {
             method: 'DELETE',
@@ -29,36 +37,14 @@ export default function Client() {
     return (
         <div className='p-6 w-full flex flex-col bg-candy-background'>
             <FormLabel labelType="clients" />
-            <div>
-                <div>
-                    {clients ? clients.map(client => (
-                        <tr key={client.id} className="border-b">
-                            <td className='p-2' >
-                                {client.name}
-                            </td>
-                            <td className='p-2'>
-                                {client.street}
-                            </td>
-                            <td className='p-2'>
-                                {client.number}
-                            </td>
-                            <td className='p-2'>
-                                {client.neighborhood}
-                            </td>
-                            <td className='p-2'>
-                                {client.complement}
-                            </td>
-                            <td className='p-2 flex gap-3'>
-                                <Link href={`/client/${client.id}`}>
-                                    <button className="text-blue-500"><InfoIcon /></button>
-                                </Link>
-                                <Link href={`/client/${client.id}/update`}>
-                                    <button className="text-blue-500"><EditIcon /></button>
-                                </Link>
-                            </td>
-                        </tr>
-                    )) : null}
-                </div>
+            <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
+                <FormHeader addHref='client/create' />
+                <DynamicTable
+                    data={clients}
+                    columns={columns}
+                    basePath='client'
+                    onDelete={handleDelete}
+                />
             </div>
         </div>
     );

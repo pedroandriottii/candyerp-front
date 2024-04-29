@@ -1,20 +1,25 @@
 "use client";
 
-import { IngredientProps } from '@/types';
-import Link from 'next/link';
+import { ColumnDefinition, DataItem, OnDeleteFunction } from '@/types';
 import React, { useEffect, useState } from 'react';
 
 import { FormHeader } from '@/components/form/FormHeader';
 import FormLabel from '@/components/form/FormLabel';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import InfoIcon from '@mui/icons-material/Info';
+
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import DynamicTable from '@/components/form/DynamicTable';
 
 const IngredientPage: React.FC = () => {
-  const [ingredients, setIngredients] = useState<IngredientProps[]>([]);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [ingredients, setIngredients] = useState<DataItem[]>([]);
+
+  const columns: ColumnDefinition[] = [
+    { key: 'name', title: 'Nome' },
+    { key: 'measurement_unit', title: 'Unidade de Medida' },
+    { key: 'quantity', title: 'Quantidade' }
+  ];
+
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`)
@@ -22,7 +27,7 @@ const IngredientPage: React.FC = () => {
       .then(data => setIngredients(data));
   }, []);
 
-  const handleDelete = async (event: React.FormEvent, id: number) => {
+  const handleDelete: OnDeleteFunction = async (event, id) => {
     event.preventDefault();
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients/${id}`, {
       method: 'DELETE',
@@ -40,8 +45,14 @@ const IngredientPage: React.FC = () => {
     <div className="p-6 w-full flex flex-col bg-candy-background">
       <FormLabel labelType="ingredients" />
       <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
-        <FormHeader />
-        <hr className='my-8' />
+        <FormHeader addHref="ingredient/create" />
+        <DynamicTable
+          data={ingredients}
+          columns={columns}
+          basePath='ingredient'
+          onDelete={handleDelete}
+        />
+        {/* <hr className='my-8' />
         <div className='h-full max-h-[60vh] overflow-auto mb-8'>
           <table className='w-full'>
             <thead>
@@ -86,20 +97,20 @@ const IngredientPage: React.FC = () => {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <form onSubmit={(event) => handleDelete(event, ingredient.id)}>
+                          {/* <form onSubmit={(event) => handleDelete(event, ingredient.id)}>
                             <Button variant="destructive" type='submit'>
                               Remover
                             </Button>
-                          </form>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </td>
-                </tr>
+                          </form> */}
+        {/* </AlertDialogFooter>
+    </AlertDialogContent>
+                    </AlertDialog >
+                  </td >
+                </tr >
               )) : <tr><td colSpan={4}>Carregando...</td></tr>}
-            </tbody>
-          </table>
-        </div>
+            </tbody >
+          </table >
+        </div > * /} */}
         {/* {expandedId != null && (
           <div>
             {ingredients.filter(ingredient => ingredient.id === expandedId).map(ingredient => (
@@ -112,8 +123,8 @@ const IngredientPage: React.FC = () => {
             ))}
           </div>
         )} */}
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

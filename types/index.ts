@@ -64,3 +64,16 @@ export interface SaleProps {
   orderType: OrderTypeEnum;
   paymentMethod: PaymentMethodEnum;
 }
+
+export interface ColumnDefinition {
+  key: string;
+  title: string;
+  path?: string;
+}
+
+export interface DataItem {
+  id: number;
+  [key: string]: any;
+}
+
+export type OnDeleteFunction = (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;

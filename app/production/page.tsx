@@ -1,14 +1,18 @@
 'use client';
 import FormLabel from '@/components/form/FormLabel';
-import { ProductionProps } from '@/types';
-import Link from 'next/link';
+import { ColumnDefinition, DataItem, OnDeleteFunction } from '@/types';
 import React, { useState, useEffect } from 'react';
 
-import EditIcon from '@mui/icons-material/Edit';
-import InfoIcon from '@mui/icons-material/Info';
+import DynamicTable from '@/components/form/DynamicTable';
+import { FormHeader } from '@/components/form/FormHeader';
 
 export default function Production() {
-    const [productions, setProductions] = useState<ProductionProps[]>([]);
+    const [productions, setProductions] = useState<DataItem[]>([]);
+
+    const columns: ColumnDefinition[] = [
+        { key: 'start_date', title: 'Data de Início' },
+        { key: 'end_date', title: 'Data de Término' },
+    ];
 
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions`)
@@ -16,41 +20,27 @@ export default function Production() {
             .then(data => setProductions(data));
     }, []);
 
-    const handleDelete = async (event: React.FormEvent, id: number) => {
+    const handleDelete: OnDeleteFunction = async (event, id) => {
         event.preventDefault();
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {
-            setProductions(prevproductions => prevproductions.filter(productions => productions.id !== id));
+            setProductions(prevProductions => prevProductions.filter(productions => productions.id !== id));
         }
     }
 
     return (
         <div className='p-6 w-full flex flex-col bg-candy-background'>
             <FormLabel labelType="productions" />
-            <div>
-                <div>
-                    {productions ? productions.map(production => (
-                        <tr key={production.id} className="border-b">
-                            <td className='p-2' >
-                                {String(production.start_date)}
-                            </td>
-                            <td className='p-2'>
-                                {String(production.end_date)}
-                            </td>
-
-                            <td className='p-2 flex gap-3'>
-                                <Link href={`/production/${production.id}`}>
-                                    <button className="text-blue-500"><InfoIcon /></button>
-                                </Link>
-                                <Link href={`/production/${production.id}/update`}>
-                                    <button className="text-blue-500"><EditIcon /></button>
-                                </Link>
-                            </td>
-                        </tr>
-                    )) : null}
-                </div>
+            <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
+                <FormHeader addHref='production/create' />
+                <DynamicTable
+                    data={productions}
+                    columns={columns}
+                    onDelete={handleDelete}
+                    basePath='production'
+                />
             </div>
         </div>
     );

@@ -1,12 +1,18 @@
 "use client";
 
+import DynamicTable from '@/components/form/DynamicTable';
+import { FormHeader } from '@/components/form/FormHeader';
 import FormLabel from '@/components/form/FormLabel';
-import { SupplierProps } from '@/types';
-import Link from 'next/link';
+import { ColumnDefinition, DataItem, OnDeleteFunction } from '@/types';
 import React, { useEffect, useState } from 'react';
 
 const SupplierPage: React.FC = () => {
-  const [suppliers, setSuppliers] = useState<SupplierProps[]>([]);
+  const [suppliers, setSuppliers] = useState<DataItem[]>([]);
+
+  const columns: ColumnDefinition[] = [
+    { key: 'name', title: 'Nome' },
+    { key: 'cnpj', title: 'CNPJ' },
+  ];
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers`)
@@ -14,50 +20,29 @@ const SupplierPage: React.FC = () => {
       .then(data => setSuppliers(data));
   }, []);
 
-  const handleDelete = async (event: React.FormEvent, id: number) => {
+  const handleDelete: OnDeleteFunction = async (event, id) => {
     event.preventDefault();
-    if (window.confirm('Are you sure you want to delete this supplier?')) {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        setSuppliers(prevSuppliers => prevSuppliers.filter(supplier => supplier.id !== id));
-        alert('Supplier deleted successfully!');
-      } else {
-        alert('Failed to delete the supplier.');
-      }
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${id}`, {
+      method: 'DELETE',
+    });
+    if (response.ok) {
+      setSuppliers(prevSuppliers => prevSuppliers.filter(suppliers => suppliers.id !== id));
     }
-  };
+  }
 
 
   return (
-    <div className="p-6 w-full flex flex-col bg-candy-background">
+    <div className='p-6 w-full flex flex-col bg-candy-background'>
       <FormLabel labelType="suppliers" />
-      <h1 className="text-xl font-bold">Suppliers List</h1>
-      <Link href="/supplier/create">
-        <button className="bg-blue-500 text-white p-2 mt-4">Add New Supplier</button>
-      </Link>
-      <ul>
-        {suppliers.map(supplier => (
-          <li key={supplier.id} className="mt-2">
-            {supplier.name}
-            {supplier.cnpj}
-            <Link href={`/supplier/${supplier.id}`}>
-              <button className="ml-2 text-blue-500">Detail</button>
-            </Link>
-            <Link href={`/supplier/${supplier.id}/update`}>
-              <button className="ml-2 text-blue-500">Update</button>
-            </Link>
-
-            <form onSubmit={(event) => handleDelete(event, supplier.id)}>
-              <button type='submit' className='text-red-500'>
-                delete???
-              </button>
-            </form>
-
-          </li>
-        ))}
-      </ul>
+      <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
+        <FormHeader addHref='supplier/create' />
+        <DynamicTable
+          data={suppliers}
+          columns={columns}
+          onDelete={handleDelete}
+          basePath='supplier'
+        />
+      </div>
     </div>
   );
 };

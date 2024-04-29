@@ -1,15 +1,19 @@
 'use client';
 import { FormHeader } from '@/components/form/FormHeader';
 import FormLabel from '@/components/form/FormLabel';
-import { ProductProps } from '@/types';
-import Link from 'next/link';
+import { ColumnDefinition, DataItem, OnDeleteFunction } from '@/types';
 import React, { useState, useEffect } from 'react';
 
-import EditIcon from '@mui/icons-material/Edit';
-import InfoIcon from '@mui/icons-material/Info';
+import DynamicTable from '@/components/form/DynamicTable';
 
 export default function Product() {
-    const [products, setProducts] = useState<ProductProps[]>([]);
+    const [products, setProducts] = useState<DataItem[]>([]);
+
+    const columns: ColumnDefinition[] = [
+        { key: 'name', title: 'Nome' },
+        { key: 'price', title: 'Preço' },
+        { key: 'quantity', title: 'Quantidade' },
+    ];
 
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
@@ -17,7 +21,7 @@ export default function Product() {
             .then(data => setProducts(data));
     }, []);
 
-    const handleDelete = async (event: React.FormEvent, id: number) => {
+    const handleDelete: OnDeleteFunction = async (event, id) => {
         event.preventDefault();
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
             method: 'DELETE',
@@ -30,30 +34,14 @@ export default function Product() {
     return (
         <div className='p-6 w-full flex flex-col bg-candy-background'>
             <FormLabel labelType="products" />
-            <div>
-                <div>
-                    {products ? products.map(product => (
-                        <tr key={product.id} className="border-b">
-                            <td className='p-2' >
-                                {product.name}
-                            </td>
-                            <td className='p-2'>
-                                {product.price}
-                            </td>
-                            <td className='p-2'>
-                                {product.quantity}
-                            </td>
-                            <td className='p-2 flex gap-3'>
-                                <Link href={`/product/${product.id}`}>
-                                    <button className="text-blue-500"><InfoIcon /></button>
-                                </Link>
-                                <Link href={`/product/${product.id}/update`}>
-                                    <button className="text-blue-500"><EditIcon /></button>
-                                </Link>
-                            </td>
-                        </tr>
-                    )) : null}
-                </div>
+            <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
+                <FormHeader addHref='product/create' />
+                <DynamicTable
+                    data={products}
+                    columns={columns}
+                    onDelete={handleDelete}
+                    basePath='product'
+                />
             </div>
         </div>
     );
