@@ -1,6 +1,5 @@
 'use client';
 
-// TODO: TOASTER
 import React from 'react';
 import Link from 'next/link';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,6 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { ColumnDefinition, DataItem, OnDeleteFunction } from '@/types/index';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 interface DynamicTableProps {
@@ -34,19 +35,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
             });
             if (response.ok) {
                 setGeral(prevGeral => prevGeral.filter(item => item.id !== id));
+                toast('Item excluído com sucesso!', { type: 'success' });
             } else {
-                console.error('Failed to delete:', response.statusText);
-                alert('Falha ao excluir o item: ' + response.statusText);
+                toast.error('Falha ao excluir o item: ' + response.statusText)
             }
         } catch (error) {
-            console.error('Error deleting item:', error);
-            alert('Erro ao tentar excluir o item.');
+            toast('Erro ao tentar excluir o item.', { type: 'error' })
         }
     };
 
 
     return (
         <table className='w-full bg-white rounded-lg p-4 shadow-sm '>
+            <ToastContainer />
             <thead>
                 <tr className='text-left'>
                     {columns.map((column) => (

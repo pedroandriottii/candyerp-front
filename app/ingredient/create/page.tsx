@@ -14,6 +14,7 @@ const NewIngredient = () => {
 
   const [supplier, setSupplier] = useState<SupplierProps[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>();
+  const [isLoading, setIsloading] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers`)
@@ -25,6 +26,7 @@ const NewIngredient = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsloading(true);
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`, {
       method: 'POST',
@@ -38,6 +40,7 @@ const NewIngredient = () => {
       const ingredient = await response.json();
       const ingredientId: number = ingredient.id;
 
+
       const relationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
         method: 'POST',
         headers: {
@@ -48,8 +51,8 @@ const NewIngredient = () => {
           fk_Supplier_Id: Number(selectedSupplierId)
         }),
       });
+      setIsloading(false);
       console.log(relationResponse);
-
       if (relationResponse.ok) {
         router.push('/ingredient');
       } else {
@@ -125,7 +128,7 @@ const NewIngredient = () => {
           </select>
         </div>
 
-        <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <button disabled={isLoading} type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-slate-600">
           Submit
         </button>
       </form>
