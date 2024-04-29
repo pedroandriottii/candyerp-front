@@ -11,14 +11,14 @@ export default function Production() {
     const [sales, setSales] = useState<SaleProps[]>([]);
 
     useEffect(() => {
-        fetch('https://reasonable-amazement-production.up.railway.app/sale-orders')
+        fetch('http://localhost:8080/sale-orders')
             .then(response => response.json())
             .then(data => setSales(data));
     }, []);
 
     const handleDelete = async (event: React.FormEvent, id: number) => {
         event.preventDefault();
-        const response = await fetch(`https://reasonable-amazement-production.up.railway.app/sale-orders/${id}`, {
+        const response = await fetch(`http://localhost:8080/sale-orders/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {

@@ -11,14 +11,14 @@ export default function Client() {
     const [clients, setClients] = useState<ClientProps[]>([]);
 
     useEffect(() => {
-        fetch('https://reasonable-amazement-production.up.railway.app/clients')
+        fetch('http://localhost:8080/clients')
             .then(response => response.json())
             .then(data => setClients(data));
     }, []);
 
     const handleDelete = async (event: React.FormEvent, id: number) => {
         event.preventDefault();
-        const response = await fetch(`https://reasonable-amazement-production.up.railway.app/clients/${id}`, {
+        const response = await fetch(`http://localhost:8080/clients/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {
@@ -28,7 +28,7 @@ export default function Client() {
 
     return (
         <div className='p-6 w-full flex flex-col bg-candy-background'>
-            <FormLabel labelType="products" />
+            <FormLabel labelType="clients" />
             <div>
                 <div>
                     {clients ? clients.map(client => (

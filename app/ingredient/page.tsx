@@ -17,14 +17,14 @@ const IngredientPage: React.FC = () => {
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('https://reasonable-amazement-production.up.railway.app/ingredients')
+    fetch('http://localhost:8080/ingredients')
       .then(response => response.json())
       .then(data => setIngredients(data));
   }, []);
 
   const handleDelete = async (event: React.FormEvent, id: number) => {
     event.preventDefault();
-    const response = await fetch(`https://reasonable-amazement-production.up.railway.app/ingredients/${id}`, {
+    const response = await fetch(`http://localhost:8080/ingredients/${id}`, {
       method: 'DELETE',
     });
     if (response.ok) {

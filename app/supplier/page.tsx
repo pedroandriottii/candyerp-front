@@ -9,7 +9,7 @@ const SupplierPage: React.FC = () => {
   const [suppliers, setSuppliers] = useState<SupplierProps[]>([]);
 
   useEffect(() => {
-    fetch('https://reasonable-amazement-production.up.railway.app/suppliers')
+    fetch('http://localhost:8080/suppliers')
       .then(response => response.json())
       .then(data => setSuppliers(data));
   }, []);
@@ -17,7 +17,7 @@ const SupplierPage: React.FC = () => {
   const handleDelete = async (event: React.FormEvent, id: number) => {
     event.preventDefault();
     if (window.confirm('Are you sure you want to delete this supplier?')) {
-      const response = await fetch(`https://reasonable-amazement-production.up.railway.app/suppliers/${id}`, {
+      const response = await fetch(`http://localhost:8080/suppliers/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {

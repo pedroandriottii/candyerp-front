@@ -9,17 +9,14 @@ const NewIngredient = () => {
   const router = useRouter();
 
   const [name, setName] = useState('');
-  const [measurement_unit, setMeasurement_unit] = useState('');
+  const [measurementUnit, setMeasurementUnit] = useState('');
   const [quantity, setQuantity] = useState('');
 
   const [supplier, setSupplier] = useState<SupplierProps[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>();
 
-
-
-
   useEffect(() => {
-    fetch(`https://reasonable-amazement-production.up.railway.app/suppliers`)
+    fetch(`http://localhost:8080/suppliers`)
       .then(response => response.json())
       .then(data => {
         setSupplier(data);
@@ -28,20 +25,21 @@ const NewIngredient = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    const response = await fetch('https://reasonable-amazement-production.up.railway.app/ingredients', {
+    console.log("oi"+measurementUnit)
+    const response = await fetch('http://localhost:8080/ingredients', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, measurement_unit, quantity }),
+      body: JSON.stringify({ name, measurementUnit, quantity }),
     });
 
     if (response.ok) {
       const ingredient = await response.json();
       const ingredientId: number = ingredient.id;
-
-      const relationResponse = await fetch('https://reasonable-amazement-production.up.railway.app/ingredient-suppliers', {
+      console.log(ingredientId)
+      console.log(selectedSupplierId)
+      const relationResponse = await fetch('http://localhost:8080/ingredient-suppliers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,14 +80,15 @@ const NewIngredient = () => {
         </div>
 
         <div>
-          <label htmlFor="measurement_unit" className="block text-sm font-medium text-gray-700">Measurement Unit:</label>
+          <label htmlFor="measurementUnit" className="block text-sm font-medium text-gray-700">Measurement Unit:</label>
           <select
-            id="measurement_unit"
-            value={measurement_unit}
-            onChange={(e) => setMeasurement_unit(e.target.value)}
+            id="measurementUnit"
+            value={measurementUnit}
+            onChange={(e) => setMeasurementUnit(e.target.value)}
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           >
+            <option value="">Select a unidade de medida</option>
             <option value="KILOGRAM">Quilogramas</option>
             <option value="GRAM">Gramas</option>
             <option value="LITER">Litros</option>
@@ -119,7 +118,8 @@ const NewIngredient = () => {
             onChange={(e) => setSelectedSupplierId(e.target.value.toString())}
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          >
+          > 
+            <option value="">Escolha um fornecedor</option>
             {supplier.map((supplier) => {
               return <option key={supplier.id} value={supplier.id}>{supplier.name}</option>
             })}

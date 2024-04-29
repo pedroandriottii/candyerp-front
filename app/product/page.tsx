@@ -12,14 +12,14 @@ export default function Product() {
     const [products, setProducts] = useState<ProductProps[]>([]);
 
     useEffect(() => {
-        fetch('https://reasonable-amazement-production.up.railway.app/products')
+        fetch('http://localhost:8080/products')
             .then(response => response.json())
             .then(data => setProducts(data));
     }, []);
 
     const handleDelete = async (event: React.FormEvent, id: number) => {
         event.preventDefault();
-        const response = await fetch(`https://reasonable-amazement-production.up.railway.app/products/${id}`, {
+        const response = await fetch(`http://localhost:8080/products/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {
