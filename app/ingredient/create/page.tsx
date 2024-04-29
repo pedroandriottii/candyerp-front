@@ -14,19 +14,18 @@ const NewIngredient = () => {
 
   const [supplier, setSupplier] = useState<SupplierProps[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>();
-  const [isLoading, setIsloading] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers`)
       .then(response => response.json())
       .then(data => {
         setSupplier(data);
+        setSelectedSupplierId(data[0].id.toString());
       });
   }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setIsloading(true);
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`, {
       method: 'POST',
@@ -40,7 +39,9 @@ const NewIngredient = () => {
       const ingredient = await response.json();
       const ingredientId: number = ingredient.id;
 
-
+      console.log(ingredientId)
+      console.log(selectedSupplierId)
+      
       const relationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
         method: 'POST',
         headers: {
@@ -50,10 +51,9 @@ const NewIngredient = () => {
           fk_Ingredient_Id: Number(ingredientId),
           fk_Supplier_Id: Number(selectedSupplierId)
         }),
-
       });
-      setIsloading(false);
       console.log(relationResponse);
+
       if (relationResponse.ok) {
         router.push('/ingredient');
       } else {
@@ -95,7 +95,7 @@ const NewIngredient = () => {
             <option value="KILOGRAM">Quilogramas</option>
             <option value="GRAM">Gramas</option>
             <option value="LITER">Litros</option>
-            <option value="MILILITER">Mililitros</option>
+            <option value="MILLILITER">Mililitros</option>
             <option value="UNIT">Unidade</option>
           </select>
 
@@ -118,7 +118,7 @@ const NewIngredient = () => {
           <select
             id="supplier"
             value={selectedSupplierId}
-            onChange={(e) => setSelectedSupplierId(e.target.value.toString())}
+            onChange={(e) => {console.log(e.target.value); setSelectedSupplierId(e.target.value.toString())}}
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           >
@@ -129,7 +129,7 @@ const NewIngredient = () => {
           </select>
         </div>
 
-        <button disabled={isLoading} type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-slate-600">
+        <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Submit
         </button>
       </form>

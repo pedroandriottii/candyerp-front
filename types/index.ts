@@ -11,6 +11,12 @@ export enum MeasurementUnit {
   UNIT = "UNIT"
 }
 
+export interface DetailProps {
+  id: number;
+  description: string;
+  additional_value: number;
+}
+
 export interface IngredientProps {
   id: number;
   name: string;
