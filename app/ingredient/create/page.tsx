@@ -16,7 +16,7 @@ const NewIngredient = () => {
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>();
 
   useEffect(() => {
-    fetch(`${process.env.API_URL}/suppliers`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/suppliers`)
       .then(response => response.json())
       .then(data => {
         setSupplier(data);
