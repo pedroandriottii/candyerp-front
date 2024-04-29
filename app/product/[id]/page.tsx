@@ -17,10 +17,10 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold">Supplier Detail</h1>
+      <h1 className="text-xl font-bold">Detalhes do Produto:</h1>
       <div>Name: {product.name}</div>
-      <div>Unidade de medida: {product.quantity}</div>
-      <div>quantity: {product.price}</div>
+      <div>Quantidade: {product.quantity}</div>
+      <div>Preço: {product.price}</div>
     </div>
   );
 }

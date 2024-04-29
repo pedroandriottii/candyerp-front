@@ -36,8 +36,8 @@ export interface ClientProps {
 
 export interface ProductionProps {
   id: number;
-  start_date: Date;
-  end_date: Date;
+  start_date: Date | string;
+  end_date: Date | string;
 }
 
 export enum StatusEnum {
