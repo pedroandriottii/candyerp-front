@@ -155,7 +155,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                         {Object.entries(item).filter(([key]) => key in fields).map(([key, value]) => (
                                             <div key={key} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2 '>
                                                 <p className='font-bold'>{fields[key]}:</p>
-                                                <p>{value}</p>
+                                                <p>{formatValue(key, value)}</p>
                                             </div>
                                         ))}
                                     </div>
