@@ -69,10 +69,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                             ))}
                             <td className='p-2 flex gap-3'>
                                 <Link href={`/${basePath}/${item.id}`}>
-                                    <InfoIcon />
+                                    <span className='text-blue-500'>
+                                        <InfoIcon />
+                                    </span>
                                 </Link>
                                 <Link href={`/${basePath}/${item.id}/update`}>
-                                    <EditIcon />
+                                    <span className='text-blue-500'>
+                                        <EditIcon />
+                                    </span>
                                 </Link>
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>

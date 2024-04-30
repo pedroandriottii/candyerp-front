@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Roboto } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import HomeIcon from '@mui/icons-material/Home';
@@ -14,8 +14,9 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
-const font = Roboto({
+const font = Poppins({
   subsets: ["latin"],
   weight: ["400"]
 });
@@ -40,7 +41,6 @@ export const Sidebar = () => {
           width={isCollapsed ? 40 : 140}
           height={isCollapsed ? 80 : 300}
         />
-
       </div>
       <div className="flex flex-row justify-between items-center">
         <h1 className={cn(
@@ -50,76 +50,84 @@ export const Sidebar = () => {
           Atalhos
         </h1>
         <button onClick={toggleSidebar} className={cn(
-          "hover:bg-candy-purple rounded-md p-2 transition-all duration-300",
+          "hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2 transition-all duration-300",
           isCollapsed ? "mx-auto" : ""
         )}>
           {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </button>
       </div>
       <div>
-        {/* PEQUENO */}
         {isCollapsed ? (
           <div className='flex flex-col items-center justify-start'>
-            <div className='flex flex-col justify-start'>
-            </div>
+            <div className='flex flex-col justify-start'></div>
             <div className='flex flex-col gap-3'>
               <Link href='/'>
-                <button className='hover:bg-candy-purple rounded-md p-2'><HomeIcon /></button>
+                <button className='hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2'><HomeIcon /></button>
               </Link>
+              <hr className="border-t border-white opacity-50 my-2" />
               <Link href='/supplier'>
-                <button className='hover:bg-candy-purple rounded-md p-2'><Diversity3Icon /></button>
+                <button className='hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2'><Diversity3Icon /></button>
               </Link>
               <Link href='/ingredient'>
-                <button className='hover:bg-candy-purple rounded-md p-2'><DiningIcon /></button>
+                <button className='hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2'><DiningIcon /></button>
               </Link>
               <Link href='/product'>
-                <button className='hover:bg-candy-purple rounded-md p-2'><Inventory2Icon /></button>
+                <button className='hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2'><Inventory2Icon /></button>
               </Link>
               <Link href='/client'>
-                <button className='hover:bg-candy-purple rounded-md p-2'><AssignmentIndIcon /></button>
+                <button className='hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2'><AssignmentIndIcon /></button>
               </Link>
               <Link href='/production'>
-                <button className='hover:bg-candy-purple rounded-md p-2'><EventAvailableIcon /></button>
+                <button className='hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2'><EventAvailableIcon /></button>
               </Link>
               <Link href='/sale'>
-                <button className='hover:bg-candy-purple rounded-md p-2'><AttachMoneyIcon /></button>
+                <button className='hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2'><AttachMoneyIcon /></button>
               </Link>
-
+              <hr className="border-t border-white opacity-50 my-2" />
+              <Link href='/reports'>
+                <button className='hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2'><AssessmentIcon /></button>
+              </Link>
             </div>
           </div>
         ) : (
-          <div className='items-center'>
-            <Link href="/" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+          <div className='flex flex-col items-left gap-4'>
+            <Link href="/" className='flex items-center uppercase rounded-md p-2 gap-2 hover:bg-gradient-to-r from-purple-500 to-purple-900'>
               <HomeIcon />
-              <p className="">Home</p>
+              <p>Home</p>
             </Link>
-            <Link href="/supplier" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <hr className="border-t border-white opacity-50 my-2" />
+            <Link href="/supplier" className='flex items-center uppercase rounded-md p-2 gap-2 hover:bg-gradient-to-r from-purple-500 to-purple-900'>
               <Diversity3Icon />
               <p className="">Fornecedores</p>
             </Link>
-            <Link href="/ingredient" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/ingredient" className='flex items-center uppercase rounded-md p-2 gap-2 hover:bg-gradient-to-r from-purple-500 to-purple-900'>
               <DiningIcon />
               <p className="">Ingredientes</p>
             </Link>
-            <Link href="/product" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/product" className='flex items-center uppercase rounded-md p-2 gap-2 hover:bg-gradient-to-r from-purple-500 to-purple-900'>
               <Inventory2Icon />
               <p className="">Produtos</p>
             </Link>
-            <Link href="/client" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/client" className='flex items-center uppercase rounded-md p-2 gap-2 hover:bg-gradient-to-r from-purple-500 to-purple-900'>
               <AssignmentIndIcon />
               <p className="">Cliente</p>
             </Link>
-            <Link href="/production" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/production" className='flex items-center uppercase rounded-md p-2 gap-2 hover:bg-gradient-to-r from-purple-500 to-purple-900'>
               <EventAvailableIcon />
               <p className="">Produção</p>
             </Link>
-            <Link href="/sale" className='flex items-center uppercase hover:bg-candy-purple rounded-md p-2 gap-2'>
+            <Link href="/sale" className='flex items-center uppercase rounded-md p-2 gap-2 hover:bg-gradient-to-r from-purple-500 to-purple-900'>
               <AttachMoneyIcon />
               <p className="">Vendas</p>
+            </Link>
+            <hr className="border-t border-white opacity-50 my-2" />
+            <Link href="/reports" className='flex items-center uppercase rounded-md p-2 gap-2 hover:bg-gradient-to-r from-purple-500 to-purple-900'>
+              <AssessmentIcon />
+              <p className="">Relatórios</p>
             </Link>
           </div>
         )}
       </div>
-    </div >
+    </div>
   )
 }
