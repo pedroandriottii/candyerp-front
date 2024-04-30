@@ -1,36 +1,110 @@
-'use client';
+"use client";
 import React, { useState, useEffect } from 'react';
+import DynamicTable from '@/components/form/DynamicTable';
+import FormLabel from '@/components/form/FormLabel';
+import { ColumnDefinition, DataItem } from '@/types';
+import Image from 'next/image'
+
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 
 export default function Home() {
-  const [data, setData] = useState<{ id: number; name: string; street: string; number: string; neighborhood: string; complement: string; }[] | null>(null);
+  const [sales, setSales] = useState<DataItem[]>([]);
+  const [productions, setProductions] = useState<DataItem[]>([]);
+
+  const columnsSale: ColumnDefinition[] = [
+    { key: 'date', title: 'Data' },
+    { key: 'total_price', title: 'Valor Total' },
+    { key: 'status', title: 'Status' },
+    { key: 'order_type', title: 'Tipo de Venda' },
+    { key: 'payment_method', title: 'Método de Pagamento' },
+  ];
+  const columnsProduction: ColumnDefinition[] = [
+    { key: 'start_date', title: 'Data de Início' },
+    { key: 'end_date', title: 'Data de Término' },
+  ];
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setData(data);
-    }
-    fetchData().catch(console.error);
-    console.log(data);
+    Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders`).then(response => response.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions`).then(response => response.json())
+    ])
+      .then(([salesData, productionsData]) => {
+        setSales(salesData);
+        setProductions(productionsData);
+      })
+      .catch(error => console.error('Failed to fetch data:', error));
   }, []);
 
   return (
-    <div className='flex flex-col bg-white'>
-      <h1>TESTANDO A API</h1>
-      <div>
-        {data && data.map(e => (
-          <div key={e.id}>
-            <p >{e.name}</p>
-            <p >{e.street}</p>
-            <p >{e.number}</p>
-            <p >{e.neighborhood}</p>
-            <p >{e.complement}</p>
-          </div>
-        ))}
+    <div className='grid grid-cols-4 gap-4 w-full h-full p-8'>
+      <div className='bg-white p-4 rounded-lg shadow-md'>
+
+        <div className='flex'>
+          <span className='text-[#008000] text-sm'>
+            <AttachMoneyIcon />
+          </span>
+          <p>
+            Faturamento no mês
+          </p>
+        </div>
       </div>
-    </div>
+      <div className='bg-white p-4 rounded-lg shadow-md'>
+        <div className='flex'>
+          <span className='text-[#008000] text-sm'>
+            <BakeryDiningIcon />
+          </span>
+          <p>
+            Produtos mais vendidos
+          </p>
+        </div>
+      </div>
+      <div className='bg-white p-4 rounded-lg shadow-md'>
+        <div className='flex'>
+          <span className='text-[#008000] text-sm'>
+            <BakeryDiningIcon />
+          </span>
+          <p>
+            Produtos mais produzidos
+          </p>
+        </div>
+      </div>
+      <div className='flex flex-col bg-white p-4 rounded-lg shadow-md'>
+        <div className='flex'>
+          <span className='text-[#008000] text-sm'>
+            <AssessmentIcon />
+          </span>
+          <p>
+            Visão geral
+          </p>
+        </div>
+        <Image
+          src="/img/analytics.svg"
+          alt="analytics"
+          width={120}
+          height={120}
+        />
+      </div>
+      <div className='col-span-2 bg-white p-4 rounded-lg shadow-md'>
+        <FormLabel labelType="lastSales" />
+        <DynamicTable
+          data={sales}
+          columns={columnsSale}
+          basePath='sale'
+          showActions={false}
+        />
+      </div>
+      <div className='col-span-2 bg-white p-4 rounded-lg shadow-md'>
+        <FormLabel labelType="lastProductions" />
+        <DynamicTable
+          data={productions}
+          columns={columnsProduction}
+          basePath='productions'
+          showActions={false}
+        />
+      </div>
+    </div >
   );
 }

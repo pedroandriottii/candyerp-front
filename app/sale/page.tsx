@@ -43,6 +43,7 @@ export default function Production() {
                     columns={columns}
                     onDelete={handleDelete}
                     basePath='sale'
+                    showActions={true}
                 />
             </div>
         </div>

@@ -11,6 +11,8 @@ const labelMaps = {
   clients: { title: 'Clientes', label: 'Clientes', route: '/client' },
   suppliers: { title: 'Fornecedores', label: 'Fornecedores', route: '/supplier' },
   sales: { title: 'Vendas', label: 'Vendas', route: '/sale' },
+  lastSales: { title: 'Últimas Vendas', label: 'Últimas Vendas', route: '/sale' },
+  lastProductions: { title: 'Últimas Produções', label: 'Últimas Produções', route: '/production' },
 };
 
 interface FormLabelProps {

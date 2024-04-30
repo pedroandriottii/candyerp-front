@@ -1,53 +1,52 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoIcon from '@mui/icons-material/Info';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ColumnDefinition, DataItem, OnDeleteFunction } from '@/types/index';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+interface DataItem {
+    id: number;
+    [key: string]: any;  // Define additional properties dynamically
+}
+
+interface ColumnDefinition {
+    key: string;
+    title: string;
+}
+
 interface DynamicTableProps {
     data: DataItem[];
     columns: ColumnDefinition[];
     basePath: string;
-    onDelete: OnDeleteFunction;
+    onDelete?: (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
+    showActions?: boolean;
 }
 
-const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, onDelete }) => {
-    const [geral, setGeral] = React.useState(data);
+const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, onDelete, showActions = true }) => {
+    const [geral, setGeral] = React.useState<DataItem[]>(data);
 
     React.useEffect(() => {
         setGeral(data);
     }, [data]);
 
-
-    const handleDelete = async (event: React.FormEvent, id: number) => {
+    const handleDelete = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
         event.preventDefault();
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${basePath}s/${id}`, {
-                method: 'DELETE',
-            });
-            if (response.ok) {
-                setGeral(prevGeral => prevGeral.filter(item => item.id !== id));
-                toast('Item excluído com sucesso!', { type: 'success' });
-            } else {
-                toast.error('Falha ao excluir o item: ' + response.statusText)
-            }
-        } catch (error) {
-            toast('Erro ao tentar excluir o item.', { type: 'error' })
+        if (onDelete) {
+            onDelete(event, id);
+            setGeral(prevGeral => prevGeral.filter(item => item.id !== id));
+            toast('Item excluído com sucesso!', { type: 'success' });
         }
     };
 
-    const formatValue = (columnKey: string, value: any) => {
+    const formatValue = (columnKey: string, value: any): string => {
         if (columnKey === "price" || columnKey === "cost" || columnKey === "total_price") {
-            return `R$ ${value}`;
+            return `R$ ${value.toFixed(2)}`;
         }
-        return value;
+        return value.toString();
     };
 
     return (
@@ -60,7 +59,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                             {column.title}
                         </th>
                     ))}
-                    <th className='font-bold p-2'>Ações</th>
+                    {showActions && <th className='font-bold p-2'>Ações</th>}
                 </tr>
             </thead>
             <tbody>
@@ -72,44 +71,46 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                     {formatValue(column.key, item[column.key])}
                                 </td>
                             ))}
-                            <td className='p-2 flex gap-3'>
-                                <Link href={`/${basePath}/${item.id}`}>
-                                    <span className='text-blue-500'>
-                                        <InfoIcon />
-                                    </span>
-                                </Link>
-                                <Link href={`/${basePath}/${item.id}/update`}>
-                                    <span className='text-blue-500'>
-                                        <EditIcon />
-                                    </span>
-                                </Link>
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <button className='text-red-500'><DeleteIcon /></button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                Esta ação não pode ser desfeita.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                            <form onSubmit={(e) => handleDelete(e, item.id)}>
-                                                <Button variant="destructive" type='submit'>
-                                                    Remover
-                                                </Button>
-                                            </form>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            </td>
+                            {showActions && (
+                                <td className='p-2 flex gap-3'>
+                                    <Link href={`/${basePath}/${item.id}`}>
+                                        <span className='text-blue-500'>
+                                            <InfoIcon />
+                                        </span>
+                                    </Link>
+                                    <Link href={`/${basePath}/${item.id}/update`}>
+                                        <span className='text-blue-500'>
+                                            <EditIcon />
+                                        </span>
+                                    </Link>
+                                    {onDelete && (
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <button className='text-red-500'><DeleteIcon /></button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Esta ação não pode ser desfeita.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                    <Button variant="destructive" onClick={(e) => handleDelete(e, item.id)} type='button'>
+                                                        Remover
+                                                    </Button>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    )}
+                                </td>
+                            )}
                         </tr>
                     ))
                 ) : (
                     <tr>
-                        <td colSpan={columns.length + 1}>Carregando...</td>
+                        <td colSpan={columns.length + (showActions ? 1 : 0)}>Carregando...</td>
                     </tr>
                 )}
             </tbody>
