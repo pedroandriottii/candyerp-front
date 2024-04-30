@@ -40,10 +40,9 @@ export default function Home() {
 
   return (
     <div className='grid grid-cols-4 gap-4 w-full h-full p-8'>
-      <div className='bg-white p-4 rounded-lg shadow-md'>
-
+      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh]'>
         <div className='flex'>
-          <span className='text-[#008000] text-sm'>
+          <span className='text-candy-purple text-sm'>
             <AttachMoneyIcon />
           </span>
           <p>
@@ -51,9 +50,9 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <div className='bg-white p-4 rounded-lg shadow-md'>
+      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh]'>
         <div className='flex'>
-          <span className='text-[#008000] text-sm'>
+          <span className='text-candy-purple text-sm'>
             <BakeryDiningIcon />
           </span>
           <p>
@@ -61,9 +60,9 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <div className='bg-white p-4 rounded-lg shadow-md'>
+      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh]'>
         <div className='flex'>
-          <span className='text-[#008000] text-sm'>
+          <span className='text-candy-purple text-sm'>
             <BakeryDiningIcon />
           </span>
           <p>
@@ -71,21 +70,22 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <div className='flex flex-col bg-white p-4 rounded-lg shadow-md'>
+      <div
+        className='flex  bg-white p-4 rounded-lg shadow-md min-h-[20vh]'
+        style={{
+          backgroundImage: `url('/img/analytics.svg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'start',
+        }}
+      >
         <div className='flex'>
-          <span className='text-[#008000] text-sm'>
+          <span className='text-candy-purple text-sm'>
             <AssessmentIcon />
           </span>
           <p>
             Visão geral
           </p>
         </div>
-        <Image
-          src="/img/analytics.svg"
-          alt="analytics"
-          width={120}
-          height={120}
-        />
       </div>
       <div className='col-span-2 bg-white p-4 rounded-lg shadow-md'>
         <FormLabel labelType="lastSales" />
