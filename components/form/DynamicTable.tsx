@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 interface DynamicTableProps {
     data: DataItem[];
     columns: ColumnDefinition[];
@@ -44,6 +43,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
         }
     };
 
+    const formatValue = (columnKey: string, value: any) => {
+        if (columnKey === "price" || columnKey === "cost" || columnKey === "total_price") {
+            return `R$ ${value}`;
+        }
+        return value;
+    };
 
     return (
         <table className='w-full bg-white rounded-lg p-4 shadow-sm '>
@@ -64,7 +69,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                         <tr key={item.id} className="border-b">
                             {columns.map((column) => (
                                 <td key={`${item.id}-${column.key}`} className='p-2'>
-                                    {item[column.key]}
+                                    {formatValue(column.key, item[column.key])}
                                 </td>
                             ))}
                             <td className='p-2 flex gap-3'>

@@ -10,10 +10,11 @@ export default function Production() {
     const [sales, setSales] = useState<DataItem[]>([]);
 
     const columns: ColumnDefinition[] = [
-        { key: 'total', title: 'Valor Total' },
+        { key: 'date', title: 'Data' },
+        { key: 'total_price', title: 'Valor Total' },
         { key: 'status', title: 'Status' },
-        { key: 'orderType', title: 'Tipo de Venda' },
-        { key: 'paymentMethod', title: 'Método de Pagamento' },
+        { key: 'order_type', title: 'Tipo de Venda' },
+        { key: 'payment_method', title: 'Método de Pagamento' },
     ];
 
     useEffect(() => {
