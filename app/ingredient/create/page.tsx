@@ -11,6 +11,7 @@ const NewIngredient = () => {
   const [name, setName] = useState('');
   const [measurementUnit, setMeasurementUnit] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [cost, setCost] = useState('');
 
   const [supplier, setSupplier] = useState<SupplierProps[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>();
@@ -32,7 +33,7 @@ const NewIngredient = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, measurementUnit, quantity }),
+      body: JSON.stringify({ name, measurementUnit, quantity, cost }),
     });
 
     if (response.ok) {
@@ -41,7 +42,7 @@ const NewIngredient = () => {
 
       console.log(ingredientId)
       console.log(selectedSupplierId)
-      
+
       const relationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
         method: 'POST',
         headers: {
@@ -102,7 +103,7 @@ const NewIngredient = () => {
         </div>
 
         <div>
-          <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity:</label>
+          <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantidade:</label>
           <input
             id="quantity"
             value={quantity}
@@ -112,13 +113,24 @@ const NewIngredient = () => {
           />
 
         </div>
+        <div>
+          <label htmlFor="cost" className="block text-sm font-medium text-gray-700">Custo:</label>
+          <input
+            id="cost"
+            value={cost}
+            onChange={(e) => setCost(e.target.value)}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          />
+
+        </div>
 
         <div>
-          <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">Supplier:</label>
+          <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">Fornecedor:</label>
           <select
             id="supplier"
             value={selectedSupplierId}
-            onChange={(e) => {console.log(e.target.value); setSelectedSupplierId(e.target.value.toString())}}
+            onChange={(e) => { console.log(e.target.value); setSelectedSupplierId(e.target.value.toString()) }}
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           >

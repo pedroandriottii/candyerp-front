@@ -21,6 +21,7 @@ export default function IngredientDetail({ params }: { params: { id: string } })
       <div>Name: {ingredient.name}</div>
       <div>Unidade de medida: {ingredient.measurement_unit}</div>
       <div>quantity: {ingredient.quantity}</div>
+      <div>Custo: R$ {ingredient.cost}</div>
     </div>
   );
 }

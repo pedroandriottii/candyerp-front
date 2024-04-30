@@ -22,6 +22,7 @@ export interface IngredientProps {
   name: string;
   measurement_unit: MeasurementUnit;
   quantity: number;
+  cost: number;
 }
 
 export interface ProductProps {

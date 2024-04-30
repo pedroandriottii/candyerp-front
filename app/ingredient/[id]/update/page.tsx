@@ -8,6 +8,7 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
   const [name, setName] = useState('');
   const [measurement_unit, setMeasurementUnit] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [cost, setCost] = useState('');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -31,7 +32,7 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, measurement_unit, quantity }),
+      body: JSON.stringify({ name, measurement_unit, quantity, cost }),
     });
 
     if (response.ok) {
@@ -68,6 +69,14 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
           id="quantity"
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
+          required
+          className="border"
+        />
+        <label htmlFor="cost">Custo:</label>
+        <input
+          id="cost"
+          value={cost}
+          onChange={(e) => setCost(e.target.value)}
           required
           className="border"
         />

@@ -15,7 +15,8 @@ const IngredientPage: React.FC = () => {
   const columns: ColumnDefinition[] = [
     { key: 'name', title: 'Nome' },
     { key: 'measurement_unit', title: 'Unidade de Medida' },
-    { key: 'quantity', title: 'Quantidade' }
+    { key: 'quantity', title: 'Quantidade' },
+    { key: 'cost', title: 'Custo' },
   ];
 
 
