@@ -22,6 +22,7 @@ const config = {
         'candy-purple': '#7501E3',
         'candy-purple-dark': '#5E00B8',
         'candy-background': '#EEF2F6',
+        'candy-soft': '#DAB8F3',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

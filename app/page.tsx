@@ -40,8 +40,8 @@ export default function Home() {
 
   return (
     <div className='grid grid-cols-4 gap-4 w-full h-full p-8'>
-      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh]'>
-        <div className='flex'>
+      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
+        <div className='flex gap-2'>
           <span className='text-candy-purple text-sm'>
             <AttachMoneyIcon />
           </span>
@@ -50,18 +50,18 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh]'>
-        <div className='flex'>
+      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
+        <div className='flex gap-2'>
           <span className='text-candy-purple text-sm'>
-            <BakeryDiningIcon />
+            <ShoppingCartIcon />
           </span>
           <p>
             Produtos mais vendidos
           </p>
         </div>
       </div>
-      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh]'>
-        <div className='flex'>
+      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
+        <div className='flex gap-2'>
           <span className='text-candy-purple text-sm'>
             <BakeryDiningIcon />
           </span>
@@ -71,14 +71,14 @@ export default function Home() {
         </div>
       </div>
       <div
-        className='flex  bg-white p-4 rounded-lg shadow-md min-h-[20vh]'
+        className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '
         style={{
           backgroundImage: `url('/img/analytics.svg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'start',
         }}
       >
-        <div className='flex'>
+        <div className='flex gap-2'>
           <span className='text-candy-purple text-sm'>
             <AssessmentIcon />
           </span>
