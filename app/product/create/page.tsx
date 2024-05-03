@@ -138,7 +138,7 @@ const NewProduct = () => {
             ))}
           </select>
         </div>
-        {/* Campo para selecionar ingredientes */}
+
         <div>
           <label className="block text-sm font-medium text-gray-700">Ingredientes:</label>
           {ingredients.map(ingredient => (

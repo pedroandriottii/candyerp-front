@@ -12,6 +12,7 @@ export default function Production() {
     const columns: ColumnDefinition[] = [
         { key: 'start_date', title: 'Data de Início' },
         { key: 'end_date', title: 'Data de Término' },
+        { key: 'name', title: 'Nome' },
     ];
 
     useEffect(() => {

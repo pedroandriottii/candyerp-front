@@ -141,24 +141,24 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                         {expandedId === item.id && (
                             <tr key={`details-${item.id}`}>
                                 <td colSpan={columns.length + (showActions ? 1 : 0)} className="bg-gray-100 p-4 rounded-b-2xl shadow-sm">
-                                    <div className='flex items-center gap-2 w-full'>
-                                        <div className='flex items-center gap-2'>
+                                    <col className='flex items-center gap-2 w-full'>
+                                        <col className='flex items-center gap-2'>
                                             <span className='text-candy-purple text-sm'>
                                                 <InfoIcon />
                                             </span>
                                             <h1 className='uppercase font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-purple-900'>Detalhes</h1>
-                                        </div>
+                                        </col>
                                         <hr className="flex-grow border-none h-0.5 bg-gradient-to-r from-purple-600 to-purple-300" />
-                                    </div>
+                                    </col>
 
-                                    <div className='grid grid-cols-4 gap-4'>
+                                    <col className='grid grid-cols-4 gap-4'>
                                         {Object.entries(item).filter(([key]) => key in fields).map(([key, value]) => (
-                                            <div key={key} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2 '>
+                                            <col key={key} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2 '>
                                                 <p className='font-bold'>{fields[key]}:</p>
                                                 <p>{formatValue(key, value)}</p>
-                                            </div>
+                                            </col>
                                         ))}
-                                    </div>
+                                    </col>
                                 </td>
                             </tr>
                         )}
