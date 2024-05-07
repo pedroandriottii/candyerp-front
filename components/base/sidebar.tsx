@@ -1,6 +1,5 @@
 "use client";
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -24,8 +23,28 @@ const font = Poppins({
 export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setIsCollapsed(true);
+      } else {
+        setIsCollapsed(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   function toggleSidebar() {
-    setIsCollapsed(!isCollapsed);
+    if (window.innerWidth >= 640) {
+      setIsCollapsed(!isCollapsed);
+    }
   }
 
   return (
@@ -50,7 +69,7 @@ export const Sidebar = () => {
           Atalhos
         </h1>
         <button onClick={toggleSidebar} className={cn(
-          "hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2 transition-all duration-300",
+          "hover:bg-gradient-to-r from-purple-500 to-purple-900 rounded-md p-2 transition-all duration-300 lg:flex hidden",
           isCollapsed ? "mx-auto" : ""
         )}>
           {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
@@ -58,7 +77,7 @@ export const Sidebar = () => {
       </div>
       <div>
         {isCollapsed ? (
-          <div className='flex flex-col items-center justify-start'>
+          <div className='flex-col items-center justify-start'>
             <div className='flex flex-col justify-start'></div>
             <div className='flex flex-col gap-3'>
               <Link href='/'>
