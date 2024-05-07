@@ -1,18 +1,28 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import EditIcon from '@mui/icons-material/Edit';
-import InfoIcon from '@mui/icons-material/Info';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ActionColumn from './ActionColumn';
 
 interface FieldTranslations {
     [key: string]: string;
+}
 
+interface DataItem {
+    id: number;
+    [key: string]: any;
+}
+
+interface ColumnDefinition {
+    key: string;
+    title: string;
+}
+
+interface DynamicTableProps {
+    data: DataItem[];
+    columns: ColumnDefinition[];
+    basePath: string;
+    onDelete?: (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
+    showActions?: boolean;
 }
 
 const fields: FieldTranslations = {
@@ -35,29 +45,16 @@ const fields: FieldTranslations = {
     cnpj: 'CNPJ',
 }
 
-interface DataItem {
-    id: number;
-    [key: string]: any;
-}
-
-interface ColumnDefinition {
-    key: string;
-    title: string;
-}
-
-interface DynamicTableProps {
-    data: DataItem[];
-    columns: ColumnDefinition[];
-    basePath: string;
-    onDelete?: (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
-    showActions?: boolean;
+const formattedDate = (date: string): string => {
+    const [year, month, day] = date.split('-');
+    return `${day}/${month}/${year}`;
 }
 
 const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, onDelete, showActions = true }) => {
     const [geral, setGeral] = useState<DataItem[]>(data);
     const [expandedId, setExpandedId] = useState<number | null>(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
         setGeral(data);
     }, [data]);
 
@@ -78,6 +75,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
         if (columnKey === "price" || columnKey === "cost" || columnKey === "total_price") {
             return `R$ ${value.toFixed(2)}`;
         }
+        if (columnKey === "start_date" || columnKey === "end_date" || columnKey === "sale_date") {
+            return formattedDate(value);
+        }
         return value.toString();
     };
 
@@ -96,73 +96,45 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
             </thead>
             <tbody>
                 {geral.map((item) => (
-                    <>
-                        <tr key={item.id} className="border-b cursor-pointer" onClick={() => handleRowClick(item.id)}>
+                    <React.Fragment key={item.id}>
+                        <tr className="border-b cursor-pointer" onClick={() => handleRowClick(item.id)}>
                             {columns.map((column) => (
                                 <td key={`${item.id}-${column.key}`} className='p-2'>
                                     {formatValue(column.key, item[column.key])}
                                 </td>
                             ))}
                             {showActions && (
-                                <td className='p-2 flex gap-3'>
-                                    <Link href={`/${basePath}/${item.id}`}>
-
-                                    </Link>
-                                    <Link href={`/${basePath}/${item.id}/update`}>
-                                        <span className='text-blue-500'>
-                                            <EditIcon />
-                                        </span>
-                                    </Link>
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <button onClick={(e) => e.stopPropagation()} className='text-red-500'>
-                                                <DeleteIcon />
-                                            </button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    Esta ação não pode ser desfeita.
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                <Button variant="destructive" onClick={(e) => handleDelete(e, item.id)} type='button'>
-                                                    Remover
-                                                </Button>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                    {expandedId ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                </td>
+                                <ActionColumn
+                                    basePath={basePath}
+                                    item={item}
+                                    onDelete={handleDelete}
+                                    expandedId={expandedId}
+                                    handleRowClick={handleRowClick}
+                                />
                             )}
                         </tr>
                         {expandedId === item.id && (
                             <tr key={`details-${item.id}`}>
                                 <td colSpan={columns.length + (showActions ? 1 : 0)} className="bg-gray-100 p-4 rounded-b-2xl shadow-sm">
-                                    <col className='flex items-center gap-2 w-full'>
-                                        <col className='flex items-center gap-2'>
-                                            <span className='text-candy-purple text-sm'>
-                                                <InfoIcon />
-                                            </span>
+                                    <div className='flex items-center gap-2 w-full'>
+                                        <div className='flex items-center gap-2'>
                                             <h1 className='uppercase font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-purple-900'>Detalhes</h1>
-                                        </col>
+                                        </div>
                                         <hr className="flex-grow border-none h-0.5 bg-gradient-to-r from-purple-600 to-purple-300" />
-                                    </col>
+                                    </div>
 
-                                    <col className='grid grid-cols-4 gap-4'>
+                                    <div className='grid grid-cols-4 gap-4'>
                                         {Object.entries(item).filter(([key]) => key in fields).map(([key, value]) => (
-                                            <col key={key} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2 '>
+                                            <div key={key} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
                                                 <p className='font-bold'>{fields[key]}:</p>
                                                 <p>{formatValue(key, value)}</p>
-                                            </col>
+                                            </div>
                                         ))}
-                                    </col>
+                                    </div>
                                 </td>
                             </tr>
                         )}
-                    </>
+                    </React.Fragment>
                 ))}
             </tbody>
         </table>
