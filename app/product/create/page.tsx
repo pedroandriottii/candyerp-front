@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { DetailProps, IngredientProps } from "@/types";
 import { useEffect, useState } from "react";
+import { CreateFormHeader } from "@/components/form/CreateFormHeader";
 
 
 const NewProduct = () => {
@@ -38,7 +39,7 @@ const NewProduct = () => {
   const handleIngredientChange = (ingredientId: number) => {
     setSelectedIngredients(prev => {
       if (prev.includes(ingredientId)) {
-        const updatedQuantities = {...ingredientQuantity};
+        const updatedQuantities = { ...ingredientQuantity };
         delete updatedQuantities[ingredientId];
         setIngredientQuantity(updatedQuantities);
         return prev.filter(id => id !== ingredientId);
@@ -89,8 +90,8 @@ const NewProduct = () => {
   };
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold text-center mb-6">Add New Product</h1>
+    <div className="p-4 w-full">
+      <CreateFormHeader createType="products" />
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome:</label>

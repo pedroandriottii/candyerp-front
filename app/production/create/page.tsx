@@ -1,5 +1,6 @@
 'use client';
 
+import { CreateFormHeader } from "@/components/form/CreateFormHeader";
 import { Button } from "@/components/ui/button";
 import { ProductProps } from "@/types";
 import { useRouter } from "next/navigation";
@@ -33,7 +34,7 @@ const NewProduction = () => {
   const handleProductChange = (productId: number) => {
     setSelectedProducts(prev => {
       if (prev.includes(productId)) {
-        const updatedQuantities = {...productQuantities};
+        const updatedQuantities = { ...productQuantities };
         delete updatedQuantities[productId];
         setProductQuantities(updatedQuantities);
         return prev.filter(id => id !== productId);
@@ -73,7 +74,7 @@ const NewProduction = () => {
 
     if (productionResponse.ok) {
       console.log("passei por criacao de producao ok")
-      
+
       const production = await productionResponse.json();
       const productionId = production.id;
       console.log(productionId)
@@ -100,28 +101,27 @@ const NewProduction = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="p-4 w-full">
+      <CreateFormHeader createType="productions" />
       <div className="p-4 max-w-xl mx-auto ">
-        <h1 className="text-6xl font-bold my-6">Nova Produção</h1>
-        
         <form onSubmit={handleSubmit} className="flex flex-col w-full flex-1">
           <div className="flex flex-col gap-1">
             <label htmlFor="name" className="font-bold">Nome</label>
-            <input 
+            <input
               value={name}
               onChange={(e) => setName(e.target.value)} type="text" name="name" id="name"
             />
           </div>
           <div>
             <label htmlFor="date_start">Data início</label>
-            <input 
+            <input
               value={startDate ? startDate.toISOString().split('T')[0] : ''}
               onChange={handleStartDateChange}
               type="date" name="date_start" id="date_start" />
           </div>
           <div>
             <label htmlFor="date_end">Data fim</label>
-            <input 
+            <input
               value={endDate ? endDate.toISOString().split('T')[0] : ''}
               onChange={handleEndDateChange}
               type="date" name="date_end" id="date_end" />
@@ -130,17 +130,17 @@ const NewProduction = () => {
             <label>Produtos</label>
             {products.map(product => (
               <div key={product.id} className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
-                  id={`product-${product.id}`} 
+                <input
+                  type="checkbox"
+                  id={`product-${product.id}`}
                   checked={selectedProducts.includes(product.id)}
                   onChange={() => handleProductChange(product.id)}
                 />
                 <label htmlFor={`product-${product.id}`}>{product.name}</label>
                 {selectedProducts.includes(product.id) && (
-                  <input 
-                    type="number" 
-                    min="0" 
+                  <input
+                    type="number"
+                    min="0"
                     value={productQuantities[product.id] || 0}
                     onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
                   />

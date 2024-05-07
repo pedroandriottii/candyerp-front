@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CreateFormHeader } from '@/components/form/CreateFormHeader';
 
 const NewSupplier = () => {
   const router = useRouter();
@@ -24,8 +25,8 @@ const NewSupplier = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">Add New Supplier</h1>
+    <div className="p-4 w-full">
+      <CreateFormHeader createType="suppliers" />
       <form onSubmit={handleSubmit}>
         <label htmlFor="name">Name:</label>
         <input

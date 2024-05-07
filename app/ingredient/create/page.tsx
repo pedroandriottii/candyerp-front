@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SupplierProps } from '@/types';
+import { CreateFormHeader } from '@/components/form/CreateFormHeader';
 
 
 
@@ -69,8 +70,8 @@ const NewIngredient = () => {
 
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold text-center mb-6">Add New Ingredient</h1>
+    <div className="p-4 w-full h-full">
+      <CreateFormHeader createType='ingredients' />
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
