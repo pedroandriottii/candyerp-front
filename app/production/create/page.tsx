@@ -101,40 +101,48 @@ const NewProduction = () => {
   };
 
   return (
-    <div className="p-4 w-full">
+    <div className="flex flex-col items-center p-4 w-full h-full">
       <CreateFormHeader createType="productions" />
-      <div className="p-4 max-w-xl mx-auto ">
-        <form onSubmit={handleSubmit} className="flex flex-col w-full flex-1">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="name" className="font-bold">Nome</label>
+      <form onSubmit={handleSubmit} className="">
+        <div className="flex flex-col max-w-lg gap-4 bg-white rounded-lg shadow-md p-4 m-6">
+          <div>
+            <label htmlFor="name">Nome</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)} type="text" name="name" id="name"
+              required
+              placeholder="Fornada de Cookies"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
-            <label htmlFor="date_start">Data início</label>
+            <label htmlFor="date_start">Data de início</label>
             <input
               value={startDate ? startDate.toISOString().split('T')[0] : ''}
               onChange={handleStartDateChange}
-              type="date" name="date_start" id="date_start" />
+              type="date" name="date_start" id="date_start"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
           </div>
           <div>
-            <label htmlFor="date_end">Data fim</label>
+            <label htmlFor="date_end">Data do fim</label>
             <input
               value={endDate ? endDate.toISOString().split('T')[0] : ''}
               onChange={handleEndDateChange}
-              type="date" name="date_end" id="date_end" />
+              type="date" name="date_end" id="date_end"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
           </div>
           <div>
             <label>Produtos</label>
             {products.map(product => (
-              <div key={product.id} className="flex items-center gap-2">
+              <div key={product.id} className="flex gap-2 p-2 items-center">
                 <input
                   type="checkbox"
                   id={`product-${product.id}`}
                   checked={selectedProducts.includes(product.id)}
                   onChange={() => handleProductChange(product.id)}
+                  className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
                 />
                 <label htmlFor={`product-${product.id}`}>{product.name}</label>
                 {selectedProducts.includes(product.id) && (
@@ -143,17 +151,18 @@ const NewProduction = () => {
                     min="0"
                     value={productQuantities[product.id] || 0}
                     onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
+                    className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 )}
               </div>
             ))}
           </div>
-          <Button type="submit" className="mt-4">
-            Criar
-          </Button>
-        </form>
-      </div>
-    </div>
+          <button type="submit" className="flex justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Cadastrar
+          </button>
+        </div>
+      </form >
+    </div >
   );
 };
 

@@ -90,88 +90,95 @@ const NewProduct = () => {
   };
 
   return (
-    <div className="p-4 w-full">
+    <div className="flex flex-col items-center p-4 w-full h-full">
       <CreateFormHeader createType="products" />
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome:</label>
-          <input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
-        <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700">Preço:</label>
-          <input
-            id="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
-        <div>
-          <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantidade:</label>
-          <input
-            id="quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
+        <div className="flex flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome</label>
+            <input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="Bolo de Cenoura"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Preço</label>
+            <input
+              id="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+              placeholder="10.00"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantidade</label>
+            <input
+              id="quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              required
+              placeholder="10"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
 
-        <div>
-          <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">Detalhe:</label>
-          <select
-            id="supplier"
-            value={selectedDetailId}
-            onChange={(e) => setSelectedDetailId(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          >
-            <option disabled value="">Escolha um Detalhe</option>
-            {details.map((detail) => (
-              <option key={detail.id} value={detail.id}>{detail.description}</option>
+          <div>
+            <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">Detalhe</label>
+            <select
+              id="supplier"
+              value={selectedDetailId}
+              onChange={(e) => setSelectedDetailId(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option disabled value="">Escolha um Detalhe</option>
+              {details.map((detail) => (
+                <option key={detail.id} value={detail.id}>{detail.description}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Ingredientes</label>
+            {ingredients.map(ingredient => (
+              <div key={ingredient.id} className="flex gap-2 p-2 items-center">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
+                    checked={selectedIngredients.includes(ingredient.id)}
+                    onChange={() => handleIngredientChange(ingredient.id)}
+                  />
+                  {ingredient.name}
+                </label>
+                {selectedIngredients.includes(ingredient.id) && (
+                  <input
+                    type="number"
+                    className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    value={ingredientQuantity[ingredient.id] || ''}
+                    onChange={e => handleIngredientQuantityChange(ingredient.id, parseFloat(e.target.value))}
+                    min="0"
+                    step="0.1"
+                  />
+                )}
+                <p>
+                  {ingredient.measurement_unit}
+                </p>
+              </div>
             ))}
-          </select>
+          </div>
+          <button disabled={isLoading} type="submit" className="flex justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Enviar
+          </button>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Ingredientes:</label>
-          {ingredients.map(ingredient => (
-            <div key={ingredient.id} className="flex items-center space-x-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="h-5 w-5 text-indigo-600"
-                  checked={selectedIngredients.includes(ingredient.id)}
-                  onChange={() => handleIngredientChange(ingredient.id)}
-                />
-                {ingredient.name}
-              </label>
-              {selectedIngredients.includes(ingredient.id) && (
-                <input
-                  type="number"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  value={ingredientQuantity[ingredient.id] || ''}
-                  onChange={e => handleIngredientQuantityChange(ingredient.id, parseFloat(e.target.value))}
-                  min="0"
-                  step="0.1"
-                />
-              )}
-              {ingredient.measurement_unit}
-            </div>
-          ))}
-        </div>
-        <button disabled={isLoading} type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-slate-600">
-          Submit
-        </button>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 };
 

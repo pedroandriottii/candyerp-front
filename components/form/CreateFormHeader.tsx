@@ -5,12 +5,14 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import HomeIcon from '@mui/icons-material/Home';
 
 const createMaps = {
-  products: { title: 'Cadastrar novo produto', route: 'product', createRoute: '/product/create', },
-  ingredients: { title: 'Cadastrar novo ingrediente', route: 'ingredient', createRoute: '/ingredient/create', },
-  suppliers: { title: 'Cadastrar novo fornecedor', route: 'supplier', createRoute: '/supplier/create', },
-  productions: { title: 'Cadastrar nova produção', route: 'production', createRoute: '/production/create', },
-  clients: { title: 'Cadastrar novo cliente', route: 'client', createRoute: '/client/create', },
-  sales: { title: 'Cadastrar nova venda', route: 'sale', createRoute: '/sale/create', },
+  products: { title: 'Cadastrar novo produto', route: '/product', createRoute: '/product/create', },
+  ingredients: { title: 'Cadastrar novo ingrediente', route: '/ingredient', createRoute: '/ingredient/create', },
+  suppliers: {
+    title: 'Cadastrar novo fornecedor', route: '/supplier', createRoute: '/supplier / create',
+  },
+  productions: { title: 'Cadastrar nova produção', route: '/production', createRoute: '/production/create', },
+  clients: { title: 'Cadastrar novo cliente', route: '/client', createRoute: '/client/create', },
+  sales: { title: 'Cadastrar nova venda', route: '/sale', createRoute: '/sale/create', },
 }
 
 interface CreateFormHeaderProps {

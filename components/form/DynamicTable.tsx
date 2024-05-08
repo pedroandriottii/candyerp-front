@@ -75,7 +75,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
         if (columnKey === "price" || columnKey === "cost" || columnKey === "total_price") {
             return `R$ ${value.toFixed(2)}`;
         }
-        if (columnKey === "start_date" || columnKey === "end_date" || columnKey === "sale_date") {
+        if (columnKey === "start_date" || columnKey === "end_date" || columnKey === "sale_date" || columnKey === "date") {
             return formattedDate(value);
         }
         return value.toString();
