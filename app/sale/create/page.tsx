@@ -18,7 +18,7 @@ export default function NewSale() {
 
 
   const [clients, setClients] = useState<ClientProps[]>([]);
-  
+
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -42,7 +42,7 @@ export default function NewSale() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ date, total_price, status, order_type, payment_method, fk_client_id: 4 }),
+      body: JSON.stringify({ date, total_price, status, order_type, payment_method, fk_client_id: 4, fk_nfe_id: 4 }),
     });
 
     if (response.ok) {
@@ -99,8 +99,8 @@ export default function NewSale() {
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
-            <option value="BALCONY">Balcao</option>
-            <option value="DELIVERY">Entrega</option>
+              <option value="BALCONY">Balcao</option>
+              <option value="DELIVERY">Entrega</option>
             </select>
           </div>
           <div>
