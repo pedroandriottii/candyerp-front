@@ -25,7 +25,7 @@ export default function Production() {
 
     const handleDelete: OnDeleteFunction = async (event, id) => {
         event.preventDefault();
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-order/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {
