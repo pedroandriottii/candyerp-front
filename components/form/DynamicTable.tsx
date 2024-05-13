@@ -13,8 +13,17 @@ interface Supplier {
     cnpj: string;
 }
 
+interface Ingredient {
+    id: number;
+    name: string;
+    quantity: number;
+    measurementUnit: string;
+}
+
 interface DataItem {
     id: number;
+    ingredients?: Ingredient[];
+    suppliers?: Supplier[];
     [key: string]: any;
 }
 
@@ -50,12 +59,14 @@ const fields: FieldTranslations = {
     complement: 'Complemento',
     cnpj: 'CNPJ',
     suppliers: 'Fornecedores',
+    ingredients: 'Ingredientes',
+    KILOGRAM: 'Kg',
+    GRAM: 'g',
+    LITER: 'L',
+    MILLILITER: 'mL',
+    UNIT: 'Unidade',
 }
 
-const formattedDate = (date: string): string => {
-    const [year, month, day] = date.split('-');
-    return `${day}/${month}/${year}`;
-}
 
 const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, onDelete, showActions = true }) => {
     const [geral, setGeral] = useState<DataItem[]>(data);
@@ -78,6 +89,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
         }
     };
 
+    const formattedDate = (date: string): string => {
+        const [year, month, day] = date.split('-');
+        return `${day}/${month}/${year}`;
+    }
+
+
     const formatValue = (columnKey: string, value: any): string => {
         if (value === undefined || value === null) {
             return ''
@@ -87,6 +104,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
         }
         if (columnKey === "start_date" || columnKey === "end_date" || columnKey === "sale_date" || columnKey === "date") {
             return formattedDate(value);
+        }
+        if (columnKey === "measurementUnit" && value in fields) {
+            return fields[value];
         }
         return value.toString();
     };
@@ -133,9 +153,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                         <hr className="flex-grow border-none h-0.5 bg-gradient-to-r from-purple-600 to-purple-300" />
                                     </div>
                                     <div className='grid grid-cols-4 gap-4'>
-                                        {Object.entries(item).filter(([key]) => key in fields && key !== 'suppliers').map(([key, value]) => (
-                                            <div key={key} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
-                                                <p className='font-bold'>{fields[key]}:</p>
+                                        {Object.entries(item).filter(([key]) => key in fields && key !== 'suppliers' && key !== 'ingredients').map(([key, value]) => (
+                                            <div key={key} className='flex items-center gap-2 shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                <p className='font-bold text-sm'>{fields[key]}:</p>
                                                 <p>{formatValue(key, value)}</p>
                                             </div>
                                         ))}
@@ -143,9 +163,21 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                             <div className='col-span-4'>
                                                 <h2 className='font-bold'>Fornecedores:</h2>
                                                 {item.suppliers.map((supplier: Supplier) => (
-                                                    <div key={supplier.id} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
-                                                        <p><span className='font-bold'>Nome:</span> {supplier.name}</p>
-                                                        <p><span className='font-bold'>CNPJ:</span> {supplier.cnpj}</p>
+                                                    <div key={supplier.id} className='grid grid-cols-4 gap-2 items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                        <p><span className='font-bold text-sm'>Nome:</span> {supplier.name}</p>
+                                                        <p><span className='font-bold text-sm'>CNPJ:</span> {supplier.cnpj}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {item.ingredients && (
+                                            <div className='col-span-4'>
+                                                <h2 className='font-bold'>Ingredientes:</h2>
+                                                {item.ingredients.map((ingredient: Ingredient) => (
+                                                    <div key={ingredient.id} className='grid grid-cols-4 gap-2 items-centershadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                        <p><span className='font-bold text-sm'>Nome:</span> {ingredient.name}</p>
+                                                        <p><span className='font-bold text-sm'>Quantidade:</span> {ingredient.quantity}</p>
+                                                        <p><span className='font-bold text-sm'>Unidade de Medida:</span> {fields[ingredient.measurementUnit]}</p>
                                                     </div>
                                                 ))}
                                             </div>
