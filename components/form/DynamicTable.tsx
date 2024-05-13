@@ -7,6 +7,12 @@ interface FieldTranslations {
     [key: string]: string;
 }
 
+interface Supplier {
+    id: number;
+    name: string;
+    cnpj: string;
+}
+
 interface DataItem {
     id: number;
     [key: string]: any;
@@ -43,6 +49,7 @@ const fields: FieldTranslations = {
     neighborhood: 'Bairro',
     complement: 'Complemento',
     cnpj: 'CNPJ',
+    suppliers: 'Fornecedores',
 }
 
 const formattedDate = (date: string): string => {
@@ -72,6 +79,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
     };
 
     const formatValue = (columnKey: string, value: any): string => {
+        if (value === undefined || value === null) {
+            return ''
+        }
         if (columnKey === "price" || columnKey === "cost" || columnKey === "total_price") {
             return `R$ ${value.toFixed(2)}`;
         }
@@ -122,14 +132,24 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                         </div>
                                         <hr className="flex-grow border-none h-0.5 bg-gradient-to-r from-purple-600 to-purple-300" />
                                     </div>
-
                                     <div className='grid grid-cols-4 gap-4'>
-                                        {Object.entries(item).filter(([key]) => key in fields).map(([key, value]) => (
+                                        {Object.entries(item).filter(([key]) => key in fields && key !== 'suppliers').map(([key, value]) => (
                                             <div key={key} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
                                                 <p className='font-bold'>{fields[key]}:</p>
                                                 <p>{formatValue(key, value)}</p>
                                             </div>
                                         ))}
+                                        {item.suppliers && (
+                                            <div className='col-span-4'>
+                                                <h2 className='font-bold'>Fornecedores:</h2>
+                                                {item.suppliers.map((supplier: Supplier) => (
+                                                    <div key={supplier.id} className='flex justify-between items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                        <p><span className='font-bold'>Nome:</span> {supplier.name}</p>
+                                                        <p><span className='font-bold'>CNPJ:</span> {supplier.cnpj}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
