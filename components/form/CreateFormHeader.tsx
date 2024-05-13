@@ -7,6 +7,7 @@ import HomeIcon from '@mui/icons-material/Home';
 const createMaps = {
   products: { title: 'Cadastrar novo produto', route: '/product', createRoute: '/product/create', },
   ingredients: { title: 'Cadastrar novo ingrediente', route: '/ingredient', createRoute: '/ingredient/create', },
+  updateIngredients:{ title: 'Editar ingrediente', route: '/ingredient/', createRoute: '/ingredient/create', },
   suppliers: {
     title: 'Cadastrar novo fornecedor', route: '/supplier', createRoute: '/supplier / create',
   },
