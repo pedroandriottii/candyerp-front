@@ -20,15 +20,15 @@ interface ActionColumnProps {
 
 const ActionColumn: React.FC<ActionColumnProps> = ({ basePath, item, onDelete, expandedId, handleRowClick }) => {
   return (
-    <td className='p-2 flex gap-3'>
+    <td className='p-2 flex gap-3 items-center'>
       <Link href={`/${basePath}/${item.id}/update`} passHref>
-        <span className='text-blue-500'>
+        <span className='text-blue-500 hover:bg-[#bfd7ff] p-2 rounded-2xl'>
           <EditIcon />
         </span>
       </Link>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <button onClick={(e) => e.stopPropagation()} className='text-red-500'>
+          <button onClick={(e) => e.stopPropagation()} className='text-red-500 hover:bg-[#fcb8b8] p-2 rounded-2xl'>
             <DeleteIcon />
           </button>
         </AlertDialogTrigger>

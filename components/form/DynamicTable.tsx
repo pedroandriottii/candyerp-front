@@ -127,7 +127,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
             <tbody>
                 {geral.map((item) => (
                     <React.Fragment key={item.id}>
-                        <tr className="border-b cursor-pointer" onClick={() => handleRowClick(item.id)}>
+                        <tr className="border-b cursor-pointer hover:bg-[#e3e3e3]" onClick={() => handleRowClick(item.id)}>
                             {columns.map((column) => (
                                 <td key={`${item.id}-${column.key}`} className='p-2'>
                                     {formatValue(column.key, item[column.key])}
@@ -152,18 +152,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                         </div>
                                         <hr className="flex-grow border-none h-0.5 bg-gradient-to-r from-purple-600 to-purple-300" />
                                     </div>
-                                    <div className='grid grid-cols-4 gap-4'>
+                                    <div className='grid grid-cols-4'>
                                         {Object.entries(item).filter(([key]) => key in fields && key !== 'suppliers' && key !== 'ingredients').map(([key, value]) => (
-                                            <div key={key} className='flex items-center gap-2 shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
-                                                <p className='font-bold text-sm'>{fields[key]}:</p>
-                                                <p>{formatValue(key, value)}</p>
+                                            <div key={key} className='flex items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                <p className='font-bold text-sm pr-1'>{fields[key]}:</p>
+                                                <p> {formatValue(key, value)}</p>
                                             </div>
                                         ))}
                                         {item.suppliers && (
                                             <div className='col-span-4'>
                                                 <h2 className='font-bold'>Fornecedores:</h2>
                                                 {item.suppliers.map((supplier: Supplier) => (
-                                                    <div key={supplier.id} className='grid grid-cols-4 gap-2 items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                    <div key={supplier.id} className='grid grid-cols-4 items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
                                                         <p><span className='font-bold text-sm'>Nome:</span> {supplier.name}</p>
                                                         <p><span className='font-bold text-sm'>CNPJ:</span> {supplier.cnpj}</p>
                                                     </div>
@@ -174,10 +174,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                             <div className='col-span-4'>
                                                 <h2 className='font-bold'>Ingredientes:</h2>
                                                 {item.ingredients.map((ingredient: Ingredient) => (
-                                                    <div key={ingredient.id} className='grid grid-cols-4 gap-2 items-centershadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
-                                                        <p><span className='font-bold text-sm'>Nome:</span> {ingredient.name}</p>
-                                                        <p><span className='font-bold text-sm'>Quantidade:</span> {ingredient.quantity}</p>
-                                                        <p><span className='font-bold text-sm'>Unidade de Medida:</span> {fields[ingredient.measurementUnit]}</p>
+                                                    <div key={ingredient.id} className='grid grid-cols-4 items-centershadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                        <p> <span className='font-bold text-sm'>Nome:</span> {ingredient.name}</p>
+                                                        <p> <span className='font-bold text-sm'>Quantidade:</span> {ingredient.quantity}</p>
+                                                        <p> <span className='font-bold text-sm'>Unidade de Medida:</span> {fields[ingredient.measurementUnit]}</p>
                                                     </div>
                                                 ))}
                                             </div>
