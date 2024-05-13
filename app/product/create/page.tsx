@@ -168,7 +168,7 @@ const NewProduct = () => {
                   />
                 )}
                 <p>
-                  {ingredient.measurement_unit}
+                  {ingredient.measurementUnit}
                 </p>
               </div>
             ))}
