@@ -1,8 +1,7 @@
 export default function Reports() {
 
   return (
-    <div className="p-4">
-      Relatórios
+    <div className="flex p-4 w-full h-full">
     </div>
   );
 }
