@@ -6,12 +6,13 @@ import { CreateFormHeader } from '@/components/form/CreateFormHeader';
 
 const UpdateIngredient = ({ params }: { params: { id: string } }) => {
   const [name, setName] = useState('');
-  const [measurement_unit, setMeasurementUnit] = useState('');
+  const [measurementUnit, setMeasurementUnit] = useState('');
   const [quantity, setQuantity] = useState('');
   const [cost, setCost] = useState('');
   const [loading, setLoading] = useState(true);
   const [suppliers, setSuppliers] = useState<SupplierProps[]>([]);
   const [selectedSupplierIds, setSelectedSupplierIds] = useState<string[]>([]);
+  const [originalSupplierIds, setOriginalSupplierIds] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,10 +21,12 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
         .then(response => response.json())
         .then(data => {
           setName(data.name);
-          setMeasurementUnit(data.measurement_unit);
+          setMeasurementUnit(data.measurementUnit);
           setQuantity(data.quantity);
           setCost(data.cost);
-          setSelectedSupplierIds(data.suppliers.map((s: SupplierProps) => s.id.toString())); // Assuming the API response includes a suppliers array
+          const supplierIds = data.suppliers.map((s: SupplierProps) => s.id.toString());
+          setSelectedSupplierIds(supplierIds);
+          setOriginalSupplierIds(supplierIds);
           setLoading(false);
         });
     }
@@ -54,43 +57,49 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, measurement_unit, quantity, cost }),
+      body: JSON.stringify({ name, measurementUnit, quantity, cost }),
     });
 
     if (response.ok) {
       const ingredient = await response.json();
       const ingredientId: number = ingredient.id;
 
-      // First, delete existing supplier relationships
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers/${ingredientId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
+      const suppliersToAdd = selectedSupplierIds.filter(id => !originalSupplierIds.includes(id));
+      const suppliersToRemove = originalSupplierIds.filter(id => !selectedSupplierIds.includes(id));
+
+      const addPromises = suppliersToAdd.map(supplierId => {
+        // Check if the relationship already exists
+        if (!originalSupplierIds.includes(supplierId)) {
+          return fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fk_Ingredient_Id: Number(ingredientId),
+              fk_Supplier_Id: Number(supplierId),
+            }),
+          });
         }
       });
 
-      // Then, create new supplier relationships
-      const promises = selectedSupplierIds.map(supplierId =>
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
-          method: 'POST',
+      const deletePromises = suppliersToRemove.map(supplierId =>
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers/${ingredientId}/${supplierId}`, {
+          method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            fk_Ingredient_Id: Number(ingredientId),
-            fk_Supplier_Id: Number(supplierId),
-          }),
         })
       );
 
-      const relationResponses = await Promise.all(promises);
-      const allOk = relationResponses.every(response => response.ok);
+      const relationResponses = await Promise.all([...addPromises, ...deletePromises]);
+      const allOk = relationResponses.every(response => response && response.ok);
 
       if (allOk) {
         router.push('/ingredient');
       } else {
         console.error('Failed to update some ingredient-supplier relationships');
-        console.error(await Promise.all(relationResponses.map(res => res.json())));
+        console.error(await Promise.all(relationResponses.filter(Boolean).map(res => res!.json())));
       }
     } else {
       console.error('Failed to update ingredient');
@@ -119,7 +128,7 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
           <label htmlFor="measurementUnit" className="block text-sm font-medium text-gray-700">Unidade de Medida</label>
           <select
             id="measurementUnit"
-            value={measurement_unit}
+            value={measurementUnit}
             onChange={(e) => setMeasurementUnit(e.target.value)}
             required
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"

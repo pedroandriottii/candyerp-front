@@ -14,6 +14,7 @@ const createMaps = {
   productions: { title: 'Cadastrar nova produção', route: '/production', createRoute: '/production/create', },
   clients: { title: 'Cadastrar novo cliente', route: '/client', createRoute: '/client/create', },
   sales: { title: 'Cadastrar nova venda', route: '/sale', createRoute: '/sale/create', },
+  updateProducts: { title: 'Editar produto', route: '/product/', createRoute: '/product/create', },
 }
 
 interface CreateFormHeaderProps {

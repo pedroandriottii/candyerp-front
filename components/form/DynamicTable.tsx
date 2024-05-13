@@ -37,7 +37,7 @@ const fields: FieldTranslations = {
     cost: 'Custo',
     price: 'Preço',
     total_price: 'Preço Total',
-    measurement_unit: 'Unidade de Medida',
+    measurementUnit: 'Unidade de Medida',
     start_date: 'Data de Início',
     end_date: 'Data de Fim',
     status: 'Status',

@@ -20,7 +20,7 @@ export interface DetailProps {
 export interface IngredientProps {
   id: number;
   name: string;
-  measurement_unit: MeasurementUnit;
+  measurementUnit: MeasurementUnit;
   quantity: number;
   cost: number;
 }
