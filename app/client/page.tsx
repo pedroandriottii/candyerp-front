@@ -35,7 +35,7 @@ export default function Client() {
     };
 
     return (
-        <div className='p-6 w-full flex flex-col bg-candy-background'>
+        <div className='p-6 w-full flex flex-col bg-candy-purple max-h-40'>
             <FormLabel labelType="clients" />
             <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
                 <FormHeader addHref='client/create' />

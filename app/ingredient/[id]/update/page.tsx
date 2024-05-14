@@ -112,10 +112,10 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="flex flex-col items-center p-4 w-full h-full">
-      <CreateFormHeader createType='updateIngredients' /> 
+    <div className="flex flex-col items-center bg-candy-purple max-h-40 p-4 w-full h-full">
+      <CreateFormHeader createType='updateIngredients' />
       <form onSubmit={handleSubmit} className='flex flex-col bg-white p-4 m-6 rounded-lg shadow-md'>
-        <div className="flex flex-col max-w-lg pb-4 gap-4 m-4"> 
+        <div className="flex flex-col max-w-lg pb-4 gap-4 m-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome:</label>
           <input
             id="name"
@@ -177,7 +177,7 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
           ))}
 
           <button type="submit" className="flex justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            Atualizar
+            Editar
           </button>
         </div>
       </form>

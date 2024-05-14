@@ -47,7 +47,7 @@ const UpdateClient = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="p-4 w-full h-full">
+    <div className="p-4 w-full h-full bg-candy-purple max-h-40">
       <CreateFormHeader createType="updateClients" />
       <div className="flex items-center justify-center">
         <form onSubmit={handleSubmit} className='flex flex-1 flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md'>
@@ -106,7 +106,7 @@ const UpdateClient = ({ params }: { params: { id: string } }) => {
             />
           </div>
           <button type="submit" className="flex justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            Atualizar
+            Editar
           </button>
         </form>
       </div>

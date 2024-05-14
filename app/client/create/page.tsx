@@ -28,9 +28,9 @@ export default function NewClient() {
       router.push('/client');
     }
   };
-  
+
   return (
-    <div className="p-4 w-full h-full">
+    <div className="p-4 w-full h-full bg-candy-purple max-h-40">
       <CreateFormHeader createType="clients" />
       <div className="flex items-center justify-center">
         <form onSubmit={handleSubmit} className='flex flex-1 flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md'>

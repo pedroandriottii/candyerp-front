@@ -101,7 +101,7 @@ const NewProduction = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 w-full h-full">
+    <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
       <CreateFormHeader createType="productions" />
       <form onSubmit={handleSubmit} className="">
         <div className="flex flex-col max-w-lg gap-4 bg-white rounded-lg shadow-md p-4 m-6">

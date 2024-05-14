@@ -124,7 +124,7 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="flex flex-col items-center p-4 w-full h-full">
+    <div className="flex flex-col bg-candy-purple max-h-40 items-center p-4 w-full h-full">
       <CreateFormHeader createType="updateProducts" />
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md">
@@ -206,7 +206,7 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
             ))}
           </div>
           <button disabled={isLoading} type="submit" className="flex justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            Enviar
+            Editar
           </button>
         </div>
       </form>

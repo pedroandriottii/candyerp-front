@@ -1,4 +1,5 @@
 "use client";
+import { CreateFormHeader } from '@/components/form/CreateFormHeader';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
@@ -42,30 +43,38 @@ const UpdateSupplier = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">Update Supplier</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Name:</label>
-        <input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="border"
-        />
-        <label htmlFor="cnpj">CNPJ:</label>
-        <input
-          id="cnpj"
-          value={cnpj}
-          onChange={(e) => setCnpj(e.target.value)}
-          required
-          className="border"
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 mt-4">
-          Update
-        </button>
+    <div className="h-full w-full bg-candy-purple max-h-40 flex flex-col items-center p-4">
+      <CreateFormHeader createType={'UpdateSuppliers'} />
+      <form onSubmit={handleSubmit} className='space-y-4'>
+        <div className='flex flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md'>
+          <div>
+            <label htmlFor="name" className='block text-sm font-medium text-gray-700'>Nome</label>
+            <input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="cnpj" className='block text-sm font-medium text-gray-700'>CNPJ</label>
+            <input
+              id="cnpj"
+              value={cnpj}
+              onChange={(e) => setCnpj(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <button type="submit" className="flex justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Editar
+          </button>
+        </div>
+
       </form>
     </div>
+
   );
 };
 

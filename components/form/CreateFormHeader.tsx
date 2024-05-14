@@ -3,11 +3,12 @@ import Link from 'next/link';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import HomeIcon from '@mui/icons-material/Home';
+import UpdateSupplier from '@/app/supplier/[id]/update/page';
 
 const createMaps = {
   products: { title: 'Cadastrar novo produto', route: '/product', createRoute: '/product/create', },
   ingredients: { title: 'Cadastrar novo ingrediente', route: '/ingredient', createRoute: '/ingredient/create', },
-  updateIngredients:{ title: 'Editar ingrediente', route: '/ingredient/', createRoute: '/ingredient/create', },
+  updateIngredients: { title: 'Editar ingrediente', route: '/ingredient/', createRoute: '/ingredient/create', },
   suppliers: {
     title: 'Cadastrar novo fornecedor', route: '/supplier', createRoute: '/supplier / create',
   },
@@ -16,6 +17,7 @@ const createMaps = {
   sales: { title: 'Cadastrar nova venda', route: '/sale', createRoute: '/sale/create', },
   updateProducts: { title: 'Editar produto', route: '/product/', createRoute: '/product/create', },
   updateClients: { title: 'Editar cliente', route: '/client/', createRoute: '/client/create', },
+  UpdateSuppliers: { title: 'Editar fornecedor', route: '/supplier/', createRoute: '/supplier/create', },
 }
 
 interface CreateFormHeaderProps {
@@ -25,7 +27,7 @@ interface CreateFormHeaderProps {
 export const CreateFormHeader: React.FC<CreateFormHeaderProps> = ({ createType }) => {
   const { title, route, createRoute } = createMaps[createType];
   return (
-    <div className='flex flex-col justify-between w-full h-full'>
+    <div className='flex flex-col justify-between w-full h-full m-2'>
       <div className='flex w-full justify-between items-center text-center bg-white rounded-md p-4 shadow-sm'>
         <Link href={route} className='flex flex-row items-center align-center justify-center'>
           <button className=" text-candy-purple text-center"><ArrowBackIcon fontSize='medium' /></button>

@@ -32,7 +32,7 @@ export default function Product() {
     }
 
     return (
-        <div className='p-6 w-full flex flex-col bg-candy-background'>
+        <div className='p-6 w-full flex flex-col bg-candy-purple max-h-40'>
             <FormLabel labelType="products" />
             <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
                 <FormHeader addHref='product/create' />

@@ -90,7 +90,7 @@ const NewProduct = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 w-full h-full">
+    <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
       <CreateFormHeader createType="products" />
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md">

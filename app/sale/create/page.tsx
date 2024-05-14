@@ -1,7 +1,7 @@
 "use client";
 
 import { CreateFormHeader } from "@/components/form/CreateFormHeader";
-import { ClientProps, DetailProps, ProductProps  } from "@/types";
+import { ClientProps, DetailProps, ProductProps } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -84,7 +84,7 @@ export default function NewSale() {
         console.log(`Creating detail for product ID ${productId}`)
         const quantity = productQuantities[productId];
         const detailId = selectedDetails[productId];
-        if (quantity > 0 && detailId) { 
+        if (quantity > 0 && detailId) {
           const detailResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales`, {
             method: "POST",
             headers: {
@@ -109,9 +109,10 @@ export default function NewSale() {
   };
 
   return (
-    <div className="p-4 w-full h-full">
+    <div className="flex flex-col p-4 w-full h-full bg-candy-purple max-h-40">
       <CreateFormHeader createType="sales" />
-      <form onSubmit={handleSubmit} className='flex flex-1 flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md'>
+      <div className="flex items-center justify-center align-center">
+        <form onSubmit={handleSubmit} className='flex flex-1 flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md align-center justify-center'>
           <div>
             <label htmlFor="date">Data:</label>
             <input
@@ -234,6 +235,8 @@ export default function NewSale() {
             Cadastrar
           </button>
         </form>
+      </div>
+
     </div>
   );
 }

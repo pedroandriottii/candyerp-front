@@ -77,7 +77,7 @@ const NewIngredient = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 w-full h-full">
+    <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
       <CreateFormHeader createType='ingredients' />
       <form onSubmit={handleSubmit} className='flex flex-col bg-white p-4 m-6 rounded-lg shadow-md'>
         <div className="flex flex-col max-w-lg pb-4 gap-4 m-4">
@@ -159,6 +159,7 @@ const NewIngredient = () => {
         </button>
       </form>
     </div>
+
   );
 };
 
