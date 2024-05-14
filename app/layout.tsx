@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/base/navbar";
 import { Sidebar } from "@/components/base/sidebar";
 import { cn } from "@/lib/utils"
 
@@ -20,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn("fixed inset-0 overflow-hidden bg-candy-background", inter.className)}>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="flex">
           <Sidebar />
           {children}
