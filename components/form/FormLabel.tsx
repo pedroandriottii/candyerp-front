@@ -10,7 +10,6 @@ const labelMaps = {
   productions: { title: 'Produção', route: '/' },
   createProductions: { title: 'Cadastrar nova produção', route: '/production' },
   updateProductions: { title: 'Editar produção', route: '/production/' },
-  lastProductions: { title: 'Últimas Produções', route: '/production' },
 
   ingredients: { title: 'Ingredientes', route: '/' },
   createIngredients: { title: 'Cadastrar novo ingrediente', route: '/ingredient' },
@@ -31,7 +30,6 @@ const labelMaps = {
   sales: { title: 'Vendas', route: '/' },
   createSales: { title: 'Cadastrar nova venda', route: '/sale' },
   updateSales: { title: 'Editar venda', route: '/sale/' },
-  lastSales: { title: 'Últimas Vendas', route: '/sale' },
 };
 
 interface FormLabelProps {

@@ -92,7 +92,6 @@ export default function Home() {
 
       <div className='grid grid-cols-2 w-full h-full'>
         <div className='rounded p-4'>
-          <FormLabel labelType="lastSales" />
           <DynamicTable
             data={sales}
             columns={columnsSale}
@@ -101,7 +100,6 @@ export default function Home() {
           />
         </div>
         <div className='rounded p-4'>
-          <FormLabel labelType="lastProductions" />
           <DynamicTable
             data={productions}
             columns={columnsProduction}
