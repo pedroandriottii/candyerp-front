@@ -68,22 +68,20 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
       const suppliersToRemove = originalSupplierIds.filter(id => !selectedSupplierIds.includes(id));
 
       const addPromises = suppliersToAdd.map(supplierId => {
-        if (!originalSupplierIds.includes(supplierId)) {
-          return fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              fk_Ingredient_Id: Number(ingredientId),
-              fk_Supplier_Id: Number(supplierId),
-            }),
-          });
-        }
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fk_Ingredient_Id: Number(ingredientId),
+            fk_Supplier_Id: Number(supplierId),
+          }),
+        });
       });
 
       const deletePromises = suppliersToRemove.map(supplierId =>
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers/${ingredientId}/${supplierId}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers/${supplierId}/${ingredientId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

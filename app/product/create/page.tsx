@@ -56,10 +56,11 @@ const NewProduct = () => {
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     setIsLoading(true);
+    console.log("detail id" + selectedDetailId)
     const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, price, quantity, fk_detail_id: selectedDetailId })
+      body: JSON.stringify({ name, price, quantity, fk_Detail_id: Number(selectedDetailId) })
     });
     console.log("passei por criacao de produto")
     if (productResponse.ok) {

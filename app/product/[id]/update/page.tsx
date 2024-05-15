@@ -15,35 +15,42 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
   const [ingredients, setIngredients] = useState<IngredientProps[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<number[]>([]);
   const [originalIngredientIds, setOriginalIngredientIds] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [ingredientQuantity, setIngredientQuantity] = useState<{ [key: number]: number }>({});
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/details`)
-      .then((response) => response.json())
-      .then(setDetails);
+    const fetchData = async () => {
+      try {
+        const detailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/details`);
+        const detailsData = await detailsResponse.json();
+        setDetails(detailsData);
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`)
-      .then((response) => response.json())
-      .then(setIngredients);
+        const ingredientsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`);
+        const ingredientsData = await ingredientsResponse.json();
+        setIngredients(ingredientsData);
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`)
-      .then((response) => response.json())
-      .then(data => {
-        setName(data.name);
-        setPrice(data.price);
-        setQuantity(data.quantity);
-        setSelectedDetailId(data.fkDetailId.toString());
-        const ingredientIds = data.ingredients.map((i: IngredientProps) => i.id);
+        const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`);
+        const productData = await productResponse.json();
+        setName(productData.name);
+        setPrice(productData.price);
+        setQuantity(productData.quantity);
+        setSelectedDetailId(productData.fk_Detail_id.toString());
+        const ingredientIds = productData.ingredients.map((i: IngredientProps) => i.id);
         setSelectedIngredients(ingredientIds);
         setOriginalIngredientIds(ingredientIds);
         const quantities: { [key: number]: number } = {};
-        data.ingredients.forEach((i: any) => {
+        productData.ingredients.forEach((i: any) => {
           quantities[i.id] = i.quantity;
         });
         setIngredientQuantity(quantities);
         setIsLoading(false);
-      });
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, [params.id]);
 
   const handleIngredientQuantityChange = (ingredientId: number, quantity: number) => {
@@ -73,13 +80,17 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     setIsLoading(true);
-    const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, price, quantity, fkDetailId: selectedDetailId })
-    });
+    try {
+      const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, price, quantity, fk_Detail_id: selectedDetailId })
+      });
 
-    if (productResponse.ok) {
+      if (!productResponse.ok) {
+        throw new Error("Failed to update product");
+      }
+
       const product = await productResponse.json();
       const { id: productId } = product;
 
@@ -108,15 +119,13 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
       if (allOk) {
         router.push("/product");
       } else {
-        console.error("Failed to update some ingredient-product relationships");
-        console.error(await Promise.all(relationResponses.filter(Boolean).map(res => res.json())));
+        throw new Error("Failed to update some ingredient-product relationships");
       }
-    } else {
-      console.error("Failed to update product");
-      console.error(await productResponse.json());
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   if (isLoading) {
