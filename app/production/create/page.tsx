@@ -1,7 +1,6 @@
 'use client';
 
-import { CreateFormHeader } from "@/components/form/CreateFormHeader";
-import { Button } from "@/components/ui/button";
+import FormLabel from "@/components/form/FormLabel";
 import { ProductProps } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -102,7 +101,7 @@ const NewProduction = () => {
 
   return (
     <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
-      <CreateFormHeader createType="productions" />
+      <FormLabel labelType="createProductions" />
       <form onSubmit={handleSubmit} className="">
         <div className="flex flex-col max-w-lg gap-4 bg-white rounded-lg shadow-md p-4 m-6">
           <div>

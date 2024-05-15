@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { SupplierProps } from '@/types';
-import { CreateFormHeader } from '@/components/form/CreateFormHeader';
+import FormLabel from '@/components/form/FormLabel';
 
 const UpdateIngredient = ({ params }: { params: { id: string } }) => {
   const [name, setName] = useState('');
@@ -68,7 +68,6 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
       const suppliersToRemove = originalSupplierIds.filter(id => !selectedSupplierIds.includes(id));
 
       const addPromises = suppliersToAdd.map(supplierId => {
-        // Check if the relationship already exists
         if (!originalSupplierIds.includes(supplierId)) {
           return fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-suppliers`, {
             method: 'POST',
@@ -113,7 +112,7 @@ const UpdateIngredient = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="flex flex-col items-center bg-candy-purple max-h-40 p-4 w-full h-full">
-      <CreateFormHeader createType='updateIngredients' />
+      <FormLabel labelType='updateIngredients' />
       <form onSubmit={handleSubmit} className='flex flex-col bg-white p-4 m-6 rounded-lg shadow-md'>
         <div className="flex flex-col max-w-lg pb-4 gap-4 m-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome:</label>

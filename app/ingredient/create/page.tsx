@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SupplierProps } from '@/types';
-import { CreateFormHeader } from '@/components/form/CreateFormHeader';
+import FormLabel from '@/components/form/FormLabel';
 
 const NewIngredient = () => {
   const router = useRouter();
@@ -78,7 +78,7 @@ const NewIngredient = () => {
 
   return (
     <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
-      <CreateFormHeader createType='ingredients' />
+      <FormLabel labelType='createIngredients' />
       <form onSubmit={handleSubmit} className='flex flex-col bg-white p-4 m-6 rounded-lg shadow-md'>
         <div className="flex flex-col max-w-lg pb-4 gap-4 m-4">
           <div>

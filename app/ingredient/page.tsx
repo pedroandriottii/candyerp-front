@@ -43,8 +43,8 @@ const IngredientPage: React.FC = () => {
 
   return (
     <div className="p-6 w-full flex flex-col bg-candy-purple max-h-40">
+      <FormLabel labelType="ingredients" />
       <div>
-        <FormLabel labelType="ingredients" />
         <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8 h-full max-h-[70vh] overflow-auto mb-8'>
           <FormHeader addHref="ingredient/create" />
           <DynamicTable

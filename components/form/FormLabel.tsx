@@ -1,18 +1,37 @@
 import React from 'react';
-import HomeIcon from '@mui/icons-material/Home';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 
 const labelMaps = {
-  products: { title: 'Produtos', label: 'Produtos', route: '/product' },
-  productions: { title: 'Produção', label: 'Produções', route: '/production' },
-  ingredients: { title: 'Ingredientes', label: 'Ingredientes', route: '/ingredient' },
-  phones: { title: 'Telefones', label: 'Telefones', route: '/phone' },
-  clients: { title: 'Clientes', label: 'Clientes', route: '/client' },
-  suppliers: { title: 'Fornecedores', label: 'Fornecedores', route: '/supplier' },
-  sales: { title: 'Vendas', label: 'Vendas', route: '/sale' },
-  lastSales: { title: 'Últimas Vendas', label: 'Últimas Vendas', route: '/sale' },
-  lastProductions: { title: 'Últimas Produções', label: 'Últimas Produções', route: '/production' },
+  products: { title: 'Produtos', route: '/' },
+  createProducts: { title: 'Cadastrar novo produto', route: '/product' },
+  updateProducts: { title: 'Editar produto', route: '/product/' },
+
+  productions: { title: 'Produção', route: '/' },
+  createProductions: { title: 'Cadastrar nova produção', route: '/production' },
+  updateProductions: { title: 'Editar produção', route: '/production/' },
+  lastProductions: { title: 'Últimas Produções', route: '/production' },
+
+  ingredients: { title: 'Ingredientes', route: '/' },
+  createIngredients: { title: 'Cadastrar novo ingrediente', route: '/ingredient' },
+  updateIngredients: { title: 'Editar ingrediente', route: '/ingredient/' },
+
+  phones: { title: 'Telefones', route: '/' },
+  createPhones: { title: 'Cadastrar novo telefone', route: '/phone' },
+  updatePhones: { title: 'Editar telefone', route: '/phone/' },
+
+  clients: { title: 'Clientes', route: '/' },
+  updateClients: { title: 'Editar cliente', route: '/client/' },
+  createClients: { title: 'Cadastrar novo cliente', route: '/client' },
+
+  suppliers: { title: 'Fornecedores', route: '/' },
+  createSuppliers: { title: 'Cadastrar novo fornecedor', route: '/supplier' },
+  updateSuppliers: { title: 'Editar fornecedor', route: '/supplier/' },
+
+  sales: { title: 'Vendas', route: '/' },
+  createSales: { title: 'Cadastrar nova venda', route: '/sale' },
+  updateSales: { title: 'Editar venda', route: '/sale/' },
+  lastSales: { title: 'Últimas Vendas', route: '/sale' },
 };
 
 interface FormLabelProps {
@@ -20,19 +39,16 @@ interface FormLabelProps {
 }
 
 const FormLabel: React.FC<FormLabelProps> = ({ labelType }) => {
-  const { title, label, route } = labelMaps[labelType];
+  const { title, route } = labelMaps[labelType];
   return (
-    <div className='flex w-full justify-between items-center text-center bg-white rounded-md p-4 shadow-sm' >
-      <h1 className="text-xl font-bold ">{title}</h1>
-      <div className='flex items-center'>
-        <Link href="/">
-          <HomeIcon />
-        </Link>
-        <ChevronRightIcon />
-        <Link href={route}>
-          <p className='text-slate-500'>{label}</p>
-        </Link>
-      </div>
+    <div className='flex items-center w-full h-full m-2 bg-white rounded-md p-4 shadow-sm'>
+      <Link href={route} className='flex items-center'>
+        <button className="text-candy-purple">
+          <ArrowBackIcon fontSize='medium' />
+        </button>
+        <p>Voltar</p>
+      </Link>
+      <h1 className='flex-1 text-center uppercase font-bold'>{title}</h1>
     </div>
   )
 }

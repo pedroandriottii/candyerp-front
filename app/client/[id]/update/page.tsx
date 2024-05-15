@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateFormHeader } from "@/components/form/CreateFormHeader";
+import FormLabel from "@/components/form/FormLabel";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -48,7 +48,7 @@ const UpdateClient = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="p-4 w-full h-full bg-candy-purple max-h-40">
-      <CreateFormHeader createType="updateClients" />
+      <FormLabel labelType="updateClients" />
       <div className="flex items-center justify-center">
         <form onSubmit={handleSubmit} className='flex flex-1 flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md'>
           <div>

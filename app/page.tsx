@@ -39,72 +39,78 @@ export default function Home() {
   }, []);
 
   return (
-    <div className='grid grid-cols-4 gap-4 w-full h-full p-8'>
-      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
-        <div className='flex gap-2'>
-          <span className='text-candy-purple text-sm'>
-            <AttachMoneyIcon />
-          </span>
-          <p>
-            Faturamento no mês
-          </p>
+    <div className='grid grid-cols-1 gap- 8 justify-between w-full h-full p-8'>
+      <div className='grid grid-cols-4 gap-8'>
+        <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
+          <div className='flex gap-2'>
+            <span className='text-candy-purple text-sm'>
+              <AttachMoneyIcon />
+            </span>
+            <p>
+              Faturamento no mês
+            </p>
+          </div>
+        </div>
+        <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
+          <div className='flex gap-2'>
+            <span className='text-candy-purple text-sm'>
+              <ShoppingCartIcon />
+            </span>
+            <p>
+              Produtos mais vendidos
+            </p>
+          </div>
+        </div>
+        <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
+          <div className='flex gap-2'>
+            <span className='text-candy-purple text-sm'>
+              <BakeryDiningIcon />
+            </span>
+            <p>
+              Produtos mais produzidos
+            </p>
+          </div>
+        </div>
+        <div
+          className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '
+          style={{
+            backgroundImage: `url('/img/analytics.svg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'start',
+          }}
+        >
+          <div className='flex gap-2'>
+            <span className='text-candy-purple text-sm'>
+              <AssessmentIcon />
+            </span>
+            <p>
+              Visão geral
+            </p>
+          </div>
         </div>
       </div>
-      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
-        <div className='flex gap-2'>
-          <span className='text-candy-purple text-sm'>
-            <ShoppingCartIcon />
-          </span>
-          <p>
-            Produtos mais vendidos
-          </p>
+
+      <div className='grid grid-cols-2 w-full h-full'>
+        <div className='rounded p-4'>
+          <FormLabel labelType="lastSales" />
+          <DynamicTable
+            data={sales}
+            columns={columnsSale}
+            basePath='sale'
+            showActions={false}
+          />
+        </div>
+        <div className='rounded p-4'>
+          <FormLabel labelType="lastProductions" />
+          <DynamicTable
+            data={productions}
+            columns={columnsProduction}
+            basePath='productions'
+            showActions={false}
+          />
         </div>
       </div>
-      <div className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '>
-        <div className='flex gap-2'>
-          <span className='text-candy-purple text-sm'>
-            <BakeryDiningIcon />
-          </span>
-          <p>
-            Produtos mais produzidos
-          </p>
-        </div>
-      </div>
-      <div
-        className='bg-white p-4 rounded-lg shadow-md min-h-[20vh] '
-        style={{
-          backgroundImage: `url('/img/analytics.svg')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'start',
-        }}
-      >
-        <div className='flex gap-2'>
-          <span className='text-candy-purple text-sm'>
-            <AssessmentIcon />
-          </span>
-          <p>
-            Visão geral
-          </p>
-        </div>
-      </div>
-      <div className='col-span-2 bg-white p-4 rounded-lg shadow-md'>
-        <FormLabel labelType="lastSales" />
-        <DynamicTable
-          data={sales}
-          columns={columnsSale}
-          basePath='sale'
-          showActions={false}
-        />
-      </div>
-      <div className='col-span-2 bg-white p-4 rounded-lg shadow-md'>
-        <FormLabel labelType="lastProductions" />
-        <DynamicTable
-          data={productions}
-          columns={columnsProduction}
-          basePath='productions'
-          showActions={false}
-        />
-      </div>
+
     </div >
   );
 }

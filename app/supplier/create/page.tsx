@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CreateFormHeader } from '@/components/form/CreateFormHeader';
+import FormLabel from '@/components/form/FormLabel';
 
 const NewSupplier = () => {
   const router = useRouter();
@@ -26,7 +26,7 @@ const NewSupplier = () => {
 
   return (
     <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
-      <CreateFormHeader createType="suppliers" />
+      <FormLabel labelType="createSuppliers" />
       <form onSubmit={handleSubmit} className='flex flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md'>
         <div>
           <label htmlFor="name">Nome:</label>
