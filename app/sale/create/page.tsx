@@ -8,13 +8,13 @@ import { useEffect, useState } from "react";
 export default function NewSale() {
   const router = useRouter();
 
-  const [date, setDate] = useState("");
-  const [total_price, setTotalPrice] = useState("");
-  const [status, setStatus] = useState("PENDING");
-  const [order_type, setOrderType] = useState("BALCONY");
-  const [payment_method, setPaymentMethod] = useState("CASH");
-  const [fk_client_id, setFkClientId] = useState("");
-  const [fk_nfe_id, setFkNfeId] = useState("");
+  const [date, setDate] = useState<string>("");
+  const [total_price, setTotalPrice] = useState<string>("");
+  const [status, setStatus] = useState<string>("PENDING");
+  const [order_type, setOrderType] = useState<string>("BALCONY");
+  const [payment_method, setPaymentMethod] = useState<string>("CASH");
+  const [fk_client_id, setFkClientId] = useState<string>("");
+  const [fk_nfe_id, setFkNfeId] = useState<string>("");
   const [clients, setClients] = useState<ClientProps[]>([]);
   const [products, setProducts] = useState<ProductProps[]>([]);
   const [productDetails, setProductDetails] = useState<DetailProps[]>([]);
@@ -34,7 +34,8 @@ export default function NewSale() {
 
         const productsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
         const productsData = await productsResponse.json();
-        setProducts(productsData);
+        const availableProducts = productsData.filter((product: ProductProps) => product.quantity > 0);
+        setProducts(availableProducts);
 
         const detailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/details`);
         const detailsData = await detailsResponse.json();
@@ -81,7 +82,6 @@ export default function NewSale() {
       console.log(`Created sale: ${saleOrderData.id}`);
 
       for (const productId of selectedProducts) {
-        console.log(`Creating detail for product ID ${productId}`)
         const quantity = productQuantities[productId];
         const detailId = selectedDetails[productId];
         if (quantity > 0 && detailId) {
@@ -91,14 +91,32 @@ export default function NewSale() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              fk_product_id: Number(productId),
-              fk_sale_order_id: Number(saleOrderData.id),
-              fk_detail_id: Number(detailId),
+              fk_product_id: productId,
+              fk_sale_order_id: saleOrderData.id,
+              fk_detail_id: detailId,
               quantity: quantity
             })
           });
 
           if (!detailResponse.ok) throw new Error(`Failed to create detail for product ID ${productId}`);
+        }
+      }
+
+      for (const productId of selectedProducts) {
+        const quantity = productQuantities[productId];
+        const product = products.find(p => p.id === productId);
+        if (quantity > 0 && product) {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: product.name,
+              price: product.price,
+              quantity: product.quantity - quantity
+            })
+          });
         }
       }
 
@@ -142,7 +160,6 @@ export default function NewSale() {
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               required
-              defaultValue={"PENDING"}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="" disabled>ESCOLHA O STATUS</option>
@@ -157,7 +174,6 @@ export default function NewSale() {
               value={order_type}
               onChange={(e) => setOrderType(e.target.value)}
               required
-              defaultValue={"BALCONY"}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="" disabled>ESCOLHA O TIPO</option>
@@ -169,7 +185,7 @@ export default function NewSale() {
             <label htmlFor="fk_client_id">Cliente:</label>
             <select
               id="fk_client_id"
-              value={fk_client_id ? fk_client_id : ""}
+              value={fk_client_id}
               onChange={(e) => setFkClientId(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
@@ -185,7 +201,6 @@ export default function NewSale() {
               value={payment_method}
               onChange={(e) => setPaymentMethod(e.target.value)}
               required
-              defaultValue={"CASH"}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="" disabled>ESCOLHA O MÉTODO</option>
@@ -196,7 +211,7 @@ export default function NewSale() {
             </select>
           </div>
           <div>
-            <label htmlFor="">Produtos Vendidos</label>
+            <label htmlFor="">Produtos Em Estoque</label>
             {products.map(product => (
               <div key={product.id} className="flex gap-2 p-2 items-center">
                 <input
@@ -236,7 +251,6 @@ export default function NewSale() {
           </button>
         </form>
       </div>
-
     </div>
   );
 }

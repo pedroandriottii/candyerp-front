@@ -97,3 +97,4 @@ export interface ProductDetailSaleProps {
 }
 
 export type OnDeleteFunction = (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
+

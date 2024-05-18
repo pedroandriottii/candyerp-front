@@ -63,6 +63,7 @@ const NewProduction = () => {
       name,
       start_date: formattedStartDate,
       end_date: formattedEndDate,
+      status: "IN_PROGRESS"
     };
 
     const productionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions`, {
@@ -72,19 +73,12 @@ const NewProduction = () => {
     });
 
     if (productionResponse.ok) {
-      console.log("passei por criacao de producao ok")
 
       const production = await productionResponse.json();
       const productionId = production.id;
       console.log(productionId)
       await Promise.all(selectedProducts.map(productId => {
-        console.log("passei por criacao de producao")
         const quantity = productQuantities[productId];
-        console.log(JSON.stringify({
-          fk_Production_id: productionId,
-          fk_Product_id: productId,
-          quantity: quantity
-        }))
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

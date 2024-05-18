@@ -1,37 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FieldTranslations, Supplier, Ingredient, DataItem, ColumnDefinition, ProductionProduct, Product } from '@/interface';
+import { formatValue, formattedDate } from '@/utils';
+import { fields } from '@/fields';
 import ActionColumn from './ActionColumn';
-
-interface FieldTranslations {
-    [key: string]: string;
-}
-
-interface Supplier {
-    id: number;
-    name: string;
-    cnpj: string;
-}
-
-
-interface Ingredient {
-    id: number;
-    name: string;
-    quantity: number;
-    measurementUnit: string;
-}
-
-interface DataItem {
-    id: number;
-    ingredients?: Ingredient[];
-    suppliers?: Supplier[];
-    [key: string]: any;
-}
-
-interface ColumnDefinition {
-    key: string;
-    title: string;
-}
 
 interface DynamicTableProps {
     data: DataItem[];
@@ -41,44 +14,32 @@ interface DynamicTableProps {
     showActions?: boolean;
 }
 
-const fields: FieldTranslations = {
-    name: 'Nome',
-    quantity: 'Quantidade',
-    cost: 'Custo',
-    price: 'Preço',
-    total_price: 'Preço Total',
-    measurementUnit: 'Unidade de Medida',
-    start_date: 'Data de Início',
-    end_date: 'Data de Fim',
-    status: 'Status',
-    payment_method: 'Método de Pagamento',
-    order_type: 'Tipo de Pedido',
-    sale_date: 'Data de Venda',
-    street: 'Rua',
-    number: 'Número',
-    neighborhood: 'Bairro',
-    complement: 'Complemento',
-    cnpj: 'CNPJ',
-    suppliers: 'Fornecedores',
-    ingredients: 'Ingredientes',
-    KILOGRAM: 'Kg',
-    GRAM: 'g',
-    LITER: 'L',
-    MILLILITER: 'mL',
-    UNIT: 'Unidade',
-}
-
-
 const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, onDelete, showActions = true }) => {
     const [geral, setGeral] = useState<DataItem[]>(data);
     const [expandedId, setExpandedId] = useState<number | null>(null);
+    const [productionProducts, setProductionProducts] = useState<{ [key: number]: ProductionProduct[] }>({});
 
     useEffect(() => {
         setGeral(data);
     }, [data]);
 
-    const handleRowClick = (id: number) => {
-        setExpandedId(expandedId === id ? null : id);
+    const handleRowClick = async (id: number) => {
+        if (expandedId === id) {
+            setExpandedId(null);
+            return;
+        }
+
+        if (!productionProducts[id]) {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products?productionId=${id}`);
+            const productionProductsData = await response.json();
+            const products = await Promise.all(productionProductsData.map(async (prodProd: ProductionProduct) => {
+                const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${prodProd.fkProductId}`);
+                const productData = await productResponse.json();
+                return { ...prodProd, product: productData };
+            }));
+            setProductionProducts((prev) => ({ ...prev, [id]: products }));
+        }
+        setExpandedId(id);
     };
 
     const handleDelete = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
@@ -88,28 +49,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
             setGeral(prevGeral => prevGeral.filter(item => item.id !== id));
             toast('Item excluído com sucesso!', { type: 'success' });
         }
-    };
-
-    const formattedDate = (date: string): string => {
-        const [year, month, day] = date.split('-');
-        return `${day}/${month}/${year}`;
-    }
-
-
-    const formatValue = (columnKey: string, value: any): string => {
-        if (value === undefined || value === null) {
-            return ''
-        }
-        if (columnKey === "price" || columnKey === "cost" || columnKey === "total_price") {
-            return `R$ ${value.toFixed(2)}`;
-        }
-        if (columnKey === "start_date" || columnKey === "end_date" || columnKey === "sale_date" || columnKey === "date") {
-            return formattedDate(value);
-        }
-        if (columnKey === "measurementUnit" && value in fields) {
-            return fields[value];
-        }
-        return value.toString();
     };
 
     return (
@@ -154,7 +93,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                         <hr className="flex-grow border-none h-0.5 bg-gradient-to-r from-purple-600 to-purple-300" />
                                     </div>
                                     <div className='grid grid-cols-4'>
-                                        {Object.entries(item).filter(([key]) => key in fields && key !== 'suppliers' && key !== 'ingredients').map(([key, value]) => (
+                                        {Object.entries(item).filter(([key]) => key in fields && key !== 'suppliers' && key !== 'ingredients' && key !== 'productionProducts').map(([key, value]) => (
                                             <div key={key} className='flex items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
                                                 <p className='font-bold text-sm pr-1'>{fields[key]}:</p>
                                                 <p> {formatValue(key, value)}</p>
@@ -179,6 +118,17 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                                         <p> <span className='font-bold text-sm'>Nome:</span> {ingredient.name}</p>
                                                         <p> <span className='font-bold text-sm'>Quantidade:</span> {ingredient.quantity}</p>
                                                         <p> <span className='font-bold text-sm'>Unidade de Medida:</span> {fields[ingredient.measurementUnit]}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {productionProducts[item.id] && (
+                                            <div className='col-span-4'>
+                                                <h2 className='font-bold'>Produtos da Produção:</h2>
+                                                {productionProducts[item.id].filter(prodProd => prodProd.fkProductionId === item.id).map((prodProd: ProductionProduct) => (
+                                                    <div key={prodProd.fkProductId} className='grid grid-cols-4 items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                        <p><span className='font-bold text-sm'>Nome:</span> {prodProd.product?.name || 'N/A'}</p>
+                                                        <p><span className='font-bold text-sm'>Quantidade:</span> {prodProd.quantity}</p>
                                                     </div>
                                                 ))}
                                             </div>

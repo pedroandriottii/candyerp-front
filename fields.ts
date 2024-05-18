@@ -1,0 +1,28 @@
+import { FieldTranslations } from '@/interface';
+
+export const fields: FieldTranslations = {
+  name: 'Nome',
+  quantity: 'Quantidade',
+  cost: 'Custo',
+  price: 'Preço',
+  total_price: 'Preço Total',
+  measurementUnit: 'Unidade de Medida',
+  start_date: 'Data de Início',
+  end_date: 'Data de Fim',
+  status: 'Status',
+  payment_method: 'Método de Pagamento',
+  order_type: 'Tipo de Pedido',
+  sale_date: 'Data de Venda',
+  street: 'Rua',
+  number: 'Número',
+  neighborhood: 'Bairro',
+  complement: 'Complemento',
+  cnpj: 'CNPJ',
+  suppliers: 'Fornecedores',
+  ingredients: 'Ingredientes',
+  KILOGRAM: 'Kg',
+  GRAM: 'g',
+  LITER: 'L',
+  MILLILITER: 'mL',
+  UNIT: 'Unidade',
+};
