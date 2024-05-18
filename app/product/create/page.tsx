@@ -1,29 +1,21 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { DetailProps, IngredientProps } from "@/types";
+import { IngredientProps } from "@/types";
 import { useEffect, useState } from "react";
 import FormLabel from "@/components/form/FormLabel";
-
 
 const NewProduct = () => {
   const router = useRouter();
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [details, setDetails] = useState<DetailProps[]>([]);
-  const [selectedDetailId, setSelectedDetailId] = useState("");
   const [ingredients, setIngredients] = useState<IngredientProps[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [ingredientQuantity, setIngredientQuantity] = useState<{ [key: number]: number }>({});
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/details`)
-      .then((response) => response.json())
-      .then(setDetails);
-
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`)
       .then((response) => response.json())
       .then(setIngredients);
@@ -56,25 +48,17 @@ const NewProduct = () => {
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     setIsLoading(true);
-    console.log("detail id" + selectedDetailId)
     const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, price, quantity, fk_Detail_id: Number(selectedDetailId) })
+      body: JSON.stringify({ name, price, fk_product_id: null })
     });
-    console.log("passei por criacao de produto")
     if (productResponse.ok) {
-      console.log("passei por criacao de produto ok")
       const response = await productResponse.json();
-      console.log(response)
       const { id: productId } = response;
-      console.log("passei por criacao de produto id")
-      console.log(productId)
 
       await Promise.all(selectedIngredients.map(ingredientId => {
         const quantityForThisIngredient = ingredientQuantity[ingredientId];
-        console.log(JSON.stringify({ fk_Product_id: productId, fk_Ingredient_id: ingredientId, quantity: ingredientQuantity }))
-        console.log(ingredientId)
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-products`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -117,34 +101,6 @@ const NewProduct = () => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-          <div>
-            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantidade</label>
-            <input
-              id="quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              required
-              placeholder="10"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">Detalhe</label>
-            <select
-              id="supplier"
-              value={selectedDetailId}
-              onChange={(e) => setSelectedDetailId(e.target.value)}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option disabled value="">Escolha um Detalhe</option>
-              {details.map((detail) => (
-                <option key={detail.id} value={detail.id}>{detail.description}</option>
-              ))}
-            </select>
-          </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700">Ingredientes</label>
             {ingredients.map(ingredient => (

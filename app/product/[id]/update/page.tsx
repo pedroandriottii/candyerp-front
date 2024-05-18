@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { DetailProps, IngredientProps } from "@/types";
+import { IngredientProps } from "@/types";
 import { useEffect, useState } from "react";
 import FormLabel from "@/components/form/FormLabel";
 
@@ -10,8 +10,6 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [details, setDetails] = useState<DetailProps[]>([]);
-  const [selectedDetailId, setSelectedDetailId] = useState("");
   const [ingredients, setIngredients] = useState<IngredientProps[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<number[]>([]);
   const [originalIngredientIds, setOriginalIngredientIds] = useState<number[]>([]);
@@ -21,10 +19,6 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const detailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/details`);
-        const detailsData = await detailsResponse.json();
-        setDetails(detailsData);
-
         const ingredientsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`);
         const ingredientsData = await ingredientsResponse.json();
         setIngredients(ingredientsData);
@@ -34,7 +28,6 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
         setName(productData.name);
         setPrice(productData.price);
         setQuantity(productData.quantity);
-        setSelectedDetailId(productData.fk_Detail_id.toString());
         const ingredientIds = productData.ingredients.map((i: IngredientProps) => i.id);
         setSelectedIngredients(ingredientIds);
         setOriginalIngredientIds(ingredientIds);
@@ -84,7 +77,7 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
       const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, price, quantity, fk_Detail_id: selectedDetailId })
+        body: JSON.stringify({ name, price, quantity })
       });
 
       if (!productResponse.ok) {
@@ -170,23 +163,6 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-
-          <div>
-            <label htmlFor="detail" className="block text-sm font-medium text-gray-700">Detalhe</label>
-            <select
-              id="detail"
-              value={selectedDetailId}
-              onChange={(e) => setSelectedDetailId(e.target.value)}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option disabled value="">Escolha um Detalhe</option>
-              {details.map((detail) => (
-                <option key={detail.id} value={detail.id}>{detail.description}</option>
-              ))}
-            </select>
-          </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700">Ingredientes</label>
             {ingredients.map(ingredient => (

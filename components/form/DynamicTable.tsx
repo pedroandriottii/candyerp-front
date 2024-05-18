@@ -13,6 +13,7 @@ interface Supplier {
     cnpj: string;
 }
 
+
 interface Ingredient {
     id: number;
     name: string;
