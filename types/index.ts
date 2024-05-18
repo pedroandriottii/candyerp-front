@@ -89,4 +89,12 @@ export interface DetailProps {
   additional_value: number;
 }
 
+export interface ProductDetailSaleProps {
+  id: number;
+  quantity: number;
+  fk_product_id: number;
+  fk_sale_order_id: number;
+  fk_detail_id: number;
+}
+
 export type OnDeleteFunction = (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
