@@ -90,7 +90,6 @@ export interface DetailProps {
 }
 
 export interface ProductDetailSaleProps {
-  id: number;
   quantity: number;
   fk_product_id: number;
   fk_sale_order_id: number;

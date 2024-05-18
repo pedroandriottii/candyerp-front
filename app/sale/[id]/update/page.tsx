@@ -1,276 +1,281 @@
 "use client";
 
+import { ClientProps, DetailProps, ProductProps, ProductDetailSaleProps } from "@/types";
+import FormLabel from "@/components/form/FormLabel";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ProductDetailSaleProps, ProductProps, DetailProps, SaleProps, StatusEnum, OrderTypeEnum, PaymentMethodEnum } from "@/types";
 
-const UpdateSaleOrder = ({ params }: { params: { id: string } }) => {
+export default function EditSale({ params }: { params: { id: string } }) {
   const router = useRouter();
+
+  const saleOrderId = params.id;
+
   const [date, setDate] = useState("");
-  const [totalPrice, setTotalPrice] = useState("");
-  const [status, setStatus] = useState<SaleProps["status"]>(StatusEnum.COMPLETED);
-  const [orderType, setOrderType] = useState<SaleProps["orderType"]>(OrderTypeEnum.BALCONY);
-  const [paymentMethod, setPaymentMethod] = useState<SaleProps["paymentMethod"]>(PaymentMethodEnum.CASH);
-  const [clientId, setClientId] = useState("");
-  const [nfeId, setNfeId] = useState("");
+  const [total_price, setTotalPrice] = useState("");
+  const [status, setStatus] = useState("PENDING");
+  const [order_type, setOrderType] = useState("BALCONY");
+  const [payment_method, setPaymentMethod] = useState("CASH");
+  const [fk_client_id, setFkClientId] = useState("");
+  const [fk_nfe_id, setFkNfeId] = useState("");
+  const [clients, setClients] = useState<ClientProps[]>([]);
   const [products, setProducts] = useState<ProductProps[]>([]);
-  const [details, setDetails] = useState<DetailProps[]>([]);
+  const [productDetails, setProductDetails] = useState<DetailProps[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
-  const [originalProductIds, setOriginalProductIds] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [productDetail, setProductDetail] = useState<{ [key: number]: { quantity: number; fk_detail_id: number } }>({});
+  const [originalSelectedProducts, setOriginalSelectedProducts] = useState<number[]>([]);
+  const [productQuantities, setProductQuantities] = useState<{ [key: number]: number }>({});
+  const [selectedDetails, setSelectedDetails] = useState<{ [key: number]: number }>({});
+  const [originalSelectedDetails, setOriginalSelectedDetails] = useState<{ [key: number]: number }>({});
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchClientsAndProducts() {
       try {
+        const clientsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients`);
+        const clientsData = await clientsResponse.json();
+        setClients(clientsData);
+
         const productsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
         const productsData = await productsResponse.json();
         setProducts(productsData);
 
         const detailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/details`);
         const detailsData = await detailsResponse.json();
-        setDetails(detailsData);
+        setProductDetails(detailsData);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    }
 
-        const saleOrderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders/${params.id}`);
+    async function fetchSaleOrder() {
+      try {
+        const saleOrderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders/${saleOrderId}`);
         const saleOrderData = await saleOrderResponse.json();
-        setDate(new Date(saleOrderData.date).toISOString().split("T")[0]);
-        setTotalPrice(saleOrderData.total_price.toString());
+
+        setDate(saleOrderData.date);
+        setTotalPrice(saleOrderData.total_price);
         setStatus(saleOrderData.status);
         setOrderType(saleOrderData.order_type);
         setPaymentMethod(saleOrderData.payment_method);
-        setClientId(saleOrderData.fk_client_id.toString());
-        setNfeId(saleOrderData.fk_nfe_id.toString());
+        setFkClientId(saleOrderData.fk_client_id.toString());
+        setFkNfeId(saleOrderData.fk_nfe_id);
 
-        const productIds = saleOrderData.productDetails.map((pd: ProductDetailSaleProps) => pd.fk_product_id);
-        setSelectedProducts(productIds);
-        setOriginalProductIds(productIds);
-        const detailMapping: { [key: number]: { quantity: number; fk_detail_id: number } } = {};
-        saleOrderData.productDetails.forEach((pd: any) => {
-          detailMapping[pd.fk_product_id] = {
-            quantity: pd.quantity,
-            fk_detail_id: pd.fk_detail_id
-          };
+        // Fetch product details for the sale order
+        const detailSalesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales/${saleOrderId}`);
+        const detailSalesData: ProductDetailSaleProps[] = await detailSalesResponse.json();
+
+        const selectedProducts = detailSalesData.map(detail => detail.fk_product_id);
+        setSelectedProducts(selectedProducts);
+        setOriginalSelectedProducts(selectedProducts);
+
+        const quantities: { [key: number]: number } = {};
+        const details: { [key: number]: number } = {};
+        detailSalesData.forEach(detail => {
+          quantities[detail.fk_product_id] = detail.quantity;
+          details[detail.fk_product_id] = detail.fk_detail_id;
         });
-        setProductDetail(detailMapping);
-        setIsLoading(false);
+        setProductQuantities(quantities);
+        setSelectedDetails(details);
+        setOriginalSelectedDetails(details);
       } catch (error) {
-        console.error("Failed to fetch data", error);
-        setIsLoading(false);
+        console.error("Failed to fetch sale order:", error);
       }
-    };
+    }
 
-    fetchData();
-  }, [params.id]);
+    fetchClientsAndProducts();
+    fetchSaleOrder();
+  }, [saleOrderId]);
 
-  const handleProductDetailChange = (productId: number, field: 'quantity' | 'fk_detail_id', value: number) => {
-    setProductDetail(prevDetails => ({
-      ...prevDetails,
-      [productId]: {
-        ...prevDetails[productId],
-        [field]: value
-      }
-    }));
-  };
-
-  const handleProductChange = (productId: number) => {
-    setSelectedProducts(prev => {
-      if (prev.includes(productId)) {
-        const updatedDetails = { ...productDetail };
-        delete updatedDetails[productId];
-        setProductDetail(updatedDetails);
-        return prev.filter(id => id !== productId);
-      } else {
-        setProductDetail(prevDetails => ({
-          ...prevDetails,
-          [productId]: { quantity: 0, fk_detail_id: 0 }
-        }));
-        return [...prev, productId];
-      }
-    });
-  };
-
-  const handleSubmit = async (event: { preventDefault: () => void; }) => {
+  const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    setIsLoading(true);
+
     try {
-      const saleOrderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders/${params.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+      const saleOrderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders/${saleOrderId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          date,
-          total_price: parseFloat(totalPrice),
-          status,
-          order_type: orderType,
-          payment_method: paymentMethod,
-          fk_client_id: parseInt(clientId),
-          fk_nfe_id: parseInt(nfeId)
-        })
+          date, total_price, status, order_type, payment_method, fk_client_id, fk_nfe_id
+        }),
       });
 
-      if (!saleOrderResponse.ok) {
-        throw new Error("Failed to update sale order");
+      if (!saleOrderResponse.ok) throw new Error("Failed to update sale order");
+
+      // Handle product details update
+      for (const productId of selectedProducts) {
+        const quantity = productQuantities[productId];
+        const detailId = selectedDetails[productId];
+        if (quantity > 0 && detailId) {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales/${saleOrderId}/${productId}/${detailId}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fk_product_id: Number(productId),
+              fk_sale_order_id: Number(saleOrderId),
+              fk_detail_id: Number(detailId),
+              quantity: quantity
+            })
+          });
+        }
       }
 
-      const saleOrder = await saleOrderResponse.json();
-      const { id: saleOrderId } = saleOrder;
-
-      const productsToAdd = selectedProducts.filter(id => !originalProductIds.includes(id));
-      const productsToRemove = originalProductIds.filter(id => !selectedProducts.includes(id));
-
-      const addPromises = productsToAdd.map(productId => {
-        const detail = productDetail[productId];
-        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fk_sale_order_id: saleOrderId, fk_product_id: productId, fk_detail_id: detail.fk_detail_id, quantity: detail.quantity })
-        });
-      });
-
-      const deletePromises = productsToRemove.map(productId =>
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales/${saleOrderId}`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        })
-      );
-
-      const relationResponses = await Promise.all([...addPromises, ...deletePromises]);
-      const allOk = relationResponses.every(response => response && response.ok);
-
-      if (allOk) {
-        router.push("/sale");
-      } else {
-        throw new Error("Failed to update some product-sale relationships");
+      // Handle product removals
+      const productsToRemove = originalSelectedProducts.filter(productId => !selectedProducts.includes(productId));
+      for (const productId of productsToRemove) {
+        const detailId = originalSelectedDetails[productId];
+        if (detailId) {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales/${saleOrderId}/${productId}/${detailId}`, {
+            method: "DELETE",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+        }
       }
+
+      // Handle detail changes
+      for (const productId of selectedProducts) {
+        const originalDetailId = originalSelectedDetails[productId];
+        const newDetailId = selectedDetails[productId];
+        if (originalDetailId !== newDetailId) {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales/${saleOrderId}/${productId}/${originalDetailId}`, {
+            method: "DELETE",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales`, {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fk_product_id: Number(productId),
+              fk_sale_order_id: Number(saleOrderId),
+              fk_detail_id: Number(newDetailId),
+              quantity: productQuantities[productId]
+            })
+          });
+        }
+      }
+
+      router.push('/sale');
     } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+      console.error("Error submitting form:", error);
     }
   };
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
   return (
-    <div className="flex flex-col bg-candy-purple max-h-40 items-center p-4 w-full h-full">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md">
+    <div className="flex flex-col p-4 w-full h-full bg-candy-purple max-h-40">
+      <FormLabel labelType="updateSales" />
+      <div className="flex items-center justify-center align-center">
+        <form onSubmit={handleSubmit} className='flex flex-1 flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md align-center justify-center '>
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Data</label>
+            <label htmlFor="date">Data:</label>
             <input
               id="date"
-              type="date"
               value={date}
+              type="date"
               onChange={(e) => setDate(e.target.value)}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
-            <label htmlFor="totalPrice" className="block text-sm font-medium text-gray-700">Preço Total</label>
+            <label htmlFor="total_price">Valor Total:</label>
             <input
-              id="totalPrice"
-              value={totalPrice}
+              id="total_price"
+              value={total_price}
               onChange={(e) => setTotalPrice(e.target.value)}
               required
-              placeholder="100.00"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder='1000.00'
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              disabled
             />
           </div>
           <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
+            <label htmlFor="status">Status:</label>
             <select
               id="status"
               value={status}
-              onChange={(e) => setStatus(e.target.value as SaleProps["status"])}
+              onChange={(e) => setStatus(e.target.value)}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
-              <option value="COMPLETED">Completed</option>
-              <option value="PENDING">Pending</option>
+              <option value="PENDING">Pendente</option>
+              <option value="COMPLETED">Finalizado</option>
             </select>
           </div>
           <div>
-            <label htmlFor="orderType" className="block text-sm font-medium text-gray-700">Tipo de Pedido</label>
+            <label htmlFor="order_type">Tipo de Venda:</label>
             <select
-              id="orderType"
-              value={orderType}
-              onChange={(e) => setOrderType(e.target.value as SaleProps["orderType"])}
+              id="order_type"
+              value={order_type}
+              onChange={(e) => setOrderType(e.target.value)}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
-              <option value="BALCONY">Balcony</option>
-              <option value="DELIVERY">Delivery</option>
+              <option value="BALCONY">Balcao</option>
+              <option value="DELIVERY">Entrega</option>
             </select>
           </div>
           <div>
-            <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700">Método de Pagamento</label>
+            <label htmlFor="fk_client_id">Cliente:</label>
             <select
-              id="paymentMethod"
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value as SaleProps["paymentMethod"])}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              id="fk_client_id"
+              value={fk_client_id ? fk_client_id : ""}
+              onChange={(e) => setFkClientId(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
-              <option value="CASH">Cash</option>
-              <option value="CREDIT_CARD">Credit Card</option>
-              <option value="DEBIT_CARD">Debit Card</option>
-              <option value="PIX">PIX</option>
+              {clients.map((client) => (
+                <option key={client.id} value={client.id}>{client.name}</option>
+              ))}
             </select>
           </div>
           <div>
-            <label htmlFor="clientId" className="block text-sm font-medium text-gray-700">ID do Cliente</label>
-            <input
-              id="clientId"
-              value={clientId}
-              onChange={(e) => setClientId(e.target.value)}
+            <label htmlFor="payment_method">Método de Pagamento:</label>
+            <select
+              id="payment_method"
+              value={payment_method}
+              onChange={(e) => setPaymentMethod(e.target.value)}
               required
-              placeholder="123"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="CASH">Dinheiro</option>
+              <option value="CREDIT_CARD">Cartão de Crédito</option>
+              <option value="DEBIT_CARD">Cartão de Débito</option>
+              <option value="PIX">Pix</option>
+            </select>
           </div>
           <div>
-            <label htmlFor="nfeId" className="block text-sm font-medium text-gray-700">ID da NFe</label>
-            <input
-              id="nfeId"
-              value={nfeId}
-              onChange={(e) => setNfeId(e.target.value)}
-              required
-              placeholder="456"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Produtos</label>
+            <label htmlFor="">Produtos Vendidos</label>
             {products.map(product => (
               <div key={product.id} className="flex gap-2 p-2 items-center">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
-                    checked={selectedProducts.includes(product.id)}
-                    onChange={() => handleProductChange(product.id)}
-                  />
-                  {product.name}
-                </label>
+                <input
+                  type="checkbox"
+                  id={`product-${product.id}`}
+                  checked={selectedProducts.includes(product.id)}
+                  onChange={() => setSelectedProducts(selectedProducts.includes(product.id) ? selectedProducts.filter(id => id !== product.id) : [...selectedProducts, product.id])}
+                  className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
+                />
+                <label htmlFor={`product-${product.id}`}>{product.name}</label>
                 {selectedProducts.includes(product.id) && (
                   <>
                     <input
                       type="number"
-                      className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                      value={productDetail[product.id]?.quantity || ''}
-                      onChange={e => handleProductDetailChange(product.id, 'quantity', parseFloat(e.target.value))}
                       min="0"
-                      step="0.1"
+                      value={productQuantities[product.id] || 0}
+                      onChange={(e) => setProductQuantities({ ...productQuantities, [product.id]: parseInt(e.target.value) })}
+                      className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
                     <select
-                      value={productDetail[product.id]?.fk_detail_id || ''}
-                      onChange={e => handleProductDetailChange(product.id, 'fk_detail_id', parseInt(e.target.value))}
-                      className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      value={selectedDetails[product.id] || ""}
+                      onChange={(e) => setSelectedDetails({ ...selectedDetails, [product.id]: parseInt(e.target.value) })}
+                      className="ml-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
-                      <option value="" disabled>Escolha um Detalhe</option>
-                      {details.map(detail => (
+                      <option value="" disabled>ESCOLHA O DETALHE</option>
+                      {productDetails.map(detail => (
                         <option key={detail.id} value={detail.id}>{detail.description}</option>
                       ))}
                     </select>
@@ -279,13 +284,11 @@ const UpdateSaleOrder = ({ params }: { params: { id: string } }) => {
               </div>
             ))}
           </div>
-          <button disabled={isLoading} type="submit" className="flex justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            Editar
+          <button type="submit" className="flex justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Atualizar
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
-};
-
-export default UpdateSaleOrder;
+}
