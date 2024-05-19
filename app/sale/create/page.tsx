@@ -4,6 +4,8 @@ import { ClientProps, DetailProps, ProductProps } from "@/types";
 import FormLabel from "@/components/form/FormLabel";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Link from "next/link";
 
 export default function NewSale() {
   const router = useRouter();
@@ -147,7 +149,6 @@ export default function NewSale() {
       <div className="w-full h-full flex flex-col items-center justify-center align-center bg-white m-6 p-4 rounded-lg shadow-md mb-10">
         <form onSubmit={handleSubmit} className="w-full">
           <div className='w-full grid grid-cols-2 gap-4  align-center justify-center max-h-[70vh] overflow-auto mb-4'>
-
             <div>
               <label htmlFor="order_type">Tipo de Venda:</label>
               <select
@@ -164,16 +165,22 @@ export default function NewSale() {
             </div>
             <div>
               <label htmlFor="fk_client_id">Cliente:</label>
-              <select
-                id="fk_client_id"
-                value={fkClientId}
-                onChange={(e) => setFkClientId(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                {clients.map((client) => (
-                  <option key={client.id} value={client.id}>{client.name}</option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <select
+                  id="fk_client_id"
+                  value={fkClientId}
+                  onChange={(e) => setFkClientId(e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  {clients.map((client) => (
+                    <option key={client.id} value={client.id}>{client.name}</option>
+                  ))}
+                </select>
+                <Link href='/client/create' className="flex bg-candy-purple rounded-md">
+                  <AddCircleIcon className="text-white mx-3 my-2" />
+                </Link>
+              </div>
+
             </div>
             <div>
               <label htmlFor="payment_method">Método de Pagamento:</label>
@@ -210,14 +217,24 @@ export default function NewSale() {
                     }
                     className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
                   />
-                  <label htmlFor={`product-${product.id}`} className="flex-1">
-                    {product.name}
-                  </label>
+                  <div className="flex flex-1 justify-between">
+                    <p>
+                      {product.name}
+                    </p>
+                    <p className="text-sm text-slate-500">
+                      Preço: R$ {product.price.toFixed(2)}
+                    </p>
+                    <p className="text-sm text-slate-500">
+                      Estoque: {product.quantity}
+                    </p>
+                  </div>
+
                   {selectedProducts.includes(product.id) && (
                     <>
                       <input
                         type="number"
                         min="0"
+                        max={product.quantity}
                         value={productQuantities[product.id] || 0}
                         onChange={(e) =>
                           setProductQuantities({
@@ -235,7 +252,7 @@ export default function NewSale() {
                             [product.id]: parseInt(e.target.value),
                           })
                         }
-                        className="ml-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="ml-2 max-w-[10vw] border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                       >
                         <option value="" disabled>
                           ESCOLHA O DETALHE

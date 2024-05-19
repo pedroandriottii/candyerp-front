@@ -18,5 +18,9 @@ export const formatValue = (columnKey: string, value: any): string => {
   if (columnKey === "measurementUnit" && value in fields) {
     return fields[value];
   }
+  if (columnKey === 'order_type' || columnKey === 'payment_method') {
+    return fields[value] || value;
+  }
+  return value;
   return value.toString();
 };
