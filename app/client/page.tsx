@@ -37,15 +37,18 @@ export default function Client() {
     return (
         <div className='p-6 w-full flex flex-col bg-candy-purple max-h-40'>
             <FormLabel labelType="clients" />
-            <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8'>
-                <FormHeader addHref='client/create' />
-                <DynamicTable
-                    data={clients}
-                    columns={columns}
-                    basePath='client'
-                    onDelete={handleDelete}
-                />
+            <div>
+                <div className='bg-white rounded-lg p-4 shadow-sm pb-6 mt-8 max-h-[70vh] overflow-auto mb-8'>
+                    <FormHeader addHref='client/create' />
+                    <DynamicTable
+                        data={clients}
+                        columns={columns}
+                        basePath='client'
+                        onDelete={handleDelete}
+                    />
+                </div>
             </div>
+
         </div>
     );
 }
