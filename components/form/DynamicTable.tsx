@@ -63,12 +63,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
     }
 
     const handleCompleteProduction = async (id: number) => {
-        fetchData();
+        await fetchData();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: name, start_date: startDate, end_date: endDate, status: "COMPLETED" })
+            body: JSON.stringify({ name, start_date: startDate, end_date: endDate, status: "COMPLETED" })
         });
 
         if (response.ok) {
@@ -126,17 +126,26 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                     handleRowClick={handleRowClick}
                                 />
                             )}
-                            {basePath === 'production' && item.status === "IN_PROGRESS" && (
+                            {basePath === 'production' && (
                                 <td>
-                                    <button
-                                        className="text-white bg-green-500 hover:bg-green-700 font-bold py-2 px-4 rounded"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleCompleteProduction(item.id);
-                                        }}
-                                    >
-                                        Finalizar
-                                    </button>
+                                    {item.status === "IN_PROGRESS" ? (
+                                        <button
+                                            className="text-white bg-green-500 hover:bg-green-700 w-full max-w-[120px] font-bold py-2 px-4 rounded"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCompleteProduction(item.id);
+                                            }}
+                                        >
+                                            Finalizar
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="text-white bg-gray-500 cursor-not-allowed font-bold py-2 px-4 w-full max-w-[120px] rounded"
+                                            disabled
+                                        >
+                                            Finalizada
+                                        </button>
+                                    )}
                                 </td>
                             )}
                         </tr>
@@ -179,7 +188,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                                 ))}
                                             </div>
                                         )}
-                                        {productionProducts[item.id] && (
+                                        {productionProducts[item.id] && basePath === 'production' && (
                                             <div className='col-span-4'>
                                                 <h2 className='font-bold'>Produtos da Produção:</h2>
                                                 {productionProducts[item.id].filter(prodProd => prodProd.fkProductionId === item.id).map((prodProd: ProductionProduct) => (
