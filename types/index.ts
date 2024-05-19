@@ -47,11 +47,6 @@ export interface ProductionProps {
   end_date: Date | string;
 }
 
-export enum StatusEnum {
-  PENDING = "PENDING",
-  COMPLETED = "COMPLETED"
-}
-
 export enum OrderTypeEnum {
   BALCONY = "BALCONY",
   DELIVERY = "DELIVERY"
@@ -67,7 +62,6 @@ export enum PaymentMethodEnum {
 export interface SaleProps {
   id: number;
   total: number;
-  status: StatusEnum;
   orderType: OrderTypeEnum;
   paymentMethod: PaymentMethodEnum;
 }

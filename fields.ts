@@ -9,7 +9,6 @@ export const fields: FieldTranslations = {
   measurementUnit: 'Unidade de Medida',
   start_date: 'Data de Início',
   end_date: 'Data de Fim',
-  status: 'Status',
   payment_method: 'Método de Pagamento',
   order_type: 'Tipo de Pedido',
   sale_date: 'Data de Venda',

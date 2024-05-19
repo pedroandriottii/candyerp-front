@@ -12,7 +12,6 @@ export default function Production() {
     const columns: ColumnDefinition[] = [
         { key: 'date', title: 'Data' },
         { key: 'total_price', title: 'Valor Total' },
-        { key: 'status', title: 'Status' },
         { key: 'order_type', title: 'Tipo de Venda' },
         { key: 'payment_method', title: 'Método de Pagamento' },
     ];

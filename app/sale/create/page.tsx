@@ -8,13 +8,12 @@ import { useEffect, useState } from "react";
 export default function NewSale() {
   const router = useRouter();
 
-  const [date, setDate] = useState<string>("");
-  const [total_price, setTotalPrice] = useState<string>("");
-  const [status, setStatus] = useState<string>("PENDING");
-  const [order_type, setOrderType] = useState<string>("BALCONY");
-  const [payment_method, setPaymentMethod] = useState<string>("CASH");
-  const [fk_client_id, setFkClientId] = useState<string>("");
-  const [fk_nfe_id, setFkNfeId] = useState<string>("");
+  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [orderType, setOrderType] = useState<string>("BALCONY");
+  const [paymentMethod, setPaymentMethod] = useState<string>("CASH");
+  const [fkClientId, setFkClientId] = useState<string>("");
+  const [fkNfeId, setFkNfeId] = useState<string>("");
   const [clients, setClients] = useState<ClientProps[]>([]);
   const [products, setProducts] = useState<ProductProps[]>([]);
   const [productDetails, setProductDetails] = useState<DetailProps[]>([]);
@@ -48,6 +47,22 @@ export default function NewSale() {
     fetchClientsAndProducts();
   }, []);
 
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [selectedProducts, productQuantities]);
+
+  const calculateTotalPrice = () => {
+    let total = 0;
+    selectedProducts.forEach(productId => {
+      const product = products.find(p => p.id === productId);
+      const quantity = productQuantities[productId] || 0;
+      if (product) {
+        total += product.price * quantity;
+      }
+    });
+    setTotalPrice(total);
+  };
+
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
@@ -72,7 +87,7 @@ export default function NewSale() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          date, total_price, status, order_type, payment_method, fk_client_id, fk_nfe_id: nfeData.id
+          date, total_price: totalPrice, order_type: orderType, payment_method: paymentMethod, fk_client_id: fkClientId, fk_nfe_id: nfeData.id
         }),
       });
 
@@ -130,126 +145,132 @@ export default function NewSale() {
     <div className="flex flex-col p-4 w-full h-full items-center bg-candy-purple max-h-40">
       <FormLabel labelType="createSales" />
       <div className="w-full h-full flex flex-col items-center justify-center align-center bg-white m-6 p-4 rounded-lg shadow-md mb-10">
-        <form onSubmit={handleSubmit} className=' w-full grid grid-cols-2 gap-4  align-center justify-center max-h-[70vh] overflow-auto mb-4'>
-          <div>
-            <label htmlFor="date">Data:</label>
-            <input
-              id="date"
-              value={date}
-              type="date"
-              onChange={(e) => setDate(e.target.value)}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
+        <form onSubmit={handleSubmit} className="w-full">
+          <div className='w-full grid grid-cols-2 gap-4  align-center justify-center max-h-[70vh] overflow-auto mb-4'>
+
+            <div>
+              <label htmlFor="order_type">Tipo de Venda:</label>
+              <select
+                id="order_type"
+                value={orderType}
+                onChange={(e) => setOrderType(e.target.value)}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="" disabled>ESCOLHA O TIPO</option>
+                <option value="BALCONY">Balcao</option>
+                <option value="DELIVERY">Entrega</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="fk_client_id">Cliente:</label>
+              <select
+                id="fk_client_id"
+                value={fkClientId}
+                onChange={(e) => setFkClientId(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                {clients.map((client) => (
+                  <option key={client.id} value={client.id}>{client.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="payment_method">Método de Pagamento:</label>
+              <select
+                id="payment_method"
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="" disabled>ESCOLHA O MÉTODO</option>
+                <option value="CASH">Dinheiro</option>
+                <option value="CREDIT_CARD">Cartão de Crédito</option>
+                <option value="DEBIT_CARD">Cartão de Débito</option>
+                <option value="PIX">Pix</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label htmlFor="total_price">Valor Total:</label>
+          <div className="py-4">
+            <label htmlFor="">Produtos disponíveis em estoque</label>
+            <div className="grid grid-cols-2 gap-4">
+              {products.map((product) => (
+                <div key={product.id} className="flex gap-2 p-2 items-center border border-gray-300 rounded-md">
+                  <input
+                    type="checkbox"
+                    id={`product-${product.id}`}
+                    checked={selectedProducts.includes(product.id)}
+                    onChange={() =>
+                      setSelectedProducts(
+                        selectedProducts.includes(product.id)
+                          ? selectedProducts.filter((id) => id !== product.id)
+                          : [...selectedProducts, product.id]
+                      )
+                    }
+                    className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
+                  />
+                  <label htmlFor={`product-${product.id}`} className="flex-1">
+                    {product.name}
+                  </label>
+                  {selectedProducts.includes(product.id) && (
+                    <>
+                      <input
+                        type="number"
+                        min="0"
+                        value={productQuantities[product.id] || 0}
+                        onChange={(e) =>
+                          setProductQuantities({
+                            ...productQuantities,
+                            [product.id]: parseInt(e.target.value),
+                          })
+                        }
+                        className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <select
+                        value={selectedDetails[product.id] || ""}
+                        onChange={(e) =>
+                          setSelectedDetails({
+                            ...selectedDetails,
+                            [product.id]: parseInt(e.target.value),
+                          })
+                        }
+                        className="ml-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      >
+                        <option value="" disabled>
+                          ESCOLHA O DETALHE
+                        </option>
+                        {productDetails.map((detail) => (
+                          <option key={detail.id} value={detail.id}>
+                            {detail.description}
+                          </option>
+                        ))}
+                      </select>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="py-4">
+            <p className="text-center justify-center uppercase font-bold text-candy-purple" >Valor Total</p>
             <input
               id="total_price"
-              value={total_price}
-              onChange={(e) => setTotalPrice(e.target.value)}
+              type="number"
+              value={totalPrice}
+              onChange={(e) => setTotalPrice(parseFloat(e.target.value))}
               required
+              disabled
               placeholder='1000.00'
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
-            <label htmlFor="status">Status:</label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="" disabled>ESCOLHA O STATUS</option>
-              <option value="PENDING">Pendente</option>
-              <option value="COMPLETED">Finalizado</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="order_type">Tipo de Venda:</label>
-            <select
-              id="order_type"
-              value={order_type}
-              onChange={(e) => setOrderType(e.target.value)}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="" disabled>ESCOLHA O TIPO</option>
-              <option value="BALCONY">Balcao</option>
-              <option value="DELIVERY">Entrega</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="fk_client_id">Cliente:</label>
-            <select
-              id="fk_client_id"
-              value={fk_client_id}
-              onChange={(e) => setFkClientId(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              {clients.map((client) => (
-                <option key={client.id} value={client.id}>{client.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="payment_method">Método de Pagamento:</label>
-            <select
-              id="payment_method"
-              value={payment_method}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="" disabled>ESCOLHA O MÉTODO</option>
-              <option value="CASH">Dinheiro</option>
-              <option value="CREDIT_CARD">Cartão de Crédito</option>
-              <option value="DEBIT_CARD">Cartão de Débito</option>
-              <option value="PIX">Pix</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="">Produtos disponíveis em estoque</label>
-            {products.map(product => (
-              <div key={product.id} className="flex gap-2 p-2 items-center">
-                <input
-                  type="checkbox"
-                  id={`product-${product.id}`}
-                  checked={selectedProducts.includes(product.id)}
-                  onChange={() => setSelectedProducts(selectedProducts.includes(product.id) ? selectedProducts.filter(id => id !== product.id) : [...selectedProducts, product.id])}
-                  className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
-                />
-                <label htmlFor={`product-${product.id}`}>{product.name}</label>
-                {selectedProducts.includes(product.id) && (
-                  <>
-                    <input
-                      type="number"
-                      min="0"
-                      value={productQuantities[product.id] || 0}
-                      onChange={(e) => setProductQuantities({ ...productQuantities, [product.id]: parseInt(e.target.value) })}
-                      className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                    <select
-                      value={selectedDetails[product.id] || ""}
-                      onChange={(e) => setSelectedDetails({ ...selectedDetails, [product.id]: parseInt(e.target.value) })}
-                      className="ml-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      <option value="" disabled>ESCOLHA O DETALHE</option>
-                      {productDetails.map(detail => (
-                        <option key={detail.id} value={detail.id}>{detail.description}</option>
-                      ))}
-                    </select>
-                  </>
-                )}
-              </div>
-            ))}
+            <button type="submit" className="w-full justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Cadastrar
+            </button>
           </div>
         </form >
-        <button type="submit" className="w-full justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          Cadastrar
-        </button>
       </div >
     </div >
   );
