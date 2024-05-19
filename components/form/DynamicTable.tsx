@@ -6,23 +6,62 @@ import { formatValue } from '@/utils';
 import { fields } from '@/fields';
 import ActionColumn from './ActionColumn';
 
-
 const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, onDelete, showActions = true }) => {
     const [geral, setGeral] = useState<DataItem[]>(data);
+    const [filteredData, setFilteredData] = useState<DataItem[]>(data);
+    const [filters, setFilters] = useState<{ [key: string]: string }>({});
     const [expandedId, setExpandedId] = useState<number | null>(null);
     const [productionProducts, setProductionProducts] = useState<{ [key: number]: ProductionProduct[] }>({});
     const [name, setName] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [productDetails, setProductDetails] = useState<{ [key: number]: { name: string, quantity: number } | null }>({});
 
     useEffect(() => {
         setGeral(data);
+        setFilteredData(data);
     }, [data]);
+
+    useEffect(() => {
+        applyFilters();
+    }, [filters]);
+
+    const applyFilters = () => {
+        let filtered = geral;
+
+        Object.keys(filters).forEach(key => {
+            const value = filters[key];
+            if (value) {
+                filtered = filtered.filter(item =>
+                    item[key]?.toString().toLowerCase().includes(value.toLowerCase())
+                );
+            }
+        });
+
+        setFilteredData(filtered);
+    };
+
+    const handleFilterChange = (key: string, value: string) => {
+        setFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    const fetchProductDetails = async (fkProductId: number) => {
+        if (!productDetails[fkProductId]) {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${fkProductId}`);
+            const productData = await response.json();
+            setProductDetails(prev => ({ ...prev, [fkProductId]: { name: productData.name, quantity: productData.quantity } }));
+        }
+    };
 
     const handleRowClick = async (id: number) => {
         if (expandedId === id) {
             setExpandedId(null);
             return;
+        }
+
+        const item = geral.find(item => item.id === id);
+        if (item && item.fk_product_id) {
+            await fetchProductDetails(item.fk_product_id);
         }
 
         if (!productionProducts[id]) {
@@ -95,13 +134,20 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                     {columns.map((column) => (
                         <th key={column.key} className='font-bold p-2'>
                             {fields[column.key] || column.title}
+                            <input
+                                type="text"
+                                placeholder={`Filtrar ${fields[column.key] || column.title}`}
+                                value={filters[column.key] || ''}
+                                onChange={(e) => handleFilterChange(column.key, e.target.value)}
+                                className="mt-1 block w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
+                            />
                         </th>
                     ))}
                     {showActions && <th className='font-bold p-2'>Ações</th>}
                 </tr>
             </thead>
             <tbody>
-                {geral.map((item) => (
+                {filteredData.map((item) => (
                     <React.Fragment key={item.id}>
                         <tr className="border-b cursor-pointer hover:bg-[#e3e3e3]" onClick={() => handleRowClick(item.id)}>
                             {columns.map((column) => (
@@ -172,12 +218,21 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                             <div className='col-span-4'>
                                                 <h2 className='font-bold'>{fields['ingredients']}:</h2>
                                                 {item.ingredients.map((ingredient: Ingredient) => (
-                                                    <div key={ingredient.id} className='grid grid-cols-4 items-centershadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                    <div key={ingredient.id} className='grid grid-cols-4 items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
                                                         <p> <span className='font-bold text-sm'>{fields['name']}:</span> {ingredient.name}</p>
                                                         <p> <span className='font-bold text-sm'>{fields['quantity']}:</span> {ingredient.quantity}</p>
                                                         <p> <span className='font-bold text-sm'>{fields['measurementUnit']}:</span> {fields[ingredient.measurementUnit]}</p>
                                                     </div>
                                                 ))}
+                                            </div>
+                                        )}
+                                        {item.fk_product_id && basePath === "products" && (
+                                            <div className='col-span-4'>
+                                                <h2 className='font-bold'>{fields['product']}:</h2>
+                                                <div className='grid grid-cols-4 items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
+                                                    <p><span className='font-bold text-sm'>{fields['name']}:</span> {productDetails[item.fk_product_id]?.name || 'N/A'}</p>
+                                                    <p><span className='font-bold text-sm'>{fields['quantity']}:</span> {productDetails[item.fk_product_id]?.quantity || 'N/A'}</p>
+                                                </div>
                                             </div>
                                         )}
                                         {productionProducts[item.id] && basePath === 'production' && (
