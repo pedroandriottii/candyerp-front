@@ -48,3 +48,12 @@ export interface DynamicTableProps {
   onDelete?: (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
   showActions?: boolean;
 }
+
+export interface ProductDetail {
+  fkProductId: number;
+  fkDetailId: number;
+  fkSaleOrderId: number;
+  quantity: number;
+  productName: string;
+  productPrice: number;
+}

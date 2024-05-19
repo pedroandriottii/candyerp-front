@@ -2,8 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import InfoIcon from '@mui/icons-material/Info';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
@@ -21,6 +20,11 @@ interface ActionColumnProps {
 const ActionColumn: React.FC<ActionColumnProps> = ({ basePath, item, onDelete, expandedId, handleRowClick }) => {
   return (
     <td className='p-2 flex gap-3 items-center'>
+      <Link href={`/${basePath}/${item.id}`} passHref>
+        <span className='text-blue-500 hover:bg-[#bfd7ff] p-2 rounded-2xl'>
+          <InfoIcon />
+        </span>
+      </Link>
       <Link href={`/${basePath}/${item.id}/update`} passHref>
         <span className='text-blue-500 hover:bg-[#bfd7ff] p-2 rounded-2xl'>
           <EditIcon />
@@ -47,7 +51,6 @@ const ActionColumn: React.FC<ActionColumnProps> = ({ basePath, item, onDelete, e
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      {expandedId === item.id ? <ExpandLessIcon onClick={() => handleRowClick(item.id)} /> : <ExpandMoreIcon onClick={() => handleRowClick(item.id)} />}
     </td>
   );
 };

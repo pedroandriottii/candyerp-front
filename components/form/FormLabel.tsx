@@ -6,14 +6,17 @@ const labelMaps = {
   products: { title: 'Produtos', route: '/' },
   createProducts: { title: 'Cadastrar novo produto', route: '/product' },
   updateProducts: { title: 'Editar produto', route: '/product/' },
+  detailProducts: { title: 'Detalhes do produto', route: '/product/' },
 
   productions: { title: 'Produção', route: '/' },
   createProductions: { title: 'Cadastrar nova produção', route: '/production' },
   updateProductions: { title: 'Editar produção', route: '/production/' },
+  detailProductions: { title: 'Detalhes da produção', route: '/production/' },
 
   ingredients: { title: 'Ingredientes', route: '/' },
   createIngredients: { title: 'Cadastrar novo ingrediente', route: '/ingredient' },
   updateIngredients: { title: 'Editar ingrediente', route: '/ingredient/' },
+  detailIngredients: { title: 'Detalhes do ingrediente', route: '/ingredient/' },
 
   phones: { title: 'Telefones', route: '/' },
   createPhones: { title: 'Cadastrar novo telefone', route: '/client' },
@@ -22,14 +25,17 @@ const labelMaps = {
   clients: { title: 'Clientes', route: '/' },
   updateClients: { title: 'Editar cliente', route: '/client/' },
   createClients: { title: 'Cadastrar novo cliente', route: '/client' },
+  detailClients: { title: 'Detalhes do cliente', route: '/client/' },
 
   suppliers: { title: 'Fornecedores', route: '/' },
   createSuppliers: { title: 'Cadastrar novo fornecedor', route: '/supplier' },
   updateSuppliers: { title: 'Editar fornecedor', route: '/supplier/' },
+  detailSuppliers: { title: 'Detalhes do fornecedor', route: '/supplier/' },
 
   sales: { title: 'Vendas', route: '/' },
   createSales: { title: 'Cadastrar nova venda', route: '/sale' },
   updateSales: { title: 'Editar venda', route: '/sale/' },
+  detailSales: { title: 'Detalhes da venda', route: '/sale/' },
 };
 
 interface FormLabelProps {
