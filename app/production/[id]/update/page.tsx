@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import FormLabel from "@/components/form/FormLabel";
-import { ProductionProps, ProductProps } from "@/types";
+import { ProductProps } from "@/types";
 
 const UpdateProduction = ({ params }: { params: { id: string } }) => {
   const router = useRouter();

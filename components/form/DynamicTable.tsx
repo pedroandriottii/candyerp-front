@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FieldTranslations, Supplier, Ingredient, DataItem, ColumnDefinition, ProductionProduct, Product } from '@/interface';
-import { formatValue, formattedDate } from '@/utils';
+import { Supplier, Ingredient, DataItem, ColumnDefinition, ProductionProduct, Product } from '@/interface';
+import { formatValue } from '@/utils';
 import { fields } from '@/fields';
 import ActionColumn from './ActionColumn';
 
@@ -18,6 +18,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
     const [geral, setGeral] = useState<DataItem[]>(data);
     const [expandedId, setExpandedId] = useState<number | null>(null);
     const [productionProducts, setProductionProducts] = useState<{ [key: number]: ProductionProduct[] }>({});
+    const [name, setName] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
         setGeral(data);
@@ -51,6 +54,47 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
         }
     };
 
+    const fetchData = async () => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${expandedId}`);
+        const productionData = await response.json();
+        setName(productionData.name);
+        setStartDate(new Date(productionData.start_date).toISOString().split("T")[0]);
+        setEndDate(new Date(productionData.end_date).toISOString().split("T")[0]);
+    }
+
+    const handleCompleteProduction = async (id: number) => {
+        fetchData();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: name, start_date: startDate, end_date: endDate, status: "COMPLETED" })
+        });
+
+        if (response.ok) {
+            const updatedProducts = productionProducts[id];
+
+            await Promise.all(updatedProducts.map(async (prodProd) => {
+                const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${prodProd.fkProductId}`);
+                const productData = await productResponse.json();
+
+                const newQuantity = productData.quantity + prodProd.quantity;
+
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${prodProd.fkProductId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ...productData, quantity: newQuantity })
+                });
+            }));
+
+            toast('Produção completada com sucesso!', { type: 'success' });
+            setGeral(prevGeral => prevGeral.map(item => item.id === id ? { ...item, status: "COMPLETED" } : item));
+        } else {
+            toast('Erro ao completar produção.', { type: 'error' });
+        }
+    };
+
+
     return (
         <table className='w-full bg-white rounded-lg p-4 shadow-sm'>
             <ToastContainer />
@@ -81,6 +125,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                     expandedId={expandedId}
                                     handleRowClick={handleRowClick}
                                 />
+                            )}
+                            {basePath === 'production' && item.status === "IN_PROGRESS" && (
+                                <td>
+                                    <button
+                                        className="text-white bg-green-500 hover:bg-green-700 font-bold py-2 px-4 rounded"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleCompleteProduction(item.id);
+                                        }}
+                                    >
+                                        Finalizar
+                                    </button>
+                                </td>
                             )}
                         </tr>
                         {expandedId === item.id && (
