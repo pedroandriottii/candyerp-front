@@ -25,4 +25,12 @@ export const fields: FieldTranslations = {
   LITER: 'L',
   MILLILITER: 'mL',
   UNIT: 'Unidade',
+  BALCONY: 'Balcão',
+  DELIVERY: 'Entrega',
+  CREDIT_CARD: 'Cartão de Crédito',
+  DEBIT_CARD: 'Cartão de Débito',
+  CASH: 'Dinheiro',
+  PENDING: 'Pedente',
+  COMPLETED: 'Completo',
+  IN_PROGRESS: 'Em Progresso',
 };

@@ -16,7 +16,7 @@ const labelMaps = {
   updateIngredients: { title: 'Editar ingrediente', route: '/ingredient/' },
 
   phones: { title: 'Telefones', route: '/' },
-  createPhones: { title: 'Cadastrar novo telefone', route: '/phone' },
+  createPhones: { title: 'Cadastrar novo telefone', route: '/client' },
   updatePhones: { title: 'Editar telefone', route: '/phone/' },
 
   clients: { title: 'Clientes', route: '/' },

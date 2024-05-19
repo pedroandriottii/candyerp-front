@@ -40,3 +40,11 @@ export interface ColumnDefinition {
   key: string;
   title: string;
 }
+
+export interface DynamicTableProps {
+  data: DataItem[];
+  columns: ColumnDefinition[];
+  basePath: string;
+  onDelete?: (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
+  showActions?: boolean;
+}

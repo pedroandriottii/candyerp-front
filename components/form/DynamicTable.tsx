@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Supplier, Ingredient, DataItem, ColumnDefinition, ProductionProduct, Product } from '@/interface';
+import { Supplier, Ingredient, DataItem, DynamicTableProps, ProductionProduct } from '@/interface';
 import { formatValue } from '@/utils';
 import { fields } from '@/fields';
 import ActionColumn from './ActionColumn';
 
-interface DynamicTableProps {
-    data: DataItem[];
-    columns: ColumnDefinition[];
-    basePath: string;
-    onDelete?: (event: React.MouseEvent<HTMLButtonElement>, id: number) => void;
-    showActions?: boolean;
-}
 
 const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, onDelete, showActions = true }) => {
     const [geral, setGeral] = useState<DataItem[]>(data);
@@ -94,7 +87,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
         }
     };
 
-
     return (
         <table className='w-full bg-white rounded-lg p-4 shadow-sm'>
             <ToastContainer />
@@ -102,7 +94,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                 <tr className='text-left'>
                     {columns.map((column) => (
                         <th key={column.key} className='font-bold p-2'>
-                            {column.title}
+                            {fields[column.key] || column.title}
                         </th>
                     ))}
                     {showActions && <th className='font-bold p-2'>Ações</th>}
@@ -167,34 +159,34 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                         ))}
                                         {item.suppliers && (
                                             <div className='col-span-4'>
-                                                <h2 className='font-bold'>Fornecedores:</h2>
+                                                <h2 className='font-bold'>{fields['suppliers']}:</h2>
                                                 {item.suppliers.map((supplier: Supplier) => (
                                                     <div key={supplier.id} className='grid grid-cols-4 items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
-                                                        <p><span className='font-bold text-sm'>Nome:</span> {supplier.name}</p>
-                                                        <p><span className='font-bold text-sm'>CNPJ:</span> {supplier.cnpj}</p>
+                                                        <p><span className='font-bold text-sm'>{fields['name']}:</span> {supplier.name}</p>
+                                                        <p><span className='font-bold text-sm'>{fields['cnpj']}:</span> {supplier.cnpj}</p>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
                                         {item.ingredients && (
                                             <div className='col-span-4'>
-                                                <h2 className='font-bold'>Ingredientes:</h2>
+                                                <h2 className='font-bold'>{fields['ingredients']}:</h2>
                                                 {item.ingredients.map((ingredient: Ingredient) => (
                                                     <div key={ingredient.id} className='grid grid-cols-4 items-centershadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
-                                                        <p> <span className='font-bold text-sm'>Nome:</span> {ingredient.name}</p>
-                                                        <p> <span className='font-bold text-sm'>Quantidade:</span> {ingredient.quantity}</p>
-                                                        <p> <span className='font-bold text-sm'>Unidade de Medida:</span> {fields[ingredient.measurementUnit]}</p>
+                                                        <p> <span className='font-bold text-sm'>{fields['name']}:</span> {ingredient.name}</p>
+                                                        <p> <span className='font-bold text-sm'>{fields['quantity']}:</span> {ingredient.quantity}</p>
+                                                        <p> <span className='font-bold text-sm'>{fields['measurementUnit']}:</span> {fields[ingredient.measurementUnit]}</p>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
                                         {productionProducts[item.id] && basePath === 'production' && (
                                             <div className='col-span-4'>
-                                                <h2 className='font-bold'>Produtos da Produção:</h2>
+                                                <h2 className='font-bold'>{fields['products']}:</h2>
                                                 {productionProducts[item.id].filter(prodProd => prodProd.fkProductionId === item.id).map((prodProd: ProductionProduct) => (
                                                     <div key={prodProd.fkProductId} className='grid grid-cols-4 items-center shadow-sm rounded-2xl bg-candy-soft p-2 m-2'>
-                                                        <p><span className='font-bold text-sm'>Nome:</span> {prodProd.product?.name || 'N/A'}</p>
-                                                        <p><span className='font-bold text-sm'>Quantidade:</span> {prodProd.quantity}</p>
+                                                        <p><span className='font-bold text-sm'>{fields['name']}:</span> {prodProd.product?.name || 'N/A'}</p>
+                                                        <p><span className='font-bold text-sm'>{fields['quantity']}:</span> {prodProd.quantity}</p>
                                                     </div>
                                                 ))}
                                             </div>
