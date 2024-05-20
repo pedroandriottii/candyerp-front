@@ -21,10 +21,17 @@ interface Production {
   products: Product[];
 }
 
+interface ProductionProduct {
+  fk_Product_id: number;
+  fk_Production_id: number;
+  quantity: number;
+}
+
 const Page: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [production, setProduction] = useState<Production | null>(null);
+  const [productionProducts, setProductionProducts] = useState<ProductionProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +43,11 @@ const Page: React.FC = () => {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${id}`);
           const data: Production = await response.json();
           setProduction(data);
+
+          const productionProductsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products`);
+          const productionProductsData: ProductionProduct[] = await productionProductsResponse.json();
+          const filteredProductionProducts = productionProductsData.filter(pp => pp.fk_Production_id === parseInt(id));
+          setProductionProducts(filteredProductionProducts);
         } catch (error) {
           console.error('Error fetching production data:', error);
         } finally {
@@ -59,12 +71,12 @@ const Page: React.FC = () => {
           <p className='text-center text-lg'>Carregando...</p>
         ) : production ? (
           <div>
-            <p className='flex justify-between'>
+            <div className='flex justify-between'>
               <h2 className='text-xl font-bold text-candy-purple mb-4'>Detalhes da Produção</h2>
               <Link href={`/production/${production.id}/update`}>
                 <span className='text-slate-400'><EditIcon /></span>
               </Link>
-            </p>
+            </div>
             <p className='text-lg'>
               <span className='font-semibold'>ID: </span>{production.id}
             </p>
@@ -82,11 +94,14 @@ const Page: React.FC = () => {
             </p>
             <h3 className='text-lg font-semibold text-candy-purple mt-4'>Produtos:</h3>
             <ul className='list-disc list-inside mt-2'>
-              {production.products.map((product) => (
-                <li key={product.id}>
-                  {product.name} - Preço: ${product.price} - Quantidade: {product.quantity}
-                </li>
-              ))}
+              {production.products.map((product) => {
+                const productionProduct = productionProducts.find(pp => pp.fk_Product_id === product.id);
+                return (
+                  <li key={product.id}>
+                    {product.name} - Quantidade: {productionProduct ? productionProduct.quantity : 0}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ) : (

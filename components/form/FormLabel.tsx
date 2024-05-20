@@ -45,7 +45,7 @@ interface FormLabelProps {
 const FormLabel: React.FC<FormLabelProps> = ({ labelType }) => {
   const { title, route } = labelMaps[labelType];
   return (
-    <div className='flex items-center w-full h-full m-2 bg-white rounded-md p-4 shadow-sm'>
+    <div className='flex items-center w-full h-full bg-white rounded-md p-4 shadow-sm'>
       <Link href={route} className='flex items-center'>
         <button className="text-candy-purple">
           <ArrowBackIcon fontSize='medium' />

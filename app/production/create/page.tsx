@@ -96,13 +96,14 @@ const NewProduction = () => {
   return (
     <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
       <FormLabel labelType="createProductions" />
-      <form onSubmit={handleSubmit} className="">
-        <div className="flex flex-col max-w-lg gap-4 bg-white rounded-lg shadow-md p-4 m-6">
+      <form onSubmit={handleSubmit} className="w-full flex-col bg-white rounded-lg shadow-md p-4 m-6">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="name">Nome</label>
             <input
               value={name}
-              onChange={(e) => setName(e.target.value)} type="text" name="name" id="name"
+              onChange={(e) => setName(e.target.value)}
+              type="text" name="name" id="name"
               required
               placeholder="Fornada de Cookies"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
@@ -126,10 +127,13 @@ const NewProduction = () => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-          <div>
-            <label>Produtos</label>
+
+        </div>
+        <div className="pt-4">
+          <label >Produtos</label>
+          <div className="grid grid-cols-2 gap-4 pb-4">
             {products.map(product => (
-              <div key={product.id} className="flex gap-2 p-2 items-center">
+              <div key={product.id} className="flex gap-2 p-2 items-center border border-gray-300 rounded-md">
                 <input
                   type="checkbox"
                   id={`product-${product.id}`}
@@ -137,25 +141,36 @@ const NewProduction = () => {
                   onChange={() => handleProductChange(product.id)}
                   className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
                 />
-                <label htmlFor={`product-${product.id}`}>{product.name}</label>
+                <label htmlFor={`product-${product.id}`} className="flex-1">
+                  <div className="flex justify-between">
+                    <p>
+                      {product.name}
+                    </p>
+                    <p className="text-slate-400">
+                      Estoque: {product.quantity}
+                    </p>
+                  </div>
+
+                </label>
                 {selectedProducts.includes(product.id) && (
                   <input
                     type="number"
                     min="0"
                     value={productQuantities[product.id] || 0}
                     onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
-                    className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    className="py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 )}
               </div>
             ))}
           </div>
-          <button type="submit" className="flex justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+
+          <button type="submit" className="w-full justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Cadastrar
           </button>
         </div>
-      </form >
-    </div >
+      </form>
+    </div>
   );
 };
 

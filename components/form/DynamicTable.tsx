@@ -53,15 +53,36 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
     };
 
     const handleCompleteProduction = async (id: number) => {
+        const production = geral.find(item => item.id === id);
+        if (!production) return;
+
+        const { name, start_date, end_date } = production;
+
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status: "COMPLETED" })
+            body: JSON.stringify({ name, start_date, end_date, status: "COMPLETED" })
         });
 
         if (response.ok) {
             toast('Produção completada com sucesso!', { type: 'success' });
             setGeral(prevGeral => prevGeral.map(item => item.id === id ? { ...item, status: "COMPLETED" } : item));
+
+            const productionProductsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products?fkProductionId=${id}`);
+            const productionProducts = await productionProductsResponse.json();
+
+            await Promise.all(productionProducts.map(async (prodProd: { fkProductId: number, quantity: number }) => {
+                const productResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${prodProd.fkProductId}`);
+                const productData = await productResponse.json();
+
+                const updatedQuantity = productData.quantity + prodProd.quantity;
+
+                const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${prodProd.fkProductId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ...productData, quantity: updatedQuantity })
+                });
+            }));
         } else {
             toast('Erro ao completar produção.', { type: 'error' });
         }

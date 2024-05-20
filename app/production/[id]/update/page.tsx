@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -78,7 +78,7 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
       const productionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${params.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, start_date: startDate, end_date: endDate })
+        body: JSON.stringify({ name, start_date: startDate, end_date: endDate, status: "IN_PROGRESS" })
       });
 
       if (!productionResponse.ok) {
@@ -129,10 +129,10 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
   return (
     <div className="flex flex-col bg-candy-purple max-h-40 items-center p-4 w-full h-full">
       <FormLabel labelType="updateProductions" />
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="w-full flex-col bg-white rounded-lg shadow-md p-4 m-6">
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome</label>
+            <label htmlFor="name">Nome</label>
             <input
               id="name"
               value={name}
@@ -143,7 +143,7 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
             />
           </div>
           <div>
-            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Data de Início</label>
+            <label htmlFor="startDate">Data de Início</label>
             <input
               id="startDate"
               type="date"
@@ -154,7 +154,7 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
             />
           </div>
           <div>
-            <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">Data de Término</label>
+            <label htmlFor="endDate">Data de Término</label>
             <input
               id="endDate"
               type="date"
@@ -164,34 +164,42 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Produtos</label>
+        </div>
+        <div className="pt-4">
+          <label>Produtos</label>
+          <div className="grid grid-cols-2 gap-4 pb-4">
             {products.map(product => (
-              <div key={product.id} className="flex gap-2 p-2 items-center">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
-                    checked={selectedProducts.includes(product.id)}
-                    onChange={() => handleProductChange(product.id)}
-                  />
-                  {product.name}
+              <div key={product.id} className="flex gap-2 p-2 items-center border border-gray-300 rounded-md">
+                <input
+                  type="checkbox"
+                  id={`product-${product.id}`}
+                  checked={selectedProducts.includes(product.id)}
+                  onChange={() => handleProductChange(product.id)}
+                  className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
+                />
+                <label htmlFor={`product-${product.id}`} className="flex-1">
+                  <div className="flex justify-between">
+                    <p>
+                      {product.name}
+                    </p>
+                    <p className="text-slate-400">
+                      Estoque: {product.quantity}
+                    </p>
+                  </div>
                 </label>
                 {selectedProducts.includes(product.id) && (
                   <input
                     type="number"
-                    className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    value={productQuantity[product.id] || ''}
-                    onChange={e => handleProductQuantityChange(product.id, parseFloat(e.target.value))}
                     min="0"
-                    step="0.1"
+                    value={productQuantity[product.id] || 0}
+                    onChange={(e) => handleProductQuantityChange(product.id, parseInt(e.target.value))}
+                    className="py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 )}
               </div>
             ))}
           </div>
-          <button disabled={isLoading} type="submit" className="flex justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <button disabled={isLoading} type="submit" className="w-full justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Editar
           </button>
         </div>
