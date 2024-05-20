@@ -11,34 +11,69 @@ const UpdateClient = ({ params }: { params: { id: string } }) => {
   const [number, setNumber] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [complement, setComplement] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phoneId, setPhoneId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${params.id}`)
-      .then(response => response.json())
-      .then(data => {
-        setName(data.name);
-        setStreet(data.street);
-        setNumber(data.number);
-        setNeighborhood(data.neighborhood);
-        setComplement(data.complement);
+    const fetchClientAndPhone = async () => {
+      try {
+        const clientResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${params.id}`);
+        const clientData = await clientResponse.json();
+        setName(clientData.name);
+        setStreet(clientData.street);
+        setNumber(clientData.number);
+        setNeighborhood(clientData.neighborhood);
+        setComplement(clientData.complement);
+
+        const phonesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/phones`);
+        const phonesData = await phonesResponse.json();
+        const clientPhones = phonesData.filter((phone: any) => phone.fkClientId === parseInt(params.id));
+        if (clientPhones.length > 0) {
+          setPhone(clientPhones[0].phone);
+          setPhoneId(clientPhones[0].id);
+        }
+
         setIsLoading(false);
-      });
+      } catch (error) {
+        console.error('Error fetching client or phone data:', error);
+      }
+    };
+
+    fetchClientAndPhone();
   }, [params.id]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${params.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, street, number, neighborhood, complement }),
-    });
+    try {
+      const clientResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${params.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, street, number, neighborhood, complement }),
+      });
 
-    if (response.ok) {
-      router.push('/client');
+      if (clientResponse.ok && phoneId) {
+        const phoneResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/phones/${phoneId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ phone, fkClientId: params.id }),
+        });
+
+        if (phoneResponse.ok) {
+          router.push('/client');
+        } else {
+          console.error("Failed to update phone", await phoneResponse.text());
+        }
+      } else {
+        console.error("Failed to update client", await clientResponse.text());
+      }
+    } catch (error) {
+      console.error('Error updating client or phone:', error);
     }
   };
 
@@ -102,6 +137,17 @@ const UpdateClient = ({ params }: { params: { id: string } }) => {
               value={complement}
               onChange={(e) => setComplement(e.target.value)}
               placeholder='Clube'
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="phone">Telefone:</label>
+            <input
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              placeholder='11999990000'
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>

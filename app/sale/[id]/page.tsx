@@ -98,7 +98,7 @@ const Page: React.FC = () => {
             <p className='text-lg mt-2'>
               <span className='font-semibold'>Método de Pagamento: </span>{saleOrder.payment_method}
             </p>
-            <h3 className='text-lg font-semibold text-candy-purple mt-4'>Detalhes dos Produtos:</h3>
+            <h3 className='text-lg font-semibold text-candy-purple mt-4'>Produtos Vendidos:</h3>
             <ul className='list-disc list-inside mt-2'>
               {saleOrder.productDetails.map((detail) => (
                 <li key={detail.fkDetailId}>

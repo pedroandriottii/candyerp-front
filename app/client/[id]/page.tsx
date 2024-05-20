@@ -14,28 +14,40 @@ interface Client {
   complement: string;
 }
 
+interface Phone {
+  id: number;
+  phone: string;
+  fkClientId: number;
+}
+
 const Page: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [client, setClient] = useState<Client | null>(null);
+  const [phones, setPhones] = useState<Phone[]>([]);
 
   useEffect(() => {
-    const fetchClient = async () => {
+    const fetchClientAndPhones = async () => {
       const id = pathname.split('/').pop();
 
       if (id) {
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`);
-          const data = await response.json();
-          setClient(data);
+          const clientResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`);
+          const clientData = await clientResponse.json();
+          setClient(clientData);
+
+          const phonesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/phones`);
+          const phonesData = await phonesResponse.json();
+          const clientPhones = phonesData.filter((phone: Phone) => phone.fkClientId === parseInt(id));
+          setPhones(clientPhones);
         } catch (error) {
-          console.error('Error fetching client data:', error);
+          console.error('Error fetching client or phone data:', error);
         }
       }
     };
 
     if (pathname) {
-      fetchClient();
+      fetchClientAndPhones();
     }
   }, [pathname]);
 
@@ -68,6 +80,15 @@ const Page: React.FC = () => {
             <p className='text-lg mt-2'>
               <span className='font-semibold'>Complemento: </span>{client.complement}
             </p>
+            {phones.length > 0 ? (
+              phones.map(phone => (
+                <p key={phone.id} className='text-lg mt-2'>
+                  <span className='font-semibold'>Telefone: </span>{phone.phone}
+                </p>
+              ))
+            ) : (
+              <p className='text-lg mt-2'>Nenhum telefone encontrado</p>
+            )}
           </div>
         ) : (
           <p className='text-center text-lg'>Carregando...</p>

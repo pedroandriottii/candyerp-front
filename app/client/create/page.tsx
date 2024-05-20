@@ -11,6 +11,7 @@ export default function NewClient() {
   const [number, setNumber] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [complement, setComplement] = useState("");
+  const [phone, setPhone] = useState("");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -29,7 +30,20 @@ export default function NewClient() {
         const clientId = clientData.id;
         console.log("Client created with ID:", clientId);
 
-        router.push(`/add-phone?clientId=${clientId}`);
+        const phoneResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/phones`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ phone, fkClientId: clientId }),
+        });
+
+        if (phoneResponse.ok) {
+          console.log("Phone created successfully", clientId, phone);
+          router.push(`/client`);
+        } else {
+          console.error("Failed to create phone", await phoneResponse.text());
+        }
       } else {
         console.error("Failed to create client", await clientResponse.text());
       }
@@ -94,6 +108,17 @@ export default function NewClient() {
               value={complement}
               onChange={(e) => setComplement(e.target.value)}
               placeholder="Apto 101"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="phone">Telefone:</label>
+            <input
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              placeholder="11999990000"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
