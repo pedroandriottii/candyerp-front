@@ -156,9 +156,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                     </td>
                                 )}
                                 {
-                                    basePath === 'product' && (
+                                    basePath === 'product' && item.fk_product_id == null && (
                                         <td>
-                                            <button 
+                                            <button
                                                 className='text-white bg-green-500 hover:bg-green-700 w-full max-w-[120px] font-bold py-2 px-4 rounded'
                                                 onClick={() => handleFatiarProduto(item.id)}
                                             >
