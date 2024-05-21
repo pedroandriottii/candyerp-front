@@ -19,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn("fixed inset-0 overflow-hidden bg-candy-background", inter.className)}>
-        {/* <Navbar /> */}
         <div className="flex">
           <Sidebar />
           {children}
