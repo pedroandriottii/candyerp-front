@@ -5,13 +5,14 @@ import { DataItem, DynamicTableProps } from '@/interface';
 import { formatValue } from '@/utils';
 import { fields } from '@/fields';
 import ActionColumn from './ActionColumn';
+import { useRouter } from 'next/navigation';
 
 const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, onDelete, showActions = true }) => {
     const [geral, setGeral] = useState<DataItem[]>(data);
     const [filteredData, setFilteredData] = useState<DataItem[]>(data);
     const [filters, setFilters] = useState<{ [key: string]: string }>({});
     const [expandedId, setExpandedId] = useState<number | null>(null);
-
+    const router = useRouter();
     useEffect(() => {
         setGeral(data);
         setFilteredData(data);
@@ -38,6 +39,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
     const handleFilterChange = (key: string, value: string) => {
         setFilters(prev => ({ ...prev, [key]: value }));
     };
+
+    const handleFatiarProduto = (id: number) => {
+        router.push(`/product/${id}/fatiar`);
+    };
+
 
     const handleRowClick = (id: number) => {
         setExpandedId(expandedId === id ? null : id);
@@ -149,6 +155,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data, columns, basePath, on
                                         )}
                                     </td>
                                 )}
+                                {
+                                    basePath === 'product' && (
+                                        <td>
+                                            <button 
+                                                className='text-white bg-green-500 hover:bg-green-700 w-full max-w-[120px] font-bold py-2 px-4 rounded'
+                                                onClick={() => handleFatiarProduto(item.id)}
+                                            >
+                                                Fatiar
+                                            </button>
+                                        </td>
+                                    )
+                                }
                             </tr>
                         </React.Fragment>
                     ))}

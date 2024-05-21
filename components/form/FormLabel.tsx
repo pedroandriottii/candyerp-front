@@ -7,6 +7,8 @@ const labelMaps = {
   createProducts: { title: 'Cadastrar novo produto', route: '/product' },
   updateProducts: { title: 'Editar produto', route: '/product/' },
   detailProducts: { title: 'Detalhes do produto', route: '/product/' },
+  sliceProducts: { title: 'Fatiar produto', route: '/product/' },
+
 
   productions: { title: 'Produção', route: '/' },
   createProductions: { title: 'Cadastrar nova produção', route: '/production' },
