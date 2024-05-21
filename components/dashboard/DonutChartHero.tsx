@@ -40,7 +40,7 @@ export const DonutChartHero = () => (
         <div className="flex justify-center">
           <DonutChart
             data={datahero}
-            variant="pie"
+            variant="donut"
             valueFormatter={dataFormatter}
             onValueChange={(v) => console.log(v)}
           />
