@@ -8,6 +8,7 @@ const config: Config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
   ],
   prefix: "",
   theme: {
@@ -186,6 +187,6 @@ const config: Config = {
     require('@headlessui/tailwindcss'),
     require('@tailwindcss/forms'),
   ],
-} satisfies Config;
+};
 
 export default config;

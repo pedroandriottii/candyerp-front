@@ -20,7 +20,6 @@ export default function Home() {
             <DonutChartHero />
           </div>
         </div>
-
       </div>
     </div >
   );
