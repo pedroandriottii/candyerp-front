@@ -30,6 +30,7 @@ export interface ProductProps {
   name: string;
   price: number;
   quantity: number;
+  fk_product_id: number;
 }
 
 export interface ClientProps {
