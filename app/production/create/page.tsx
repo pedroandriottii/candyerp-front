@@ -17,7 +17,10 @@ const NewProduction = () => {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
       .then((response) => response.json())
-      .then(setProducts);
+      .then(data => {
+        const filteredProducts = data.filter((prod: ProductProps) => prod.fk_product_id === null);
+        setProducts(filteredProducts);
+      });
   }, []);
 
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +79,6 @@ const NewProduction = () => {
 
       const production = await productionResponse.json();
       const productionId = production.id;
-      console.log(productionId)
       await Promise.all(selectedProducts.map(productId => {
         const quantity = productQuantities[productId];
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products`, {
