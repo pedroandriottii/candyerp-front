@@ -98,7 +98,7 @@ const NewProduction = () => {
   return (
     <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
       <FormLabel labelType="createProductions" />
-      <form onSubmit={handleSubmit} className="w-full flex-col bg-white rounded-lg shadow-md p-4 m-6">
+      <form onSubmit={handleSubmit} className="w-full flex-col bg-white rounded-lg shadow-md p-4 m-6 overflow-y-auto min-h-[85vh]">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="name">Nome</label>

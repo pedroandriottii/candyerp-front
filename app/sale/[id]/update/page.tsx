@@ -163,8 +163,7 @@ export default function EditSale({ params }: { params: { id: string } }) {
   return (
     <div className="flex flex-col p-4 w-full h-full bg-candy-purple max-h-40">
       <FormLabel labelType="updateSales" />
-      <div className="flex items-center justify-center align-center w-full bg-white p-4 m-6   rounded-lg shadow-md align-center justify-center ">
-        <form onSubmit={handleSubmit} className="w-full">
+        <form onSubmit={handleSubmit} className="w-full flex-col bg-white rounded-lg shadow-md p-4 m-6 overflow-y-auto min-h-[85vh]">
           <div className='grid grid-cols-2 gap-4'>
             <div>
               <label htmlFor="date">Data:</label>
@@ -298,7 +297,6 @@ export default function EditSale({ params }: { params: { id: string } }) {
             Atualizar
           </button>
         </form>
-      </div>
     </div>
   );
 }
