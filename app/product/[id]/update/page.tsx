@@ -106,8 +106,17 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
         })
       );
 
-      const relationResponses = await Promise.all([...addPromises, ...deletePromises]);
-      const allOk = relationResponses.every(response => response && response.ok);
+      const updatePromises = selectedIngredients.map(ingredientId => {
+        const quantityForThisIngredient = ingredientQuantity[ingredientId];
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredient-products/${productId}/${ingredientId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ quantity: quantityForThisIngredient })
+        });
+      });
+
+      const relationResponses = await Promise.all([...addPromises, ...deletePromises, ...updatePromises]);
+      const allOk = relationResponses.every(response => response.ok);
 
       if (allOk) {
         router.push("/product");
@@ -181,7 +190,7 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
                     type="number"
                     className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     value={ingredientQuantity[ingredient.id] || ''}
-                    onChange={e => handleIngredientQuantityChange(ingredient.id, parseFloat(e.target.value))}
+                    onChange={e => handleIngredientQuantityChange(ingredient.id, Number(e.target.value))}
                     min="0"
                     step="0.1"
                   />
