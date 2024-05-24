@@ -14,6 +14,8 @@ import { TableProductsOutOfStock } from '@/components/dashboard/products/TablePr
 import { BarChartLoyalCustomers } from '@/components/dashboard/clients/BarChartLoyalCustomers';
 import { DonutProductsByNeighborhood } from '@/components/dashboard/sales/DonutProductsByNeighborhood';
 import { DonutSellByPaymentMethod } from '@/components/dashboard/sales/DonutSellByPaymentMethod';
+import { BarChartIngredientsByStock } from '@/components/dashboard/ingredients/BarChartIngredientsByStock';
+import { BarChartMostUsedIngredients } from '@/components/dashboard/ingredients/BarChartMostUsedIngredients';
 
 export default function Reports() {
   const [showSales, setShowSales] = useState(false);
@@ -146,11 +148,14 @@ export default function Reports() {
           {showIngredients && (
             <div className='flex flex-col gap-4 m-2'>
               <div className='bg-white p-4 rounded-2xl'>
+                <BarChartIngredientsByStock />
+              </div>
+              <div className='bg-white p-4 rounded-2xl'>
+                <BarChartMostUsedIngredients />
               </div>
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
