@@ -38,7 +38,7 @@ export function BarChartProductsSeller() {
         data={chartdata}
         index="name"
         categories={['Quantidade Vendida']}
-        colors={['blue']}
+        colors={['purple']}
         valueFormatter={dataFormatter}
         yAxisWidth={48}
       />
