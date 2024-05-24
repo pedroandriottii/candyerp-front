@@ -18,6 +18,7 @@ export default function Reports() {
   const [showProducts, setShowProducts] = useState(false);
   const [showProduction, setShowProduction] = useState(false);
   const [showClients, setShowClients] = useState(false);
+  const [showIngredients, setShowIngredients] = useState(false);
 
   const toggleSection = (section: string) => {
     switch (section) {
@@ -32,6 +33,9 @@ export default function Reports() {
         break;
       case 'clients':
         setShowClients(!showClients);
+        break;
+      case 'ingredients':
+        setShowIngredients(!showIngredients);
         break;
       default:
         break;
@@ -131,6 +135,22 @@ export default function Reports() {
             </div>
           )}
         </div>
+        <div className="bg-candy-purple text-white p-4 rounded-xl">
+          <div onClick={() => toggleSection('ingredients')} className="flex justify-between items-center cursor-pointer">
+            <h1 className="uppercase font-bold text-center pb-3">Ingredientes</h1>
+            <button onClick={() => toggleSection('ingredients')} className="text-white">
+              {showIngredients ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </button>
+          </div>
+          <hr className="border-t border-white opacity-50" />
+          {showIngredients && (
+            <div className='flex flex-col gap-4 m-2'>
+              <div className='bg-white p-4 rounded-2xl'>
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );
