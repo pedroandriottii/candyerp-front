@@ -198,6 +198,11 @@ export default function NewSale() {
                 <option value="PIX">Pix</option>
               </select>
             </div>
+            <div>
+              <Link href='/detail/create' className="h-full mt-5 block w-full px-3 max-h-12 rounded-md border bg-candy-purple focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <button className="text-white mx-3 my-2">Criar detalhe personalizado</button>
+              </Link>
+            </div>
           </div>
           <div className="py-4">
             <label htmlFor="">Produtos disponíveis em estoque</label>
