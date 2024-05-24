@@ -42,6 +42,7 @@ const labelMaps = {
   salesMonth: { title: 'Vendas do mês', route: '/reports' },
 
   createDetails: { title: 'Cadastrar novo detalhe', route: '/sale' },
+  reports: { title: 'Relatórios', route: '/' },
 };
 
 interface FormLabelProps {

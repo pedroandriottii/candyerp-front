@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, BadgeDelta } from '@tremor/react';
+import { Card, ProgressBar } from '@tremor/react';
 import { useState, useEffect } from 'react';
 
 interface ApiResponse {
@@ -11,8 +11,11 @@ interface ApiResponse {
 
 export default function CardActuallySale() {
     const [currentMonthRevenue, setCurrentMonthRevenue] = useState<number>(0);
-    const [previousMonthRevenue, setPreviousMonthRevenue] = useState<number>(0);
+    const [totalRevenue, setTotalRevenue] = useState<number>(0);
     const [percentageChange, setPercentageChange] = useState<number>(0);
+    const annualTarget = 120000;
+
+    const percentageOfAnnualTarget = ((totalRevenue / annualTarget) * 100).toFixed(2);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,6 +38,9 @@ export default function CardActuallySale() {
             } else if (currentData && !previousData) {
                 setPercentageChange(100);
             }
+
+            const total = data.reduce((sum, item) => sum + item.totalRevenue, 0);
+            setTotalRevenue(total);
         };
 
         fetchData();
@@ -52,12 +58,17 @@ export default function CardActuallySale() {
         <Card className="mx-auto max-w-sm">
             <div className="flex items-center justify-between">
                 <h4 className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                    Vendas em {new Date().toLocaleString('default', { month: 'long' })} {new Date().getFullYear()}
+                    Vendas em {new Date().getFullYear()}
                 </h4>
             </div>
-            <p className="text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
-                {valueFormatter(currentMonthRevenue)}
+            <p className="text-tremor-metric text-candy-purple dark:text-dark-candy-purple font-semibold">
+                {valueFormatter(totalRevenue)}
             </p>
+            <p className="mt-4 flex items-center justify-between text-tremor-default text-tremor-content dark:text-dark-tremor-content">
+                <span>{percentageOfAnnualTarget}% da meta no ano</span>
+                <span>{valueFormatter(annualTarget)}</span>
+            </p>
+            <ProgressBar value={parseFloat(percentageOfAnnualTarget)} className="mt-2" />
         </Card>
     );
 }

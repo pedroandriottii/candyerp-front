@@ -3,7 +3,7 @@
 import { BadgeDelta, Card, ProgressBar } from '@tremor/react';
 import { useState, useEffect } from 'react';
 
-export default function Example() {
+export default function CardSales() {
     const [totalSales, setTotalSales] = useState<number>(0);
     const [monthlySales, setMonthlySales] = useState<number>(0);
     const [monthlySalesChange, setMonthlySalesChange] = useState<number>(0);
@@ -63,13 +63,11 @@ export default function Example() {
                     {monthlySalesChange >= 0 ? "+" : ""}{monthlySalesChange.toFixed(2)}%
                 </BadgeDelta>
             </div>
-
-
-            <p className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+            <p className="text-tremor-metric font-semibold text-candy-purple dark:text-dark-candy-purple">
                 {valueFormatter(monthlySales)}
             </p>
             <p className="mt-4 flex items-center justify-between text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                <span>{percentageOfAnnualTarget}% da meta no ano</span>
+                <span>{percentageOfAnnualTarget}% da meta no mês</span>
                 <span>{valueFormatter(annualTarget)}</span>
             </p>
             <ProgressBar value={parseFloat(percentageOfAnnualTarget)} className="mt-2" />

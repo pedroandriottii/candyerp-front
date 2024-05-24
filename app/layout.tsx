@@ -18,9 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("fixed inset-0 overflow-hidden bg-candy-background", inter.className)}>
+      <body className={cn("inset-0 bg-candy-background", inter.className)}>
         <div className="flex">
-          <Sidebar />
+          <div className="bg-[#1F1F23]">
+            <Sidebar />
+          </div>
           {children}
         </div>
       </body>
