@@ -16,38 +16,49 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [productQuantity, setProductQuantity] = useState<{ [key: number]: number }>({});
 
+  const fetchData = async () => {
+    try {
+      const productsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+      const productsData = await productsResponse.json();
+      setProducts(productsData);
+
+      const productionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${params.id}`);
+      const productionData = await productionResponse.json();
+      setName(productionData.name);
+      setStartDate(new Date(productionData.start_date).toISOString().split("T")[0]);
+      setEndDate(new Date(productionData.end_date).toISOString().split("T")[0]);
+
+      const productionProductsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products`);
+      const productionProductsData = await productionProductsResponse.json();
+
+      const productIds = productionProductsData
+        .filter((pp: { fkProductionId: any; }) => pp.fkProductionId === productionData.id)
+        .map((pp: { fkProductId: any; }) => pp.fkProductId);
+      setSelectedProducts(productIds);
+      setOriginalProductIds(productIds);
+      const quantities: { [key: number]: number } = {};
+      productionProductsData.forEach((pp: any) => {
+        if (pp.fkProductionId === productionData.id) {
+          quantities[pp.fkProductId] = pp.quantity;
+        }
+      });
+      setProductQuantity(quantities);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const productsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
-        const productsData = await productsResponse.json();
-        setProducts(productsData);
-
-        const productionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/productions/${params.id}`);
-        const productionData = await productionResponse.json();
-        setName(productionData.name);
-        setStartDate(new Date(productionData.start_date).toISOString().split("T")[0]);
-        setEndDate(new Date(productionData.end_date).toISOString().split("T")[0]);
-
-        const productIds = productionData.products.map((p: ProductProps) => p.id);
-        setSelectedProducts(productIds);
-        setOriginalProductIds(productIds);
-        const quantities: { [key: number]: number } = {};
-        productionData.products.forEach((p: any) => {
-          quantities[p.id] = p.quantity;
-        });
-        setProductQuantity(quantities);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch data", error);
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
   }, [params.id]);
 
   const handleProductQuantityChange = (productId: number, quantity: number) => {
+    if (quantity <= 0) {
+      alert("Quantity must be greater than zero");
+      return;
+    }
     setProductQuantity(prevQuantities => ({
       ...prevQuantities,
       [productId]: quantity
@@ -64,7 +75,7 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
       } else {
         setProductQuantity(prevQuantities => ({
           ...prevQuantities,
-          [productId]: 0
+          [productId]: 1
         }));
         return [...prev, productId];
       }
@@ -90,9 +101,15 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
 
       const productsToAdd = selectedProducts.filter(id => !originalProductIds.includes(id));
       const productsToRemove = originalProductIds.filter(id => !selectedProducts.includes(id));
+      const productsToUpdate = selectedProducts.filter(id => originalProductIds.includes(id));
+
+      console.log("Products to Add: ", productsToAdd);
+      console.log("Products to Remove: ", productsToRemove);
+      console.log("Products to Update: ", productsToUpdate);
 
       const addPromises = productsToAdd.map(productId => {
         const quantityForThisProduct = productQuantity[productId];
+        console.log("Adding Product - ID:", productId, "Quantity:", quantityForThisProduct);
         return fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -100,17 +117,29 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
         });
       });
 
-      const deletePromises = productsToRemove.map(productId =>
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products/${productId}/${productionId}`, {
+      const deletePromises = productsToRemove.map(productId => {
+        console.log("Deleting Product - ID:", productId);
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products/${productId}/${productionId}`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
-        })
-      );
+        });
+      });
 
-      const relationResponses = await Promise.all([...addPromises, ...deletePromises]);
+      const updatePromises = productsToUpdate.map(productId => {
+        const quantityForThisProduct = productQuantity[productId];
+        console.log("Updating Product - ID:", productId, "Quantity:", quantityForThisProduct);
+        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-products/${productId}/${productionId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ quantity: quantityForThisProduct })
+        });
+      });
+
+      const relationResponses = await Promise.all([...addPromises, ...deletePromises, ...updatePromises]);
       const allOk = relationResponses.every(response => response && response.ok);
 
       if (allOk) {
+        fetchData(); // Re-fetch data to update state
         router.push("/production");
       } else {
         throw new Error("Failed to update some production-product relationships");
@@ -190,8 +219,8 @@ const UpdateProduction = ({ params }: { params: { id: string } }) => {
                 {selectedProducts.includes(product.id) && (
                   <input
                     type="number"
-                    min="0"
-                    value={productQuantity[product.id] || 0}
+                    min="1"
+                    value={productQuantity[product.id] || 1}
                     onChange={(e) => handleProductQuantityChange(product.id, parseInt(e.target.value))}
                     className="py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
