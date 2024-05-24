@@ -4,6 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import FormLabel from '@/components/form/FormLabel';
 import Link from 'next/link';
 import EditIcon from '@mui/icons-material/Edit';
+import { formatValue } from '@/utils';
 
 interface Supplier {
   id: number;
@@ -67,18 +68,36 @@ const Page: React.FC = () => {
             <p className='text-lg'>
               <span className='font-semibold'>Nome: </span>{ingredient.name}
             </p>
-            <p className='text-lg mt-2'>
-              <span className='font-semibold'>Quantidade: </span>{ingredient.quantity} {ingredient.measurementUnit}
+            <p className='text-lg mt-2 flex justify-between'>
+              <div className='flex'>
+                <p className='font-semibold mr-2'>
+                  Quantidade:
+                </p>
+                <div className='flex justify-between'>
+                  <p>
+                    {ingredient.quantity}
+                  </p>
+                  <p>
+                    {formatValue('measurementUnit', ingredient.measurementUnit)}
+                  </p>
+                </div>
+              </div>
+
             </p>
             <p className='text-lg mt-2'>
-              <span className='font-semibold'>Custo: </span>R${ingredient.cost}
+              <span className='font-semibold'>Custo: </span>R$ {ingredient.cost}
             </p>
             <h3 className='text-lg font-semibold text-candy-purple mt-4'>Fornecedores:</h3>
             <ul className='list-disc list-inside mt-2'>
               {ingredient.suppliers.map((supplier) => (
-                <li key={supplier.id}>
-                  {supplier.name} - CNPJ: {supplier.cnpj}
-                </li>
+                <div key={supplier.id} className='flex justify-between border p-1 rounded-xl border-slate-500 my-2'>
+                  <p>
+                    {supplier.name}
+                  </p>
+                  <p className='text-slate-500'>
+                    CNPJ: {supplier.cnpj}
+                  </p>
+                </div>
               ))}
             </ul>
           </div>
@@ -86,7 +105,7 @@ const Page: React.FC = () => {
           <p className='text-center text-lg'>Nenhum dado encontrado</p>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

@@ -21,6 +21,10 @@ export const formatValue = (columnKey: string, value: any): string => {
   if (columnKey === 'order_type' || columnKey === 'payment_method') {
     return fields[value] || value;
   }
+  if (columnKey === 'status') {
+    return fields[value] || value;
+  }
+
   return value;
   return value.toString();
 };

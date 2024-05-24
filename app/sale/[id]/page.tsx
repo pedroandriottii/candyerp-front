@@ -4,6 +4,8 @@ import { useRouter, usePathname } from 'next/navigation';
 import FormLabel from '@/components/form/FormLabel';
 import Link from 'next/link';
 import EditIcon from '@mui/icons-material/Edit';
+import { formattedDate, formatValue } from '@/utils';
+import { FieldTranslations } from '@/interface';
 
 interface ProductDetail {
   fkProductId: number;
@@ -39,7 +41,6 @@ const Page: React.FC = () => {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders/${id}`);
           const data: SaleOrder = await response.json();
 
-          // Fetch product names for each product detail
           const productDetailsWithNames = await Promise.all(
             data.productDetails.map(async (detail) => {
               try {
@@ -83,27 +84,32 @@ const Page: React.FC = () => {
                 <span className='text-slate-400'><EditIcon /></span>
               </Link>
             </p>
-            <p className='text-lg'>
-              <span className='font-semibold'>ID: </span>{saleOrder.id}
+            <p className='text-lg mt-2'>
+              <span className='font-semibold'>Data: </span>{formattedDate(saleOrder.date)}
             </p>
             <p className='text-lg mt-2'>
-              <span className='font-semibold'>Data: </span>{saleOrder.date}
+              <span className='font-semibold'>Preço Total: </span>R$ {saleOrder.total_price}
             </p>
             <p className='text-lg mt-2'>
-              <span className='font-semibold'>Preço Total: </span>${saleOrder.total_price}
+              <span className='font-semibold'>Tipo de Pedido: </span>{formatValue('order_type', saleOrder.order_type)}
             </p>
             <p className='text-lg mt-2'>
-              <span className='font-semibold'>Tipo de Pedido: </span>{saleOrder.order_type}
-            </p>
-            <p className='text-lg mt-2'>
-              <span className='font-semibold'>Método de Pagamento: </span>{saleOrder.payment_method}
+              <span className='font-semibold'>Método de Pagamento: </span>{formatValue('payment_method', saleOrder.payment_method)}
             </p>
             <h3 className='text-lg font-semibold text-candy-purple mt-4'>Produtos Vendidos:</h3>
             <ul className='list-disc list-inside mt-2'>
               {saleOrder.productDetails.map((detail) => (
-                <li key={detail.fkDetailId}>
-                  {detail.productName ? detail.productName : 'Produto não encontrado'} - Quantidade: {detail.quantity}
-                </li>
+                <p key={detail.fkDetailId}>
+                  <div className='flex justify-between border p-1 rounded-xl border-slate-500 my-2'>
+                    <p>
+                      {detail.productName ? detail.productName : 'Produto não encontrado'}
+                    </p>
+                    <p className='text-slate-500'>
+                      Qtd: {detail.quantity}
+                    </p>
+                  </div>
+
+                </p>
               ))}
             </ul>
           </div>

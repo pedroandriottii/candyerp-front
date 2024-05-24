@@ -163,140 +163,140 @@ export default function EditSale({ params }: { params: { id: string } }) {
   return (
     <div className="flex flex-col p-4 w-full h-full bg-candy-purple max-h-40">
       <FormLabel labelType="updateSales" />
-        <form onSubmit={handleSubmit} className="w-full flex-col bg-white rounded-lg shadow-md p-4 m-6 overflow-y-auto min-h-[85vh]">
-          <div className='grid grid-cols-2 gap-4'>
-            <div>
-              <label htmlFor="date">Data:</label>
-              <input
-                id="date"
-                value={date}
-                type="date"
-                onChange={(e) => setDate(e.target.value)}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-            <div>
-              <label htmlFor="total_price">Valor Total:</label>
-              <input
-                id="total_price"
-                value={total_price}
-                onChange={(e) => setTotalPrice(e.target.value)}
-                required
-                placeholder='1000.00'
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="order_type">Tipo de Venda:</label>
-              <select
-                id="order_type"
-                value={order_type}
-                onChange={(e) => setOrderType(e.target.value)}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="BALCONY">Balcao</option>
-                <option value="DELIVERY">Entrega</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="fk_client_id">Cliente:</label>
-              <select
-                id="fk_client_id"
-                value={fk_client_id ? fk_client_id : ""}
-                onChange={(e) => setFkClientId(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                {clients.map((client) => (
-                  <option key={client.id} value={client.id}>{client.name}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="payment_method">Método de Pagamento:</label>
-              <select
-                id="payment_method"
-                value={payment_method}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="CASH">Dinheiro</option>
-                <option value="CREDIT_CARD">Cartão de Crédito</option>
-                <option value="DEBIT_CARD">Cartão de Débito</option>
-                <option value="PIX">Pix</option>
-              </select>
-            </div>
+      <form onSubmit={handleSubmit} className="flex-col flex-1 bg-white rounded-lg shadow-md p-4 m-6 overflow-y-auto min-h-[85vh]">
+        <div className='grid grid-cols-2 gap-4'>
+          <div>
+            <label htmlFor="date">Data:</label>
+            <input
+              id="date"
+              value={date}
+              type="date"
+              onChange={(e) => setDate(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
           </div>
           <div>
-            <div className="pt-4">
-              <label className="" htmlFor="">Produtos Vendidos</label>
-              <div className="grid grid-cols-2 gap-4 pb-4">
-                {products.map((product) => (
-                  <div key={product.id} className="flex gap-2 p-2 items-center border border-gray-300 rounded-md">
-                    <input
-                      type="checkbox"
-                      id={`product-${product.id}`}
-                      checked={selectedProducts.includes(product.id)}
-                      onChange={() =>
-                        setSelectedProducts(
-                          selectedProducts.includes(product.id)
-                            ? selectedProducts.filter((id) => id !== product.id)
-                            : [...selectedProducts, product.id]
-                        )
-                      }
-                      className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
-                    />
-                    <label htmlFor={`product-${product.id}`} className="flex-1">
-                      {product.name}
-                    </label>
-                    {selectedProducts.includes(product.id) && (
-                      <>
-                        <input
-                          type="number"
-                          min="0"
-                          value={productQuantities[product.id] || 0}
-                          onChange={(e) =>
-                            setProductQuantities({
-                              ...productQuantities,
-                              [product.id]: parseInt(e.target.value),
-                            })
-                          }
-                          className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                        <select
-                          value={selectedDetails[product.id] || ""}
-                          onChange={(e) =>
-                            setSelectedDetails({
-                              ...selectedDetails,
-                              [product.id]: parseInt(e.target.value),
-                            })
-                          }
-                          className="ml-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        >
-                          <option value="" disabled>
-                            ESCOLHA O DETALHE
+            <label htmlFor="total_price">Valor Total:</label>
+            <input
+              id="total_price"
+              value={total_price}
+              onChange={(e) => setTotalPrice(e.target.value)}
+              required
+              placeholder='1000.00'
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              disabled
+            />
+          </div>
+          <div>
+            <label htmlFor="order_type">Tipo de Venda:</label>
+            <select
+              id="order_type"
+              value={order_type}
+              onChange={(e) => setOrderType(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="BALCONY">Balcao</option>
+              <option value="DELIVERY">Entrega</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="fk_client_id">Cliente:</label>
+            <select
+              id="fk_client_id"
+              value={fk_client_id ? fk_client_id : ""}
+              onChange={(e) => setFkClientId(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              {clients.map((client) => (
+                <option key={client.id} value={client.id}>{client.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="payment_method">Método de Pagamento:</label>
+            <select
+              id="payment_method"
+              value={payment_method}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="CASH">Dinheiro</option>
+              <option value="CREDIT_CARD">Cartão de Crédito</option>
+              <option value="DEBIT_CARD">Cartão de Débito</option>
+              <option value="PIX">Pix</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div className="pt-4">
+            <label className="" htmlFor="">Produtos Vendidos</label>
+            <div className="grid grid-cols-2 gap-4 pb-4">
+              {products.map((product) => (
+                <div key={product.id} className="flex gap-2 p-2 items-center border border-gray-300 rounded-md">
+                  <input
+                    type="checkbox"
+                    id={`product-${product.id}`}
+                    checked={selectedProducts.includes(product.id)}
+                    onChange={() =>
+                      setSelectedProducts(
+                        selectedProducts.includes(product.id)
+                          ? selectedProducts.filter((id) => id !== product.id)
+                          : [...selectedProducts, product.id]
+                      )
+                    }
+                    className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
+                  />
+                  <label htmlFor={`product-${product.id}`} className="flex-1">
+                    {product.name}
+                  </label>
+                  {selectedProducts.includes(product.id) && (
+                    <>
+                      <input
+                        type="number"
+                        min="0"
+                        value={productQuantities[product.id] || 0}
+                        onChange={(e) =>
+                          setProductQuantities({
+                            ...productQuantities,
+                            [product.id]: parseInt(e.target.value),
+                          })
+                        }
+                        className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <select
+                        value={selectedDetails[product.id] || ""}
+                        onChange={(e) =>
+                          setSelectedDetails({
+                            ...selectedDetails,
+                            [product.id]: parseInt(e.target.value),
+                          })
+                        }
+                        className="ml-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      >
+                        <option value="" disabled>
+                          ESCOLHA O DETALHE
+                        </option>
+                        {productDetails.map((detail) => (
+                          <option key={detail.id} value={detail.id}>
+                            {detail.description}
                           </option>
-                          {productDetails.map((detail) => (
-                            <option key={detail.id} value={detail.id}>
-                              {detail.description}
-                            </option>
-                          ))}
-                        </select>
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
+                        ))}
+                      </select>
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
+        </div>
 
-          <button type="submit" className="flex w-full justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            Atualizar
-          </button>
-        </form>
+        <button type="submit" className="flex w-full justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          Atualizar
+        </button>
+      </form>
     </div>
   );
 }

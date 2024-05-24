@@ -4,6 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import FormLabel from '@/components/form/FormLabel';
 import Link from 'next/link';
 import EditIcon from '@mui/icons-material/Edit';
+import { formattedDate, formatValue } from '@/utils';
 
 interface Product {
   id: number;
@@ -77,29 +78,31 @@ const Page: React.FC = () => {
                 <span className='text-slate-400'><EditIcon /></span>
               </Link>
             </div>
-            <p className='text-lg'>
-              <span className='font-semibold'>ID: </span>{production.id}
-            </p>
             <p className='text-lg mt-2'>
               <span className='font-semibold'>Nome: </span>{production.name}
             </p>
             <p className='text-lg mt-2'>
-              <span className='font-semibold'>Data de Início: </span>{production.start_date}
+              <span className='font-semibold'>Data de Início: </span>{formattedDate(production.start_date)}
             </p>
             <p className='text-lg mt-2'>
-              <span className='font-semibold'>Data de Término: </span>{production.end_date}
+              <span className='font-semibold'>Data de Término: </span>{formattedDate(production.end_date)}
             </p>
             <p className='text-lg mt-2'>
-              <span className='font-semibold'>Status: </span>{production.status}
+              <span className='font-semibold'>Status: </span>{formatValue('status', production.status)}
             </p>
             <h3 className='text-lg font-semibold text-candy-purple mt-4'>Produtos:</h3>
             <ul className='list-disc list-inside mt-2'>
               {production.products.map((product) => {
                 const productionProduct = productionProducts.find(pp => pp.fk_Product_id === product.id);
                 return (
-                  <li key={product.id}>
-                    {product.name} - Quantidade: {productionProduct ? productionProduct.quantity : 0}
-                  </li>
+                  <div key={product.id} className='flex justify-between border p-1 rounded-xl border-slate-500 my-2'>
+                    <p>
+                      {product.name}
+                    </p>
+                    <p className='text-slate-500'>
+                      Qtd: {productionProduct ? productionProduct.quantity : 0}
+                    </p>
+                  </div>
                 );
               })}
             </ul>
