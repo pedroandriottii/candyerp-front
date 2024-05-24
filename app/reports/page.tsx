@@ -12,6 +12,8 @@ import { BarChartMostProduced } from '@/components/dashboard/productions/BarChar
 import { BarChartProductsByStock } from '@/components/dashboard/products/BarChartProductsByStockDesc';
 import { TableProductsOutOfStock } from '@/components/dashboard/products/TableProductsOutOfStock';
 import { BarChartLoyalCustomers } from '@/components/dashboard/clients/BarChartLoyalCustomers';
+import { DonutProductsByNeighborhood } from '@/components/dashboard/sales/DonutProductsByNeighborhood';
+import { DonutSellByPaymentMethod } from '@/components/dashboard/sales/DonutSellByPaymentMethod';
 
 export default function Reports() {
   const [showSales, setShowSales] = useState(false);
@@ -60,15 +62,9 @@ export default function Reports() {
                 <CardSales />
                 <CardActuallySale />
               </div>
-              <div className='grid grid-cols-2 gap-4'>
-                <div className="bg-white p-4 rounded-2xl">
-                  <BarChartProductsSeller /> {/* This should be changed to PRODUCTS BY NEIGHBORHOOD */}
-                </div>
-                <div className="bg-white p-4 rounded-2xl">
-                  <BarChartProductsSeller />
-                </div>
+              <div className="bg-white p-4 rounded-2xl">
+                <BarChartProductsSeller />
               </div>
-
               <div className='grid grid-cols-2 gap-4'>
                 <div className="bg-white p-4 rounded-2xl">
                   <BarChartBestDelivery />
@@ -77,10 +73,14 @@ export default function Reports() {
                   <BarChartBestBalcony />
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-2xl">
-                <BarChartProductsSeller /> {/* This should be changed to PRODUCTS BY PAYMENT METHOD */}
+              <div className='grid grid-cols-2 gap-4'>
+                <div className="bg-white p-4 rounded-2xl">
+                  <DonutSellByPaymentMethod />
+                </div>
+                <div className="flex h-full bg-white p-4 rounded-2xl justify-center align-center">
+                  <DonutProductsByNeighborhood />
+                </div>
               </div>
-
             </div>
           )}
         </div>
