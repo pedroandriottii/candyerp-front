@@ -80,9 +80,9 @@ const NewIngredient = () => {
     <div className="flex flex-col items-center p-4 w-full h-full bg-candy-purple max-h-40">
       <FormLabel labelType='createIngredients' />
       <form onSubmit={handleSubmit} className='flex flex-col bg-white p-4 m-6 rounded-lg shadow-md'>
-        <div className="flex flex-col max-w-lg pb-4 gap-4 m-4">
+        <div className="w-full grid grid-cols-2 align-center justify-center max-h-[70vh] gap-4 overflow-auto mb-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome do Ingrediente</label>
+            <label htmlFor="name" >Nome do Ingrediente</label>
             <input
               id="name"
               value={name}
@@ -92,9 +92,8 @@ const NewIngredient = () => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-
           <div>
-            <label htmlFor="measurementUnit" className="block text-sm font-medium text-gray-700">Unidade de Medida</label>
+            <label htmlFor="measurementUnit" >Unidade de Medida</label>
             <select
               id="measurementUnit"
               value={measurementUnit}
@@ -110,9 +109,8 @@ const NewIngredient = () => {
               <option value="UNIT">Unidade</option>
             </select>
           </div>
-
           <div>
-            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantidade</label>
+            <label htmlFor="quantity" >Quantidade</label>
             <input
               id="quantity"
               value={quantity}
@@ -122,9 +120,8 @@ const NewIngredient = () => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-
           <div>
-            <label htmlFor="cost" className="block text-sm font-medium text-gray-700">Custo:</label>
+            <label htmlFor="cost" >Custo:</label>
             <input
               id="cost"
               value={cost}
@@ -134,27 +131,28 @@ const NewIngredient = () => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Fornecedores</label>
+        </div>
+        <div className='py-4'>
+          <label >Fornecedores</label>
+          <div className='grid grid-cols-2 gap-4'>
             {suppliers.map((supplier) => (
-              <div key={supplier.id} className="flex items-center">
+              <div key={supplier.id} className="flex gap-2 p-2 items-center border border-gray-300 rounded-md">
                 <input
                   id={`supplier-${supplier.id}`}
                   type="checkbox"
                   value={supplier.id}
                   checked={selectedSupplierIds.includes(String(supplier.id))}
                   onChange={() => handleSupplierChange(String(supplier.id))}
-                  className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                  className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
                 />
-                <label htmlFor={`supplier-${supplier.id}`} className="ml-2 block text-sm text-gray-700">
+                <p>
                   {supplier.name}
-                </label>
+                </p>
               </div>
             ))}
           </div>
         </div>
-        <button type="submit" className="flex justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <button type="submit" className="w-full justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Cadastrar
         </button>
       </form>

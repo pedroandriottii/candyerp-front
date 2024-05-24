@@ -232,7 +232,7 @@ export default function EditSale({ params }: { params: { id: string } }) {
         </div>
         <div>
           <div className="pt-4">
-            <label className="" htmlFor="">Produtos Vendidos</label>
+            <label htmlFor="">Produtos Vendidos</label>
             <div className="grid grid-cols-2 gap-4 pb-4">
               {products.map((product) => (
                 <div key={product.id} className="flex gap-2 p-2 items-center border border-gray-300 rounded-md">

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { IngredientProps } from "@/types";
 import { useEffect, useState } from "react";
 import FormLabel from "@/components/form/FormLabel";
+import { formatValue } from "@/utils";
 
 const UpdateProduct = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -135,10 +136,10 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="flex flex-col bg-candy-purple max-h-40 items-center p-4 w-full h-full">
+    <div className="flex flex-col p-4 w-full h-full bg-candy-purple max-h-40">
       <FormLabel labelType="updateProducts" />
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col max-w-lg gap-4 bg-white p-4 m-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="flex-col flex-1 bg-white rounded-lg shadow-md p-4 m-6 overflow-y-auto min-h-[85vh]">
+        <div className='grid grid-cols-2 gap-4'>
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome</label>
             <input
@@ -147,7 +148,7 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Bolo de Cenoura"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
@@ -158,7 +159,7 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
               onChange={(e) => setPrice(e.target.value)}
               required
               placeholder="10.00"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
@@ -169,42 +170,52 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
               onChange={(e) => setQuantity(e.target.value)}
               required
               placeholder="10"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Ingredientes</label>
-            {ingredients.map(ingredient => (
-              <div key={ingredient.id} className="flex gap-2 p-2 items-center">
-                <label className="flex items-center gap-2">
+        </div>
+        <div>
+          <div className="pt-4">
+            <label>Ingredientes</label>
+            <div className="grid grid-cols-2 gap-4 pb-4">
+              {ingredients.map(ingredient => (
+                <div key={ingredient.id} className="flex gap-2 p-2 items-center border border-gray-300 rounded-md">
                   <input
                     type="checkbox"
                     className="h-5 w-5 text-candy-purple focus:ring-candy-purple-dark border-gray-300 rounded"
                     checked={selectedIngredients.includes(ingredient.id)}
                     onChange={() => handleIngredientChange(ingredient.id)}
                   />
-                  {ingredient.name}
-                </label>
-                {selectedIngredients.includes(ingredient.id) && (
-                  <input
-                    type="number"
-                    className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    value={ingredientQuantity[ingredient.id] || ''}
-                    onChange={e => handleIngredientQuantityChange(ingredient.id, Number(e.target.value))}
-                    min="0"
-                    step="0.1"
-                  />
-                )}
-                <p>{ingredient.measurementUnit}</p>
-              </div>
-            ))}
+                  <div className="flex flex-1 justify-between">
+                    <p>
+                      {ingredient.name}
+                    </p>
+                    <p>
+                      {selectedIngredients.includes(ingredient.id) && (
+                        <input
+                          type="number"
+                          className="flex py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          value={ingredientQuantity[ingredient.id] || ''}
+                          onChange={e => handleIngredientQuantityChange(ingredient.id, Number(e.target.value))}
+                          min="0"
+                          step="0.1"
+                        />
+                      )}
+                    </p>
+                    <p className="text-slate-500">
+                      {formatValue('measurementUnit', ingredient.measurementUnit)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <button disabled={isLoading} type="submit" className="flex justify-center py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <button disabled={isLoading} type="submit" className="w-full justify-center py-2  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-candy-purple hover:bg-candy-purple-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Editar
           </button>
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 };
 
