@@ -29,9 +29,6 @@ export default function NewSale() {
         const clientsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients`);
         const clientsData = await clientsResponse.json();
         setClients(clientsData);
-        if (clientsData.length > 0) {
-          setFkClientId(clientsData[0].id.toString());
-        }
 
         const productsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
         const productsData = await productsResponse.json();
@@ -83,15 +80,25 @@ export default function NewSale() {
       console.log(`Created NFE: ${nfeData.id}`);
       setFkNfeId(nfeData.id);
 
+      const saleOrderBody = {
+        date,
+        total_price: totalPrice,
+        order_type: orderType,
+        payment_method: paymentMethod,
+        fk_nfe_id: nfeData.id,
+        fk_Client_id: orderType === "DELIVERY" ? fkClientId : null
+      };
+      console.log("Sale order body:", saleOrderBody);
+
       const saleOrderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          date, total_price: totalPrice, order_type: orderType, payment_method: paymentMethod, fk_client_id: fkClientId, fk_nfe_id: nfeData.id
-        }),
+        body: JSON.stringify(saleOrderBody),
       });
+      console.log("Oi linda");
+
 
       if (!saleOrderResponse.ok) throw new Error("Failed to create sale order");
 
@@ -163,25 +170,26 @@ export default function NewSale() {
                 <option value="DELIVERY">Entrega</option>
               </select>
             </div>
-            <div>
-              <label htmlFor="fk_client_id">Cliente:</label>
-              <div className="flex items-center gap-2">
-                <select
-                  id="fk_client_id"
-                  value={fkClientId}
-                  onChange={(e) => setFkClientId(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  {clients.map((client) => (
-                    <option key={client.id} value={client.id}>{client.name}</option>
-                  ))}
-                </select>
-                <Link href='/client/create' className="flex bg-candy-purple rounded-md">
-                  <AddCircleIcon className="text-white mx-3 my-2" />
-                </Link>
+            {orderType === "DELIVERY" && (
+              <div>
+                <label htmlFor="fk_client_id">Cliente:</label>
+                <div className="flex items-center gap-2">
+                  <select
+                    id="fk_client_id"
+                    value={fkClientId}
+                    onChange={(e) => setFkClientId(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    {clients.map((client) => (
+                      <option key={client.id} value={client.id}>{client.name}</option>
+                    ))}
+                  </select>
+                  <Link href='/client/create' className="flex bg-candy-purple rounded-md">
+                    <AddCircleIcon className="text-white mx-3 my-2" />
+                  </Link>
+                </div>
               </div>
-
-            </div>
+            )}
             <div>
               <label htmlFor="payment_method">Método de Pagamento:</label>
               <select

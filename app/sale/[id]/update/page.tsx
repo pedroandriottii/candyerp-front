@@ -14,7 +14,7 @@ export default function EditSale({ params }: { params: { id: string } }) {
   const [total_price, setTotalPrice] = useState("");
   const [order_type, setOrderType] = useState("BALCONY");
   const [payment_method, setPaymentMethod] = useState("CASH");
-  const [fk_client_id, setFkClientId] = useState("");
+  const [fk_client_id, setFkClientId] = useState<string | null>(null);
   const [fk_nfe_id, setFkNfeId] = useState("");
   const [clients, setClients] = useState<ClientProps[]>([]);
   const [products, setProducts] = useState<ProductProps[]>([]);
@@ -53,7 +53,7 @@ export default function EditSale({ params }: { params: { id: string } }) {
         setTotalPrice(saleOrderData.total_price);
         setOrderType(saleOrderData.order_type);
         setPaymentMethod(saleOrderData.payment_method);
-        setFkClientId(saleOrderData.fk_client_id.toString());
+        setFkClientId(saleOrderData.fk_client_id ? saleOrderData.fk_client_id.toString() : null);
         setFkNfeId(saleOrderData.fk_nfe_id);
 
         const detailSalesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product-detail-sales/${saleOrderId}`);
@@ -91,7 +91,7 @@ export default function EditSale({ params }: { params: { id: string } }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          date, total_price, order_type, payment_method, fk_client_id, fk_nfe_id
+          date, total_price, order_type, payment_method, fk_client_id: fk_client_id || null, fk_nfe_id
         }),
       });
 
@@ -209,6 +209,7 @@ export default function EditSale({ params }: { params: { id: string } }) {
               onChange={(e) => setFkClientId(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
+              <option value="" disabled>Selecione um Cliente</option>
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>{client.name}</option>
               ))}
