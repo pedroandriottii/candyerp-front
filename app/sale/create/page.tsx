@@ -48,15 +48,21 @@ export default function NewSale() {
 
   useEffect(() => {
     calculateTotalPrice();
-  }, [selectedProducts, productQuantities]);
+  }, [selectedProducts, productQuantities, selectedDetails]);
 
   const calculateTotalPrice = () => {
     let total = 0;
     selectedProducts.forEach(productId => {
       const product = products.find(p => p.id === productId);
       const quantity = productQuantities[productId] || 0;
+      const detailId = selectedDetails[productId];
+      const detail = productDetails.find(d => d.id === detailId);
+
       if (product) {
         total += product.price * quantity;
+      }
+      if (detail) {
+        total += detail.additional_value * quantity;
       }
     });
     setTotalPrice(total);
@@ -77,7 +83,6 @@ export default function NewSale() {
       if (!nfeResponse.ok) throw new Error("Failed to create NFE");
 
       const nfeData = await nfeResponse.json();
-      console.log(`Created NFE: ${nfeData.id}`);
       setFkNfeId(nfeData.id);
 
       const saleOrderBody = {
@@ -88,7 +93,6 @@ export default function NewSale() {
         fk_nfe_id: nfeData.id,
         fk_Client_id: orderType === "DELIVERY" ? fkClientId : null
       };
-      console.log("Sale order body:", saleOrderBody);
 
       const saleOrderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sale-orders`, {
         method: 'POST',
@@ -97,13 +101,10 @@ export default function NewSale() {
         },
         body: JSON.stringify(saleOrderBody),
       });
-      console.log("Oi linda");
-
 
       if (!saleOrderResponse.ok) throw new Error("Failed to create sale order");
 
       const saleOrderData = await saleOrderResponse.json();
-      console.log(`Created sale: ${saleOrderData.id}`);
 
       for (const productId of selectedProducts) {
         const quantity = productQuantities[productId];
@@ -272,7 +273,7 @@ export default function NewSale() {
                         </option>
                         {productDetails.map((detail) => (
                           <option key={detail.id} value={detail.id}>
-                            {detail.description}
+                            {detail.description} (R$ {detail.additional_value.toFixed(2)})
                           </option>
                         ))}
                       </select>
