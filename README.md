@@ -33,3 +33,22 @@ Clone este repositório e entre na pasta raiz.
 * *Luis Otavio Mingati* 
 
 ## Aplicação em Funcionamento
+
+### Fornecedores e Ingredientes
+![IngredienteGif](https://github.com/pedroandriottii/candyerp-front/assets/112347899/c0b48039-0bea-4dbb-ada5-d1dc93751d8e)
+
+### Produto
+![ProdutoGif](https://github.com/pedroandriottii/candyerp-front/assets/112347899/6cd7968e-79b0-4b9d-9da4-4878b6028e86)
+
+### Produção e Atualização do Produto
+![ProducaoProdutoGif](https://github.com/pedroandriottii/candyerp-front/assets/112347899/ae2f3dd8-5599-44af-8ee1-18c7e746c0f1)
+
+### Cliente e Vendas
+![VendaGif](https://github.com/pedroandriottii/candyerp-front/assets/112347899/4f30e1c9-9733-4425-afc1-b012d6ce7221)
+
+### Relatórios
+![RelatorioGiF](https://github.com/pedroandriottii/candyerp-front/assets/112347899/26eb0acc-cf71-4769-b487-547587569864)
+
+
+
+
